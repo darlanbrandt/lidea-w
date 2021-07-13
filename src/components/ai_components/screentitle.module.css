@@ -1,0 +1,26 @@
+.flex_container {
+  display: flex;
+  align-items: stretch;
+  position: sticky;
+  width: 100%;
+  top: 0;
+  z-index:2;
+  
+}
+
+.flex_screentitle {
+  display: flex;
+  align-items: center;
+  flex: 100%;
+  margin: 0;
+  height: 60px;
+  background-color: #3f51b5;
+  position: relative;
+}
+
+.text {
+  margin-left: 10px;
+  color: white;
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.2em;
+}
