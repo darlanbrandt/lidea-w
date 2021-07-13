@@ -37,8 +37,26 @@
   max-width: 432px;
   min-height: 658px;
   max-height: 658px;
-  background-color: yellow;
   overflow: auto;
+}
+
+.phoneArea::-webkit-scrollbar-track
+{
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  background-color: #F5F5F5;
+}
+
+.phoneArea::-webkit-scrollbar
+{
+  width: 5px;
+  background-color: lightgray;
+}
+
+.phoneArea::-webkit-scrollbar-thumb
+{
+  background-color: dimgray;
+  border: 0;
 }
 
 .components {
