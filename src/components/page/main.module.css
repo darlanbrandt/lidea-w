@@ -38,6 +38,7 @@
   min-height: 658px;
   max-height: 658px;
   background-color: yellow;
+  overflow: auto;
 }
 
 .components {
