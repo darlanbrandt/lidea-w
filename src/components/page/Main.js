@@ -1,6 +1,5 @@
 import React from 'react';
 import css from './main.module.css';
-import device from '../../assets/images/device.png';
 
 export default function Main() {
   return (

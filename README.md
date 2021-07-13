@@ -1,6 +1,6 @@
-# Getting Started with Create React App
+# LIDEA-w
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Aplicação criada como Trabalho de Conclusão de Curso, do curso de Sistemas de Informação, da Universidade Federal de Santa Catarina (2021/1).
 
 ## Available Scripts
 
