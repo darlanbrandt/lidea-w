@@ -1,29 +1,28 @@
 /* Add style to header block */
 .header {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr repeat(3, auto) 1fr;
+  grid-column-gap: 5px;
+  justify-items: center;
+ 
   background-color: white;
   flex-direction: row;
   flex-wrap: nowrap;
-  justify-content: flex-start;
+
   align-items: center;
   box-shadow: 2px 0px 5px rgba(64,64,64,0.5);
   height: 70px;
   width: 100%;
   margin: 0;
   position: fixed;
-
+  z-index: 10;
 }
 
 /* Add style to image element */
 .image {
   width: 136px;
   height: 55px;
-  margin-left: 1.2rem;
-}
-
-/* Add style to space element between image and title */
-.space {
-  width: 25%;
+  margin-left: 0;
 }
 
 /* Add style to app title */
@@ -47,10 +46,6 @@
     width: 99px;
     height: 40px;
     margin-left: 1%;
-  }
-
-  .space {
-    width: 4%;
   }
 
   .appTitle {
