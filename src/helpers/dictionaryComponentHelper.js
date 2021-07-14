@@ -23,6 +23,9 @@ const endOfElement = ')\\n\\n)\\n\\n';
 
 const commonTextComponent = 'com.google.appinventor.components.runtime.';
 const commonTextProperties = "\\n(set-and-coerce-property! '";
+const commonTextScreenTitle =
+  "(do-after-form-creation (set-and-coerce-property! '";
+const screenTextProperties = "(set-and-coerce-property! '";
 
 export {
   dict,
@@ -30,4 +33,6 @@ export {
   endOfElement,
   commonTextComponent,
   commonTextProperties,
+  commonTextScreenTitle,
+  screenTextProperties,
 };

@@ -4,11 +4,73 @@ import {
   endOfElement,
   commonTextComponent,
   commonTextProperties,
+  commonTextScreenTitle,
+  screenTextProperties,
 } from './dictionaryComponentHelper';
 
 let components = [];
 let properties = [];
+let screenProperties = [];
 let propertiesArray = { properties };
+let screenPropertiesArray = { screenProperties };
+
+/* Returns app screen title and properties */
+function getScreenTitle(fullText) {
+  let screenTitleText = '';
+  let screenName = '';
+  const text = JSON.stringify(fullText);
+  for (let i = 0; i < text.length; i++) {
+    if (text.startsWith(commonTextScreenTitle, i)) {
+      screenTitleText = text.substring(i).split(startOfElement)[0];
+    }
+  }
+  screenName = screenTitleText
+    .substring(commonTextScreenTitle.length)
+    .split(' ')[0];
+
+  let screenProperty = [];
+  for (let j = 0; j < screenTitleText.length; j++) {
+    if (screenTitleText.startsWith(screenTextProperties, j)) {
+      screenProperty.push(screenTitleText.substring(j).split(')\\n ')[0]);
+    }
+  }
+  let allScreenProperties = {};
+  for (let k = 0; k < screenProperty.length; k++) {
+    let screenInfoText = screenProperty[k];
+
+    let screenInfo = screenTextProperties + screenName;
+
+    let propertiesString = screenInfoText
+      .substring(screenInfo.length + 2)
+      .split(')\\n')[0];
+
+    if (screenInfoText.startsWith(screenInfo)) {
+      let propertiesName = propertiesString.split(' ')[0];
+
+      let propertiesStringAdjusted = propertiesString.replaceAll('\\"', '');
+
+      let propertiesValue = propertiesStringAdjusted
+        .substring(propertiesString.indexOf(' ') + 1)
+        .split(" '")[0];
+
+      let propertiesType = propertiesString.substring(
+        propertiesString.indexOf(" '") + 2
+      );
+
+      allScreenProperties = {
+        propertyName: propertiesName,
+        propertyValue: propertiesValue,
+        propertyType: propertiesType,
+      };
+      screenProperties.push(allScreenProperties);
+    }
+  }
+  screenPropertiesArray[screenName] = screenProperties;
+  screenProperties = [];
+  delete screenPropertiesArray.screenProperties;
+
+  return screenPropertiesArray;
+}
 
 /* Splits full YAIL code into YAIL code for each component*/
 function returnFullComponentText(fullText) {
@@ -106,4 +168,4 @@ function getComponentProperties(text) {
   return propertiesArray;
 }
 
-export { getAllComponents, getComponentProperties };
+export { getAllComponents, getComponentProperties, getScreenTitle };

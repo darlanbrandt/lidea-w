@@ -3,6 +3,7 @@ import api from '../services/api';
 import {
   getAllComponents,
   getComponentProperties,
+  getScreenTitle,
 } from '../helpers/componentsHelper';
 
 const ComponentContext = createContext();
@@ -15,6 +16,7 @@ export function ComponentProvider({ children }) {
       /* Fetch data from API */
       const res = await api.get('/data');
       const code = await res.data;
+      const screentitle = getScreenTitle(code);
 
       let componentObject = {};
       let components = [];
