@@ -74,9 +74,7 @@ export default function Elements({ components }) {
 
   return (
     <center>
-      <div style={{ display: 'flex' }} className="content">
-        {reactElement}
-      </div>
+      <div className="content">{reactElement}</div>
     </center>
   );
 }
