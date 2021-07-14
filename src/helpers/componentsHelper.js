@@ -1,33 +1,16 @@
-const dict = [];
+import {
+  dict,
+  startOfElement,
+  endOfElement,
+  commonTextComponent,
+  commonTextProperties,
+} from './dictionaryComponentHelper';
+
 let components = [];
 let properties = [];
 let propertiesArray = { properties };
 
-const commonTextComponent = 'com.google.appinventor.components.runtime.';
-const commonTextProperties = "\\n(set-and-coerce-property! '";
-
-dict['Button '] = 'Button';
-dict['Camera '] = 'Camera';
-dict['Canvas '] = 'Canvas';
-dict['Clock '] = 'Clock';
-dict['CheckBox '] = 'Checkbox';
-dict['DatePicker '] = 'Date';
-dict['Image '] = 'Image';
-dict['ImageSprite '] = 'ImageSprite';
-dict['Label '] = 'Label';
-dict['ListPicker '] = 'Select';
-dict['PasswordTextBox '] = 'Password';
-dict['Slider '] = 'Slider';
-dict['Sound '] = 'Sound';
-dict['Spinner '] = 'Spinner';
-dict['Switch '] = 'Switch';
-dict['TextBox '] = 'TextBox';
-dict['VerticalArrangement '] = 'VerticalArrangement';
-
 /* Splits full YAIL code into YAIL code for each component*/
-const startOfElement = '(add-component';
-const endOfElement = ')\\n\\n)\\n\\n';
-
 function returnFullComponentText(fullText) {
   let fullComponentText = [];
   const text = JSON.stringify(fullText);

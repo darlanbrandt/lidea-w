@@ -12,15 +12,20 @@ export function ComponentProvider({ children }) {
 
   useEffect(() => {
     const getPageComponents = async () => {
+      /* Fetch data from API */
       const res = await api.get('/data');
       const code = await res.data;
 
       let componentObject = {};
       let components = [];
 
+      /* Lists all components in an array */
       const allComponents = getAllComponents(code);
+
+      /* Lists all components properties in an array */
       const allComponentsProperties = getComponentProperties(code);
 
+      /* Merges both arrays into a new object */
       Object.keys(allComponents).forEach((acKey) => {
         let cValue = allComponents[acKey];
         Object.keys(allComponentsProperties).forEach((cKey) => {
@@ -30,7 +35,7 @@ export function ComponentProvider({ children }) {
             componentObject = {
               componentType: cValue.componentType,
               componentName: cValue.componentName,
-              componentProperies: componentProperty,
+              componentProperties: componentProperty,
             };
             components = components.concat(componentObject);
           }
