@@ -3,18 +3,22 @@ import api from '../services/api';
 import {
   getAllComponents,
   getComponentProperties,
+  getScreensInfo,
 } from '../helpers/componentsHelper';
 
 const ComponentContext = createContext();
 
 export function ComponentProvider({ children }) {
   const [components, setComponents] = useState([]);
+  //const [screenInfo, setScreenInfo] = useState([]);
 
   useEffect(() => {
     const getPageComponents = async () => {
       /* Fetch data from API */
       const res = await api.get('/data');
       const code = await res.data;
+      const screenInfo = getScreensInfo(code);
+      console.log(Math.floor(Math.random() * 10000) + 1);
 
       let componentObject = {};
       let components = [];
@@ -28,6 +32,14 @@ export function ComponentProvider({ children }) {
       /* Merges both arrays into a new object */
       Object.keys(allComponents).forEach((acKey) => {
         let cValue = allComponents[acKey];
+
+        let parentIsScreen = false;
+        Object.keys(screenInfo).forEach((sKey) => {
+          if (cValue.parentComponent === sKey) {
+            parentIsScreen = true;
+          }
+        });
+
         Object.keys(allComponentsProperties).forEach((cKey) => {
           let componentProperty = allComponentsProperties[cKey];
 
@@ -36,6 +48,8 @@ export function ComponentProvider({ children }) {
               componentType: cValue.componentType,
               componentName: cValue.componentName,
               componentProperties: componentProperty,
+              parentComponent: cValue.parentComponent,
+              parentIsScreen: parentIsScreen,
             };
             components = components.concat(componentObject);
           }

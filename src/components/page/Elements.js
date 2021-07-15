@@ -67,7 +67,6 @@ export default function Elements({ components }) {
         );
         break;
       default:
-        reactElement.push(<span>Componente</span>);
         break;
     }
   }
