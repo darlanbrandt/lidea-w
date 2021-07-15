@@ -67,16 +67,13 @@ export default function Elements({ components }) {
         );
         break;
       default:
-        reactElement.push(<span>Componente</span>);
         break;
     }
   }
 
   return (
     <center>
-      <div style={{ display: 'flex' }} className="content">
-        {reactElement}
-      </div>
+      <div className="content">{reactElement}</div>
     </center>
   );
 }
