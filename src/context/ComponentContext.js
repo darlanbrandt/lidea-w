@@ -12,14 +12,12 @@ export function ComponentProvider({ children }) {
   const [components, setComponents] = useState([]);
   //const [screenInfo, setScreenInfo] = useState([]);
 
-
   useEffect(() => {
     const getPageComponents = async () => {
       /* Fetch data from API */
       const res = await api.get('/data');
       const code = await res.data;
       const screenInfo = getScreensInfo(code);
-      console.log(Math.floor(Math.random() * 10000) + 1);
 
       let componentObject = {};
       let components = [];

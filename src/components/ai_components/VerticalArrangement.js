@@ -4,5 +4,17 @@ export default function VerticalArrangement(
   { componentName, componentProperties },
   { children }
 ) {
-  return <div id={componentName}>{children}</div>;
+  let defaultValue = '';
+  const componentContent = componentProperties.find(
+    (prop) => prop.propertyName === 'BackgroundColor'
+  );
+
+  if (componentContent !== undefined) {
+    defaultValue = componentContent.propertyValue.replace('#xFF', '#');
+  }
+  return (
+    <div style={{ backgroundColor: `${defaultValue}` }} id={componentName}>
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+    </div>
+  );
 }

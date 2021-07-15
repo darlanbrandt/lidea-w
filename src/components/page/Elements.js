@@ -6,6 +6,7 @@ import Image from '../ai_components/Image';
 import TextBox from '../ai_components/TextBox';
 import DatePicker from '../ai_components/DatePicker';
 import Select from '../ai_components/Select';
+import VerticalArrangement from '../ai_components/VerticalArrangement';
 
 export default function Elements({ components }) {
   let reactElement = [];
@@ -64,6 +65,16 @@ export default function Elements({ components }) {
             componentName={components[i].componentName}
             componentProperties={components[i].componentProperties}
           />
+        );
+        break;
+      case 'VerticalArrangement':
+        reactElement.push(
+          <VerticalArrangement
+            key={components[i].componentName}
+            componentName={components[i].componentName}
+            componentProperties={
+              components[i].componentProperties
+            }></VerticalArrangement>
         );
         break;
       default:
