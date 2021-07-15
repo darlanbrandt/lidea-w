@@ -15,7 +15,7 @@ let propertiesArray = { properties };
 let screenPropertiesArray = { screenProperties };
 
 /* Returns app screen title and properties */
-function getScreenTitle(fullText) {
+function getScreensInfo(fullText) {
   let screenTitleText = '';
   let screenName = '';
   const text = JSON.stringify(fullText);
@@ -111,9 +111,13 @@ function getAllComponents(text) {
       let componentInfoText = commonTextComponent + key;
       for (let j = 0; j < componentText.length; j++) {
         if (componentText.startsWith(componentInfoText, j)) {
+          let parentComponent = componentText
+            .substring(startOfElement.length + 1)
+            .split(' ')[0];
           let componentInfo = {
             componentType: dict[key],
             componentName: componentName,
+            parentComponent: parentComponent,
           };
           components = components.concat(componentInfo);
         }
@@ -150,6 +154,7 @@ function getComponentProperties(text) {
         let propertiesType = propertiesString.substring(
           propertiesString.indexOf(" '") + 2
         );
+
         allProperties = {
           propertyName: propertiesName,
           propertyValue: propertiesValue,
@@ -164,8 +169,7 @@ function getComponentProperties(text) {
     properties = [];
     delete propertiesArray.properties;
   }
-
   return propertiesArray;
 }
 
-export { getAllComponents, getComponentProperties, getScreenTitle };
+export { getAllComponents, getComponentProperties, getScreensInfo };
