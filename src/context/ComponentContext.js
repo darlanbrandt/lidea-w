@@ -12,6 +12,7 @@ export function ComponentProvider({ children }) {
   const [components, setComponents] = useState([]);
   //const [screenInfo, setScreenInfo] = useState([]);
 
+
   useEffect(() => {
     const getPageComponents = async () => {
       /* Fetch data from API */
