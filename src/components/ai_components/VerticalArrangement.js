@@ -1,9 +1,10 @@
 import React from 'react';
 
-export default function VerticalArrangement(
-  { componentName, componentProperties },
-  { children }
-) {
+export default function VerticalArrangement({
+  componentName,
+  componentProperties,
+  children,
+}) {
   let defaultValue = '';
   const componentContent = componentProperties.find(
     (prop) => prop.propertyName === 'BackgroundColor'
@@ -14,7 +15,7 @@ export default function VerticalArrangement(
   }
   return (
     <div style={{ backgroundColor: `${defaultValue}` }} id={componentName}>
-      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      {children}
     </div>
   );
 }
