@@ -1,6 +1,15 @@
 import React from 'react';
+import {
+  measureValue,
+  fontSizeValue,
+  textAlignmentValue,
+} from '../../helpers/propertiesHelper';
 
 export default function TextBox({ componentName, componentProperties }) {
+  /*******************************
+   *  Coomponents properties     *
+   *******************************/
+
   /* Get default value from properties */
   let textValue = '';
   const componentTextValue = componentProperties.find(
@@ -11,22 +20,54 @@ export default function TextBox({ componentName, componentProperties }) {
     textValue = componentTextValue.propertyValue;
   }
 
-  let height = '';
-  const componentHeight = componentProperties.find(
-    (prop) => prop.propertyName === 'Height'
+  /* Get background color of TextBox component */
+  let bgColor = '';
+  const componentBgColor = componentProperties.find(
+    (prop) => prop.propertyName === 'BackgroundColor'
   );
 
-  if (componentHeight !== undefined) {
-    height = componentHeight.propertyValue;
+  if (componentBgColor !== undefined) {
+    bgColor = componentBgColor.propertyValue.replace('#xFF', '#');
   }
 
-  let fontSize = '';
+  /* Get font size of TextBox component */
+  let fontSize = '14px';
   const componentFontSize = componentProperties.find(
     (prop) => prop.propertyName === 'FontSize'
   );
 
   if (componentFontSize !== undefined) {
-    fontSize = componentFontSize.propertyValue;
+    fontSize = fontSizeValue(componentFontSize.propertyValue);
+  }
+
+  /* Get height of TextBox component */
+  let height = fontSize;
+  const componentHeight = componentProperties.find(
+    (prop) => prop.propertyName === 'Height'
+  );
+
+  if (componentHeight !== undefined) {
+    height = measureValue(componentHeight.propertyValue);
+  }
+
+  /* Get width of TextBox component */
+  let width = '';
+  const componentWidth = componentProperties.find(
+    (prop) => prop.propertyName === 'Width'
+  );
+
+  if (componentWidth !== undefined) {
+    width = measureValue(componentWidth.propertyValue);
+  }
+
+  /* Get text alignment of TextBox component */
+  let textAlignment = '';
+  const componentTextAlignment = componentProperties.find(
+    (prop) => prop.propertyName === 'TextAlignment'
+  );
+
+  if (componentTextAlignment !== undefined) {
+    textAlignment = textAlignmentValue(componentTextAlignment.propertyValue);
   }
 
   const componentInputType = componentProperties.find(
@@ -35,13 +76,20 @@ export default function TextBox({ componentName, componentProperties }) {
 
   if (componentInputType === '#t') {
     return (
-      <div>
+      <div
+        style={{
+          minHeight: `${height}`,
+          minWidth: `${width}`,
+          position: 'relative',
+        }}>
         <textarea
           id={componentName}
           defaultValue={textValue}
           style={{
-            height: `${height}px`,
-            fontSize: `${fontSize}px`,
+            textAlign: `${textAlignment}`,
+            height: `${height}`,
+            fontSize: `${fontSize}`,
+            width: '100%',
           }}></textarea>
       </div>
     );
@@ -52,7 +100,12 @@ export default function TextBox({ componentName, componentProperties }) {
           type="text"
           id={componentName}
           defaultValue={textValue}
-          style={{ height: `${height}px`, fontSize: `${fontSize}px` }}></input>
+          style={{
+            textAlign: `${textAlignment}`,
+            height: `${height}`,
+            fontSize: `${fontSize}`,
+            width: '100%',
+          }}></input>
       </div>
     );
   }

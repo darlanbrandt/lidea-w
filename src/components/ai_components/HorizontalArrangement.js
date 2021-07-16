@@ -10,6 +10,11 @@ export default function HorizontalArrangement({
   componentProperties,
   children,
 }) {
+  /*******************************
+   *  Coomponents properties     *
+   *******************************/
+
+  /* Get background color of VerticalArrangement */
   let bgColor = '';
   const componentBgColor = componentProperties.find(
     (prop) => prop.propertyName === 'BackgroundColor'
@@ -19,6 +24,7 @@ export default function HorizontalArrangement({
     bgColor = componentBgColor.propertyValue.replace('#xFF', '#');
   }
 
+  /* Get height of VerticalArrangement */
   let height = '';
   const componentHeight = componentProperties.find(
     (prop) => prop.propertyName === 'Height'
@@ -28,6 +34,7 @@ export default function HorizontalArrangement({
     height = measureValue(componentHeight.propertyValue);
   }
 
+  /* Get width of VerticalArrangement */
   let width = '';
   const componentWidth = componentProperties.find(
     (prop) => prop.propertyName === 'Width'
@@ -37,6 +44,7 @@ export default function HorizontalArrangement({
     width = measureValue(componentWidth.propertyValue);
   }
 
+  /* Get horizontal alignment of VerticalArrangement */
   let alignHorizontal = '';
   const componentAlignHorizontal = componentProperties.find(
     (prop) => prop.propertyName === 'AlignHorizontal'
@@ -48,6 +56,7 @@ export default function HorizontalArrangement({
     );
   }
 
+  /* Get vertical alignment of VerticalArrangement */
   let alignVertical = '';
   const componentAlignVertical = componentProperties.find(
     (prop) => prop.propertyName === 'AlignVertical'
@@ -65,6 +74,8 @@ export default function HorizontalArrangement({
         alignItems: `${alignHorizontal}`,
         justifyContent: `${alignVertical}`,
         backgroundColor: `${bgColor}`,
+        minHeight: `${height}`,
+        minWidth: `${width}`,
       }}
       id={componentName}>
       {children}
