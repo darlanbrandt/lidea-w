@@ -35,8 +35,8 @@ function getScreensInfo(fullText) {
     }
   }
   let allScreenProperties = {};
-  for (let k = 0; k < screenProperty.length; k++) {
-    let screenInfoText = screenProperty[k];
+  screenProperty.forEach((screenProperty) => {
+    let screenInfoText = screenProperty;
 
     let screenInfo = screenTextProperties + screenName;
 
@@ -64,7 +64,8 @@ function getScreensInfo(fullText) {
       };
       screenProperties.push(allScreenProperties);
     }
-  }
+  });
+
   screenPropertiesArray[screenName] = screenProperties;
   screenProperties = [];
   delete screenPropertiesArray.screenProperties;
@@ -89,7 +90,7 @@ function getComponentName(text) {
   let componentName = '';
   for (let i = 0; i < text.length; i++) {
     Object.keys(dict).forEach((key) => {
-      let componentInfo = commonTextComponent + key;
+      const componentInfo = commonTextComponent + key;
       if (text.startsWith(componentInfo, i)) {
         componentName = text.substring(i + componentInfo.length).split(' ')[0];
       }
@@ -102,8 +103,8 @@ function getComponentName(text) {
 function getAllComponents(text) {
   const allComponents = returnFullComponentText(text);
 
-  for (let i = 0; i < allComponents.length; i++) {
-    let componentText = allComponents[i];
+  allComponents.forEach((allComponent) => {
+    let componentText = allComponent;
 
     let componentName = getComponentName(componentText);
 
@@ -123,7 +124,8 @@ function getAllComponents(text) {
         }
       }
     });
-  }
+  });
+
   return components;
 }
 
@@ -131,8 +133,8 @@ function getAllComponents(text) {
 function getComponentProperties(text) {
   const allComponents = returnFullComponentText(text);
 
-  for (let i = 0; i < allComponents.length; i++) {
-    let componentText = allComponents[i];
+  allComponents.forEach(allComponent => {
+    let componentText = allComponent;
 
     let componentName = getComponentName(componentText);
 
@@ -168,7 +170,8 @@ function getComponentProperties(text) {
     propertiesArray[componentName] = properties;
     properties = [];
     delete propertiesArray.properties;
-  }
+  });
+
   return propertiesArray;
 }
 

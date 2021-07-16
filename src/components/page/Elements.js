@@ -16,31 +16,32 @@ export default function Elements({ components }) {
 
   function childrenFromParent(parentComponent) {
     let children = [];
-    for (let i = 0; i < components.length; i++) {
+    components.forEach((component) => {
       Object.keys(childComponents).forEach((childKey) => {
         const child = childComponents[childKey];
         if (
           child.parentComponent === parentComponent &&
-          child.componentName === components[i].componentName
+          child.componentName === component.componentName
         ) {
-          children.push(getComponent(components[i].componentName));
+          children.push(getComponent(component.componentName));
         }
       });
-    }
+    });
+
     return children;
   }
 
-  for (let i = 0; i < components.length; i++) {
-    for (let j = 0; j < components.length; j++) {
-      if (components[i].parentComponent === components[j].componentName) {
+  components.forEach((childComponent) => {
+    components.forEach((parentComponent) => {
+      if (childComponent.parentComponent === parentComponent.componentName) {
         childComponents.push({
-          componentName: components[i].componentName,
-          componentType: components[i].componentType,
-          parentComponent: components[i].parentComponent,
+          componentName: childComponent.componentName,
+          componentType: childComponent.componentType,
+          parentComponent: childComponent.parentComponent,
         });
       }
-    }
-  }
+    });
+  });
 
   function getComponent(componentName) {
     let component = null;
@@ -122,7 +123,6 @@ export default function Elements({ components }) {
             componentProperties={componentProperties(componentName)}>
             {childrenFromParent(componentName)}
           </HorizontalArrangement>
-
         );
         break;
       default:
@@ -154,11 +154,12 @@ export default function Elements({ components }) {
   }
 
   function pageComponents() {
-    for (let i = 0; i < components.length; i++) {
-      if (components[i].parentIsScreen) {
-        reactComponent.push(getComponent(components[i].componentName));
+    components.forEach((component) => {
+      if (component.parentIsScreen) {
+        reactComponent.push(getComponent(component.componentName));
       }
-    }
+    });
+
     return reactComponent;
   }
 

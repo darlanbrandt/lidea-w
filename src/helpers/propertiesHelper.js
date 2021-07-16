@@ -1,5 +1,5 @@
 /* Returns correct value for measurements */
-function measureValue(value) {
+const measureValue = (value) => {
   let measure = '';
   if (value === '-2') {
     measure = '100%';
@@ -9,10 +9,10 @@ function measureValue(value) {
     measure = Math.abs(parseInt(value)) - 1000 + '%';
   }
   return measure;
-}
+};
 
 /* Returns correct positioning for horizontal alignment */
-function alignHorizontalValue(value) {
+const alignHorizontalValue = (value) => {
   let alignHorizontal = '';
   switch (parseInt(value)) {
     case 1:
@@ -28,10 +28,10 @@ function alignHorizontalValue(value) {
       break;
   }
   return alignHorizontal;
-}
+};
 
 /* Returns correct positioning for vertical alignment */
-function alignVerticalValue(value) {
+const alignVerticalValue = (value) => {
   let alignVertical = '';
   switch (parseInt(value)) {
     case 1:
@@ -47,10 +47,10 @@ function alignVerticalValue(value) {
       break;
   }
   return alignVertical;
-}
+};
 
 /* Returns text alignment */
-function textAlignmentValue(value) {
+const textAlignmentValue = (value) => {
   let textAlignment = '';
   switch (parseInt(value)) {
     case 0:
@@ -66,17 +66,17 @@ function textAlignmentValue(value) {
       break;
   }
   return textAlignment;
-}
+};
 
 /* Returns correct font size value */
-function fontSizeValue(value) {
+const fontSizeValue = (value) => {
   let fontSize = value + 'px';
 
   return fontSize;
-}
+};
 
 /* Returns shape of button component */
-function shapeValue(value) {
+const shapeValue = (value) => {
   let shape = '';
   switch (parseInt(value)) {
     case 1:
@@ -92,7 +92,7 @@ function shapeValue(value) {
       break;
   }
   return shape;
-}
+};
 
 export {
   measureValue,

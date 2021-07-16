@@ -7,7 +7,7 @@ import {
 } from '../../helpers/propertiesHelper';
 
 /* Get default value from properties */
-function defaultTextValue(componentProperties) {
+const defaultTextValue = (componentProperties) => {
   let textValue = <>&nbsp;</>;
 
   const componentTextValue = componentProperties.find(
@@ -24,10 +24,10 @@ function defaultTextValue(componentProperties) {
     textValue = componentHintValue.propertyValue;
   }
   return textValue;
-}
+};
 
 /* Get background color component */
-function defaultBgColorValue(componentProperties) {
+const defaultBgColorValue = (componentProperties) => {
   let bgColor = '';
   const componentBgColor = componentProperties.find(
     (prop) => prop.propertyName === 'BackgroundColor'
@@ -37,10 +37,10 @@ function defaultBgColorValue(componentProperties) {
     bgColor = componentBgColor.propertyValue.replace('#xFF', '#');
   }
   return bgColor;
-}
+};
 
 /* Get font size of component */
-function defaultFontSizeValue(componentProperties) {
+const defaultFontSizeValue = (componentProperties) => {
   let fontSize = '14px';
   const componentFontSize = componentProperties.find(
     (prop) => prop.propertyName === 'FontSize'
@@ -50,10 +50,10 @@ function defaultFontSizeValue(componentProperties) {
     fontSize = fontSizeValue(componentFontSize.propertyValue);
   }
   return fontSize;
-}
+};
 
 /* Get height of component */
-function defaultHeightValue(componentProperties) {
+const defaultHeightValue = (componentProperties) => {
   let height = defaultFontSizeValue(componentProperties);
   const componentHeight = componentProperties.find(
     (prop) => prop.propertyName === 'Height'
@@ -63,10 +63,10 @@ function defaultHeightValue(componentProperties) {
     height = measureValue(componentHeight.propertyValue);
   }
   return height;
-}
+};
 
 /* Get width of Button component */
-function defaultWidthValue(componentProperties) {
+const defaultWidthValue = (componentProperties) => {
   let width = '25%';
   const componentWidth = componentProperties.find(
     (prop) => prop.propertyName === 'Width'
@@ -77,10 +77,10 @@ function defaultWidthValue(componentProperties) {
   }
 
   return width;
-}
+};
 
 /* Get text alignment of component */
-function defaultTextAlignmentValue(componentProperties) {
+const defaultTextAlignmentValue = (componentProperties) => {
   let textAlignment = '';
   const componentTextAlignment = componentProperties.find(
     (prop) => prop.propertyName === 'TextAlignment'
@@ -90,10 +90,10 @@ function defaultTextAlignmentValue(componentProperties) {
     textAlignment = textAlignmentValue(componentTextAlignment.propertyValue);
   }
   return textAlignment;
-}
+};
 
 /* Get horizontal alignment of VerticalArrangement */
-function defaultAlignHorizontalValue(componentProperties) {
+const defaultAlignHorizontalValue = (componentProperties) => {
   let alignHorizontal = '';
   const componentAlignHorizontal = componentProperties.find(
     (prop) => prop.propertyName === 'AlignHorizontal'
@@ -105,10 +105,10 @@ function defaultAlignHorizontalValue(componentProperties) {
     );
   }
   return alignHorizontal;
-}
+};
 
 /* Get vertical alignment of VerticalArrangement */
-function defaultAlignVerticalValue(componentProperties) {
+const defaultAlignVerticalValue = (componentProperties) => {
   let alignVertical = '';
   const componentAlignVertical = componentProperties.find(
     (prop) => prop.propertyName === 'AlignVertical'
@@ -118,7 +118,7 @@ function defaultAlignVerticalValue(componentProperties) {
     alignVertical = alignVerticalValue(componentAlignVertical.propertyValue);
   }
   return alignVertical;
-}
+};
 
 export {
   defaultTextValue,
