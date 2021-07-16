@@ -5,16 +5,28 @@ export default function VerticalArrangement({
   componentProperties,
   children,
 }) {
-  let defaultValue = '';
-  const componentContent = componentProperties.find(
+  let bgColor = '';
+  const componentBgColor = componentProperties.find(
     (prop) => prop.propertyName === 'BackgroundColor'
   );
 
-  if (componentContent !== undefined) {
-    defaultValue = componentContent.propertyValue.replace('#xFF', '#');
+  if (componentBgColor !== undefined) {
+    bgColor = componentBgColor.propertyValue.replace('#xFF', '#');
   }
+
+  let height = '';
+  const componentHeight = componentProperties.find(
+    (prop) => prop.propertyName === 'BackgroundColor'
+  );
+
+  if (componentHeight !== undefined) {
+    height = componentHeight.propertyValue;
+  }
+
   return (
-    <div style={{ backgroundColor: `${defaultValue}` }} id={componentName}>
+    <div
+      style={{ backgroundColor: `${bgColor}`, height: `${height}px` }}
+      id={componentName}>
       {children}
     </div>
   );
