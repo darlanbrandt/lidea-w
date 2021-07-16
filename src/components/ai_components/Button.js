@@ -2,18 +2,18 @@ import React from 'react';
 
 export default function Button({ componentName, componentProperties }) {
   /* Get default value from properties */
-  let defaultValue = '';
-  const componentContent = componentProperties.find(
+  let textValue = '';
+  const componentTextValue = componentProperties.find(
     (prop) => prop.propertyName === 'Text'
   );
 
-  if (componentContent !== undefined) {
-    defaultValue = componentContent.propertyValue;
+  if (componentTextValue !== undefined) {
+    textValue = componentTextValue.propertyValue;
   }
 
   return (
     <div>
-      <button id={componentName}>{defaultValue}</button>
+      <button id={componentName}>{textValue}</button>
     </div>
   );
 }

@@ -1,4 +1,9 @@
 import React from 'react';
+import {
+  measureValue,
+  alignHorizontalValue,
+  alignVerticalValue,
+} from '../../helpers/propertiesHelper';
 
 export default function VerticalArrangement({
   componentName,
@@ -16,16 +21,27 @@ export default function VerticalArrangement({
 
   let height = '';
   const componentHeight = componentProperties.find(
-    (prop) => prop.propertyName === 'BackgroundColor'
+    (prop) => prop.propertyName === 'Height'
   );
 
   if (componentHeight !== undefined) {
-    height = componentHeight.propertyValue;
+    height = measureValue(componentHeight.propertyValue);
   }
+
+  let width = '';
+  const componentWidth = componentProperties.find(
+    (prop) => prop.propertyName === 'Width'
+  );
+
+  if (componentWidth !== undefined) {
+    width = measureValue(componentWidth.propertyValue);
+  }
+
+  console.log(width);
 
   return (
     <div
-      style={{ backgroundColor: `${bgColor}`, height: `${height}px` }}
+      style={{ backgroundColor: `${bgColor}`, height: `${height}` }}
       id={componentName}>
       {children}
     </div>
