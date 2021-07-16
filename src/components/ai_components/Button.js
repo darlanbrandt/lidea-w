@@ -53,10 +53,12 @@ export default function Button({ componentName, componentProperties }) {
   }
 
   /* Get width of Button component */
-  let width = '';
+  let width = '25%';
   const componentWidth = componentProperties.find(
     (prop) => prop.propertyName === 'Width'
   );
+
+  console.log(componentWidth);
 
   if (componentWidth !== undefined) {
     width = measureValue(componentWidth.propertyValue);
@@ -88,6 +90,7 @@ export default function Button({ componentName, componentProperties }) {
         display: 'flex',
         height: `${height}`,
         minWidth: `${width}`,
+        maxWidth: `${width}`,
         position: 'relative',
       }}>
       <button
@@ -100,6 +103,7 @@ export default function Button({ componentName, componentProperties }) {
           borderRadius: `${shape}`,
           height: '100%',
           border: 0,
+          padding: '2px',
         }}>
         {textValue}
       </button>
