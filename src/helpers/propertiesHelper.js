@@ -5,14 +5,14 @@ function measureValue(value) {
   } else if (value > 0) {
     measure = value + 'px';
   } else {
-    measure = Math.abs(value) - 1000;
+    measure = Math.abs(parseInt(value)) - 1000;
   }
   return measure;
 }
 
 function alignHorizontalValue(value) {
   let alignHorizontal = '';
-  switch (value) {
+  switch (parseInt(value)) {
     case 1:
       alignHorizontal = 'flex-start';
       break;
@@ -30,7 +30,7 @@ function alignHorizontalValue(value) {
 
 function alignVerticalValue(value) {
   let alignVertical = '';
-  switch (value) {
+  switch (parseInt(value)) {
     case 1:
       alignVertical = 'flex-start';
       break;

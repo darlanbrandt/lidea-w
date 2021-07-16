@@ -37,11 +37,36 @@ export default function VerticalArrangement({
     width = measureValue(componentWidth.propertyValue);
   }
 
-  console.log(width);
+  let alignHorizontal = '';
+  const componentAlignHorizontal = componentProperties.find(
+    (prop) => prop.propertyName === 'AlignHorizontal'
+  );
+
+  if (componentAlignHorizontal !== undefined) {
+    alignHorizontal = alignHorizontalValue(
+      componentAlignHorizontal.propertyValue
+    );
+  }
+
+  let alignVertical = '';
+  const componentAlignVertical = componentProperties.find(
+    (prop) => prop.propertyName === 'AlignVertical'
+  );
+
+  if (componentAlignVertical !== undefined) {
+    alignVertical = alignVerticalValue(componentAlignVertical.propertyValue);
+  }
 
   return (
     <div
-      style={{ backgroundColor: `${bgColor}`, height: `${height}` }}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: `${alignHorizontal}`,
+        justifyContent: `${alignVertical}`,
+        backgroundColor: `${bgColor}`,
+        height: `${height}`,
+      }}
       id={componentName}>
       {children}
     </div>
