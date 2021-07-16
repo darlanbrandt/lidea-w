@@ -14,7 +14,7 @@ export default function Main() {
           <ScreenTitle />
           <Elements components={components} />
         </div>
-        <img src={device} alt="device" />
+        <img src={device} alt="device" className={css.deviceImage} />
       </div>
     </div>
   );

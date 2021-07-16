@@ -7,6 +7,7 @@ import TextBox from '../ai_components/TextBox';
 import DatePicker from '../ai_components/DatePicker';
 import Select from '../ai_components/Select';
 import VerticalArrangement from '../ai_components/VerticalArrangement';
+import HorizontalArrangement from '../ai_components/HorizontalArrangement';
 
 export default function Elements({ components }) {
   console.log(components);
@@ -113,6 +114,17 @@ export default function Elements({ components }) {
           </VerticalArrangement>
         );
         break;
+      case 'HorizontalArrangement':
+        component = (
+          <HorizontalArrangement
+            key={componentName}
+            componentName={componentName}
+            componentProperties={componentProperties(componentName)}>
+            {childrenFromParent(componentName)}
+          </HorizontalArrangement>
+
+        );
+        break;
       default:
         break;
     }
@@ -150,9 +162,5 @@ export default function Elements({ components }) {
     return reactComponent;
   }
 
-  return (
-    <center>
-      <div className="content">{pageComponents()}</div>
-    </center>
-  );
+  return <div className="content">{pageComponents()}</div>;
 }
