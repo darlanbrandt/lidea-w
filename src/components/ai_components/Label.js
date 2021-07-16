@@ -13,6 +13,7 @@ export default function Label({ componentName, componentProperties }) {
   /* Get default value from properties */
   let textValue = <>&nbsp;</>;
   const componentTextValue = componentProperties.find(
+
     (prop) => prop.propertyName === 'Text'
   );
 
