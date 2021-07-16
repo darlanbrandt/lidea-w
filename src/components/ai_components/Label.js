@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function Label({ componentName, componentProperties }) {
   /* Get default value from properties */
-  let defaultValue = '';
+  let defaultValue = <>&nbsp;</>;
   const componentContent = componentProperties.find(
     (prop) => prop.propertyName === 'Text'
   );
