@@ -1,74 +1,35 @@
 import React from 'react';
 import {
-  measureValue,
-  fontSizeValue,
-  textAlignmentValue,
-} from '../../helpers/propertiesHelper';
+  defaultTextValue,
+  defaultBgColorValue,
+  defaultFontSizeValue,
+  defaultHeightValue,
+  defaultWidthValue,
+  defaultTextAlignmentValue,
+} from './commonProperties';
 
 export default function TextBox({ componentName, componentProperties }) {
   /*******************************
    *  Coomponents properties     *
    *******************************/
 
-  /* Get default value from properties */
-  let textValue = '';
-  const componentTextValue = componentProperties.find(
-    (prop) => prop.propertyName === 'Hint'
-  );
-
-  if (componentTextValue !== undefined) {
-    textValue = componentTextValue.propertyValue;
-  }
+  /* Get default text from properties */
+  const textValue = defaultTextValue(componentProperties);
 
   /* Get background color of TextBox component */
-  let bgColor = '';
-  const componentBgColor = componentProperties.find(
-    (prop) => prop.propertyName === 'BackgroundColor'
-  );
-
-  if (componentBgColor !== undefined) {
-    bgColor = componentBgColor.propertyValue.replace('#xFF', '#');
-  }
+  const bgColor = defaultBgColorValue(componentProperties);
 
   /* Get font size of TextBox component */
-  let fontSize = '14px';
-  const componentFontSize = componentProperties.find(
-    (prop) => prop.propertyName === 'FontSize'
-  );
-
-  if (componentFontSize !== undefined) {
-    fontSize = fontSizeValue(componentFontSize.propertyValue);
-  }
+  const fontSize = defaultFontSizeValue(componentProperties);
 
   /* Get height of TextBox component */
-  let height = fontSize;
-  const componentHeight = componentProperties.find(
-    (prop) => prop.propertyName === 'Height'
-  );
-
-  if (componentHeight !== undefined) {
-    height = measureValue(componentHeight.propertyValue);
-  }
+  const height = defaultHeightValue(componentProperties);
 
   /* Get width of TextBox component */
-  let width = '';
-  const componentWidth = componentProperties.find(
-    (prop) => prop.propertyName === 'Width'
-  );
-
-  if (componentWidth !== undefined) {
-    width = measureValue(componentWidth.propertyValue);
-  }
+  const width = defaultWidthValue(componentProperties);
 
   /* Get text alignment of TextBox component */
-  let textAlignment = '';
-  const componentTextAlignment = componentProperties.find(
-    (prop) => prop.propertyName === 'TextAlignment'
-  );
-
-  if (componentTextAlignment !== undefined) {
-    textAlignment = textAlignmentValue(componentTextAlignment.propertyValue);
-  }
+  const textAlignment = defaultTextAlignmentValue(componentProperties);
 
   const componentInputType = componentProperties.find(
     (prop) => prop.propertyName === 'MultiLine'
