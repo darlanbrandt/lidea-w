@@ -34,12 +34,20 @@ export default function Label({ componentName, componentProperties }) {
   return (
     <div
       style={{
+        minWidth: `${width}`,
+        position: 'relative',
         backgroundColor: `${bgColor}`,
-        minHeight: `${height}`,
-        width: `${width}`,
         textAlign: `${textAlignment}`,
+        minHeight: `${height}`,
       }}>
-      <span id={componentName} style={{ fontSize: `${fontSize}` }}>
+      <span
+        id={componentName}
+        style={{
+          width: '100%',
+          height: '100%',
+          fontSize: `${fontSize}`,
+          whiteSpace: 'nowrap',
+        }}>
         {textValue}
       </span>
     </div>
