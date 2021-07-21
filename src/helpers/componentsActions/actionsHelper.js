@@ -1,7 +1,8 @@
 const dict = [];
 
 const getProperty = "(get-property '";
-const getVarValue = '(get-var! g';
+const getVarValue = '(get-var g';
+let componentProperty = '';
 
 dict["(set-and-coerce-property! '"] = 'set-property';
 dict['(set-var! g'] = 'set-var-value';
@@ -50,13 +51,13 @@ const getComponentCode = (componentName, blocksData) => {
                 1
             )
             .split(')')[0];
-          console.log(varPropertyValue);
+
           if (varPropertyValue.startsWith(getProperty)) {
             let cName = varPropertyValue
               .substring(getProperty.length)
               .split(' ')[0];
 
-            let componentProperty = varPropertyValue
+            componentProperty = varPropertyValue
               .substring(getProperty.length + cName.length + 2)
               .split(' ')[0];
             console.log(componentProperty);
@@ -65,8 +66,14 @@ const getComponentCode = (componentName, blocksData) => {
               componentName: componentName,
               componentProperty: componentProperty,
             };*/
+          } else if (varPropertyValue.startsWith(getVarValue)) {
+            let varName = varPropertyValue
+              .substring(getVarValue.length + 1)
+              .split(' ')[0];
+            console.log(varName);
           } else {
-            //variableValue = varSubstringValue;
+            componentProperty = varPropertyValue.split(' ')[0];
+            console.log(componentProperty);
           }
 
           /*variableInfo = {
