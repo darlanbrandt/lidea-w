@@ -1,4 +1,5 @@
 import React from 'react';
+import { commonTextProperties } from '../../helpers/dictionaryComponentHelper';
 import { shapeValue } from '../../helpers/propertiesHelper';
 import {
   defaultTextValue,
@@ -7,6 +8,7 @@ import {
   defaultHeightValue,
   defaultWidthValue,
   defaultTextAlignmentValue,
+  defaultAlignHorizontalValue,
 } from './commonProperties';
 
 export default function Button({ componentName, componentProperties }) {
@@ -42,6 +44,12 @@ export default function Button({ componentName, componentProperties }) {
     shape = shapeValue(componentShape.propertyValue);
   }
 
+  const handleButtonClick = () => {
+    const LP1 = document.querySelector('.LP1').value;
+    document.querySelector('#TB1').value = document.querySelector('#DP1').value;
+    //alert(LP1);
+  };
+
   return (
     <div
       style={{
@@ -52,18 +60,24 @@ export default function Button({ componentName, componentProperties }) {
         position: 'relative',
       }}>
       <button
+        onClick={handleButtonClick}
         id={componentName}
         style={{
+          display: 'flex',
+          alignItems: 'center',
           backgroundColor: `${bgColor}`,
-          textAlign: `${textAlignment}`,
           fontSize: `${fontSize}`,
           width: '100%',
           borderRadius: `${shape}`,
           height: '100%',
           border: 0,
           padding: '2px',
+          whiteSpace: 'nowrap',
+          position: 'relative',
         }}>
-        {textValue}
+        <span style={{ textAlign: `${textAlignment}`, width: '100%' }}>
+          {textValue}
+        </span>
       </button>
     </div>
   );

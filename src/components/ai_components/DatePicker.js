@@ -11,9 +11,16 @@ export default function DatePicker({ componentName, componentProperties }) {
     defaultValue = componentContent.propertyValue;
   }
 
+  const handleDateSelection = (event) => {
+    alert(event.target.value);
+  };
+
   return (
     <div>
-      <input type="date" id={componentName}></input>
+      <input
+        type="date"
+        onChange={handleDateSelection}
+        id={componentName}></input>
     </div>
   );
 }

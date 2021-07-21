@@ -38,6 +38,7 @@
   min-height: 658px;
   max-height: 658px;
   overflow: auto;
+  overflow-x: hidden;
 }
 
 .phoneArea::-webkit-scrollbar-track

@@ -5,6 +5,7 @@ import {
   getComponentProperties,
   getScreensInfo,
 } from '../helpers/componentsHelper';
+import { getAllBlocks } from '../helpers/blocksHelper';
 
 const ComponentContext = createContext();
 
@@ -18,6 +19,8 @@ export function ComponentProvider({ children }) {
       const res = await api.get('/data');
       const code = await res.data;
       const screenInfo = getScreensInfo(code);
+      const allBlocks = getAllBlocks(code);
+      
 
       let componentObject = {};
       let components = [];
@@ -59,6 +62,50 @@ export function ComponentProvider({ children }) {
 
     getPageComponents();
   }, []);
+
+  /*useEffect(() => {
+    const getPageBlocks = async () => {
+      /* Fetch data from API 
+      const res = await api.get('/data');
+      const code = await res.data;     
+
+      /* Lists all components in an array 
+      const allBlocks = getAllBlocks(code);
+
+      /* Lists all components properties in an array 
+      const allComponentsProperties = getComponentProperties(code);
+
+      /* Merges both arrays into a new object 
+      Object.keys(allComponents).forEach((acKey) => {
+        let cValue = allComponents[acKey];
+
+        let parentIsScreen = false;
+        Object.keys(screenInfo).forEach((sKey) => {
+          if (cValue.parentComponent === sKey) {
+            parentIsScreen = true;
+          }
+        });
+
+        Object.keys(allComponentsProperties).forEach((cKey) => {
+          let componentProperty = allComponentsProperties[cKey];
+
+          if (cValue.componentName === cKey) {
+            componentObject = {
+              componentType: cValue.componentType,
+              componentName: cValue.componentName,
+              componentProperties: componentProperty,
+              parentComponent: cValue.parentComponent,
+              parentIsScreen: parentIsScreen,
+            };
+            components = components.concat(componentObject);
+          }
+        });
+      });
+      setComponents(components);
+    };
+
+    getPageComponents();
+  }, []);*/
   return (
     <ComponentContext.Provider value={{ components, setComponents }}>
       {children}

@@ -36,7 +36,7 @@ export default function Select({ componentName, componentProperties }) {
   /* Get options from properties */
   for (let i = 0; i < options.length; i++) {
     optionsList.push(
-      <option key={i} value={options[i]}>
+      <option key={i + 1} value={options[i]}>
         {options[i]}
       </option>
     );
@@ -57,6 +57,11 @@ export default function Select({ componentName, componentProperties }) {
   /* Get text alignment of Select component */
   const textAlignment = defaultTextAlignmentValue(componentProperties);
 
+  const handleSelectChange = (event) => {
+    alert(event.target.value);
+    document.querySelector('#L1').innerHTML = event.target.value;
+  };
+
   return (
     <div
       style={{
@@ -66,6 +71,7 @@ export default function Select({ componentName, componentProperties }) {
       }}>
       <select
         key={componentName}
+        onChange={handleSelectChange}
         id={componentName}
         defaultValue={defaultValue}
         style={{
