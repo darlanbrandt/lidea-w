@@ -1,5 +1,4 @@
 import React from 'react';
-import GridLayout from 'react-grid-layout';
 import Button from '../ai_components/Button';
 import Label from '../ai_components/Label';
 import Image from '../ai_components/Image';

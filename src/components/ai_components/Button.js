@@ -1,5 +1,4 @@
 import React from 'react';
-import { commonTextProperties } from '../../helpers/dictionaryComponentHelper';
 import { shapeValue } from '../../helpers/propertiesHelper';
 import {
   defaultTextValue,
