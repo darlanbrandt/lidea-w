@@ -85,8 +85,6 @@ function getAllBlocks(text) {
   //console.log(variables);
   //console.log(commands);
   blocks.push({ variables: variables, commands: commands });
-  console.log(blocks);
-
 
   return blocks;
 }

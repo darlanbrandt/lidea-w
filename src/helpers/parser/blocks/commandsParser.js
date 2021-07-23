@@ -1,12 +1,15 @@
+import { getOperation } from './mathCommandsParser';
+
 const dict = [];
 
 const getProperty = "(get-property '";
 const getGlobalVarValue = '(get-var g';
 const getScopeVarValue = '(lexical-value ';
+const operationIndicator = ' (call-yail-primitive';
 let componentProperty = '';
 let commandInfo = {};
 let commandsSetProperty = [];
-let allCommands = [];
+//let allCommands = [];
 
 dict["(set-and-coerce-property! '"] = 'set-property';
 dict['(set-var! g'] = 'set-global-var-value';
@@ -16,129 +19,124 @@ dict['(let ( ('] = 'declare-scope-variable';
 //"(set-and-coerce-property! 'L1 'Text (get-var g$x) 'text)(set-and-coerce-property! 'TB1 'Text (get-property 'L1 'Text) 'text)(set-and-coerce-property! 'TB1 'BackgroundColor -4144960 'number)(set-var! g$x (call-yail-primitive - (*list-for-runtime* (get-var g$x) 1) '(number number) \"-\")"
 
 const getBlocksCommands = (commands) => {
-  commands.forEach((block) => {
-    const commandBlock = block.map((commandBlock) => {
-      return commandBlock;
-    });
+  let allCommands = [];
 
-    commandBlock.forEach((command) => {
-      let commandText = command.command;
-      console.log(command.componentName);
-      console.log(commandText);
-      for (let i = 0; i < commandText.length; i++) {
-        Object.keys(dict).forEach((key) => {
-          if (commandText.startsWith(key, i)) {
-            if (dict[key] === 'set-property') {
-              let componentNameAction = commandText
-                .substring(i + key.length)
-                .split(' ')[0];
-              console.log(componentNameAction);
-              let componentPropertyAction = commandText
-                .substring(i + key.length + componentNameAction.length + 2)
-                .split(' ')[0];
-              console.log(componentPropertyAction);
-              let varPropertyValue = commandText
-                .substring(
-                  i +
-                    key.length +
-                    componentNameAction.length +
-                    2 +
-                    componentPropertyAction.length +
-                    1
-                )
-                .split(')')[0];
+  for (let i = 0; i < commands.length; i++) {
+    Object.keys(dict).forEach((key) => {
+      if (commands.startsWith(key, i)) {
+        /* Checks if command is Set Property Type 
+        and returns object with values to be set */
+        if (dict[key] === 'set-property') {
+          /* Return component where action will be take place */
+          let componentNameAction = commands
+            .substring(i + key.length)
+            .split(' ')[0];
 
-              let propertyValue = '';
+          /* Return which property will be set on action */
+          let componentPropertyAction = commands
+            .substring(i + key.length + componentNameAction.length + 2)
+            .split(' ')[0];
 
-              if (varPropertyValue.startsWith(getProperty)) {
-                let cName = varPropertyValue
-                  .substring(getProperty.length)
-                  .split(' ')[0];
-                console.log(cName);
-                componentProperty = varPropertyValue
-                  .substring(getProperty.length + cName.length + 2)
-                  .split(' ')[0];
-                console.log(componentProperty);
-                propertyValue = {
-                  component: cName,
-                  property: componentProperty,
-                };
-              } else if (varPropertyValue.startsWith(getGlobalVarValue)) {
-                let varName = varPropertyValue
-                  .substring(getGlobalVarValue.length + 1)
-                  .split(' ')[0];
-                console.log(varName);
-                propertyValue = { globalVariable: varName };
-              } else {
-                componentProperty = varPropertyValue.split(' ')[0];
-                console.log(componentProperty);
-                propertyValue = componentProperty;
-              }
-              commandInfo = {
-                commandType: dict[key],
-                componentAction: componentNameAction,
-                propertyAction: componentPropertyAction,
-                propertyValue: propertyValue,
-              };
-              commandsSetProperty = commandsSetProperty.concat(commandInfo);
-            } else if (dict[key] === 'set-global-var-value') {
-              let globalVariableName = commandText
-                .substring(i + key.length + 1)
-                .split(' ')[0];
-              console.log(globalVariableName);
-              console.log('olá');
-            } else if (dict[key] === 'declare-scope-variable') {
-              let scopeVariableName = commandText
-                .substring(i + key.length + 1)
-                .split(' ')[0];
-              console.log(scopeVariableName);
-              console.log('variável');
-            }
-          }
-        });
-      }
-      allCommands.push({
-        componentName: command.componentName,
-        commands: commandsSetProperty,
-      });
-      commandsSetProperty = [];
-      console.log(allCommands);
-      return allCommands;
-    });
+          /*Return value of property to be set on action */
+          let varPropertyValue = commands
+            .substring(
+              i +
+                key.length +
+                componentNameAction.length +
+                2 +
+                componentPropertyAction.length +
+                1
+            )
+            .split(')')[0];
 
-    /*variableValue = {
-            componentName: componentName,
-            componentProperty: componentProperty,
-          };
+          let propertyValue = '';
+          /* Checks if property value comes from another component */
+          if (varPropertyValue.startsWith(getProperty)) {
+            let compName = varPropertyValue
+              .substring(getProperty.length)
+              .split(' ')[0];
+
+            componentProperty = varPropertyValue
+              .substring(getProperty.length + compName.length + 2)
+              .split(' ')[0];
+
+            propertyValue = {
+              component: compName,
+              property: componentProperty,
+            };
+            /* From a global variable */
           } else if (varPropertyValue.startsWith(getGlobalVarValue)) {
             let varName = varPropertyValue
               .substring(getGlobalVarValue.length + 1)
               .split(' ')[0];
-            console.log(varName);
+
+            propertyValue = { globalVariable: varName };
+            /* From a scoped variable */
+          } else if (varPropertyValue.startsWith(getScopeVarValue)) {
+            let varName = varPropertyValue
+              .substring(getScopeVarValue.length + 1)
+              .split(' ')[0];
+
+            propertyValue = { scopeVariable: varName };
+            /* Or plain value */
           } else {
             componentProperty = varPropertyValue.split(' ')[0];
-            console.log(componentProperty);
+
+            propertyValue = componentProperty;
+          }
+          commandInfo = {
+            commandType: dict[key],
+            componentAction: componentNameAction,
+            propertyAction: componentPropertyAction,
+            propertyValue: propertyValue,
+          };
+
+          /* Checks if command is Set Global Variable Value Type 
+        and returns object with values to be set */
+        } else if (dict[key] === 'set-global-var-value') {
+          let globalVariableName = commands
+            .substring(i + key.length + 1)
+            .split(' ')[0];
+
+          let globalVariableValue = commands
+            .substring(i + key.length + globalVariableName.length + 1)
+            .split(')(')[0];
+          if (globalVariableValue.startsWith(operationIndicator)) {
+            const operation = getOperation(globalVariableValue);
+            commandInfo = {
+              commandType: dict[key],
+              globalVariableAction: globalVariableName,
+              globalVariableValue: operation,
+            };
+          } else {
+            commandInfo = {
+              commandType: dict[key],
+              globalVariableAction: globalVariableName,
+              globalVariableValue: globalVariableValue,
+            };
           }
 
-          /*variableInfo = {
-          variableName: variableName,
-          variableValue: variableValue,
-        };
-        variables = variables.concat(variableInfo);*
-        } else if (dict[key] === 'set-global-var-value') {
-          console.log('olá');
+          /* Checks if command is Declare Scope Variable Type 
+        and returns object with values to be set */
+        } else if (dict[key] === 'declare-scope-variable') {
+          let scopeVariableName = commands
+            .substring(i + key.length + 1)
+            .split(' ')[0];
+          commandInfo = {
+            commandType: dict[key],
+            scopeVariableAction: scopeVariableName,
+          };
+          console.log(scopeVariableName);
+          console.log('variável');
         }
+        /* Adds all objects parsed from commmand into an array */
+
+        allCommands.push(commandInfo);
+        commandInfo = {};
       }
     });
   }
-    });
-    /*const commandsText = commandBlocks.map(({ command }) => {
-      return command;
-    });
-    console.log(commandsText);*/
-  });
-
-  /**/
+  return allCommands;
 };
 
 export { getBlocksCommands };

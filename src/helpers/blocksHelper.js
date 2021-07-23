@@ -10,6 +10,8 @@ const getBlocks = async () => {
 
   let procedures = [];
 
+  let fullBlockInfo = [];
+
   /* Lists all components in an array */
   const allBlocks = getAllBlocks(yail);
 
@@ -22,7 +24,30 @@ const getBlocks = async () => {
     return commands;
   });
 
-  const blockCommands = getBlocksCommands(commands);
+  commands.forEach((command) => {
+    command.forEach((c) => {
+      const blockCommands = getBlocksCommands(c.command);
+
+      let blockInfo = {
+        componentAction: c.componentName,
+        commandType: c.commandType,
+        commandsToExecute: blockCommands,
+      };
+      fullBlockInfo = fullBlockInfo.concat(blockInfo);
+    });
+
+    //const blockCommands = getBlocksCommands(command);
+    /*console.log(blockCommands);
+    fullCommand.push({
+      componentAction: command.componentName,
+      commandType: command.commandType,
+      commandToApply: blockCommands,
+    });
+    console.log(fullCommand);*/
+  });
+  console.log(fullBlockInfo);
+
+  //const blockCommands = getBlocksCommands(commands);
 
   Object.keys(allBlocks).forEach((abKey) => {
     /*Object.keys(allComponentsProperties).forEach((cKey) => {
@@ -40,6 +65,8 @@ const getBlocks = async () => {
       }
     });*/
   });
+  blocks.push({ globalVariables }, { commands: fullBlockInfo });
+
   return blocks;
 };
 

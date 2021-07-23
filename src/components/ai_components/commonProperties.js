@@ -20,8 +20,10 @@ const defaultTextValue = (componentProperties) => {
 
   if (componentTextValue !== undefined) {
     textValue = componentTextValue.propertyValue;
-  } else {
+  } else if (componentHintValue !== undefined) {
     textValue = componentHintValue.propertyValue;
+  } else {
+    textValue = '';
   }
   return textValue;
 };
