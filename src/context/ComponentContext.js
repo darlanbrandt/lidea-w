@@ -16,13 +16,14 @@ export function ComponentProvider({ children }) {
       console.log(blocks);
       console.log(components);
       setComponents(components);
+      setBlocks(blocks);
     };
 
     getPageComponents();
   }, []);
 
   return (
-    <ComponentContext.Provider value={{ components, setComponents }}>
+    <ComponentContext.Provider value={{ components, blocks }}>
       {children}
     </ComponentContext.Provider>
   );

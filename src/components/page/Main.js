@@ -6,13 +6,14 @@ import ComponentContext from '../../context/ComponentContext';
 import Elements from './Elements';
 
 export default function Main() {
-  const { components, setComponents } = useContext(ComponentContext);
+  const { components, blocks } = useContext(ComponentContext);
+
   return (
     <div className={css.main}>
       <div className={css.device}>
         <div className={css.phoneArea}>
           <ScreenTitle />
-          <Elements components={components} />
+          <Elements components={components} blocks={blocks} />
         </div>
         <img src={device} alt="device" className={css.deviceImage} />
       </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { shapeValue } from '../../helpers/propertiesHelper';
 import {
   defaultTextValue,
@@ -9,8 +9,9 @@ import {
   defaultTextAlignmentValue,
   defaultAlignHorizontalValue,
 } from './commonProperties';
+import { commandToExecute } from '../../helpers/commandsToExecuteHelper';
 
-export default function Button({ componentName, componentProperties }) {
+export default function Button({ componentName, componentProperties, blocks }) {
   /*******************************
    *  Coomponents properties     *
    *******************************/
@@ -43,10 +44,23 @@ export default function Button({ componentName, componentProperties }) {
     shape = shapeValue(componentShape.propertyValue);
   }
 
+  const commands = blocks.map(({ commands }) => {
+    return commands;
+  });
+
   const handleButtonClick = () => {
-    const LP1 = document.querySelector('.LP1').value;
-    document.querySelector('#TB1').value = document.querySelector('#DP1').value;
-    //alert(LP1);
+    commands.forEach((command) => {
+      command.forEach((c) => {
+        if (c.commandType === 'Click') {
+          if (c.componentAction === componentName) {
+            commandToExecute(c.commandsToExecute);
+            /*c.commandsToExecute.forEach((commandToExecute) => {
+              commandToExecute(commandToExecute);
+            });*/
+          }
+        }
+      });
+    });
   };
 
   return (

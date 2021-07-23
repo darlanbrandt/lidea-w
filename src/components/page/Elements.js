@@ -8,7 +8,7 @@ import Select from '../ai_components/Select';
 import VerticalArrangement from '../ai_components/VerticalArrangement';
 import HorizontalArrangement from '../ai_components/HorizontalArrangement';
 
-export default function Elements({ components }) {
+export default function Elements({ components, blocks }) {
   console.log(components);
   let reactComponent = [];
   let childComponents = [];
@@ -51,6 +51,7 @@ export default function Elements({ components }) {
             key={componentName}
             componentName={componentName}
             componentProperties={componentProperties(componentName)}
+            blocks={blocks}
           />
         );
         break;
