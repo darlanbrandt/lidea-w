@@ -1,126 +1,73 @@
-import { getComponentCode } from './componentsActions/actionsHelper';
+import { getYAIL } from '../services/yailCode';
+import { getAllBlocks } from './parser/blocks/blocksParser';
+import { getBlocksCommands } from './parser/blocks/commandsParser';
 
-let variables = [];
-let commands = [];
-let procedures = [];
+const getBlocks = async () => {
+  /* Get YAIL Code */
+  const yail = await getYAIL();
 
-let blocksData = [];
+  let blocks = [];
 
-//const varValues = [];
-const dict = [];
-const beginOfBlocksCode = 'blockYail';
-const endOfBlocksCode = '},"componentYail"';
-const varGetProperty = "(get-property '";
-const endOfCommand = '))"';
-const startOfAction = '()(set-this-form)\\n    ';
+  let procedures = [];
 
-dict['def g'] = 'variable';
-dict['(define-event '] = 'command';
-dict['(def (p'] = 'procedure';
+  let fullBlockInfo = [];
 
-function getAllBlocks(text) {
-  const texto = JSON.stringify(text);
-  const startPos = texto.indexOf(beginOfBlocksCode);
-  const endPos = texto.indexOf(endOfBlocksCode);
+  /* Lists all components in an array */
+  const allBlocks = getAllBlocks(yail);
 
-  const blocksText = texto.substring(startPos, endPos);
+  /* Merges both arrays into a new object */
+  const globalVariables = allBlocks.map(({ variables }) => {
+    return variables;
+  });
 
-  for (let i = 0; i < blocksText.length; i++) {
-    let variableName = '';
-    let variableValue = '';
-    Object.keys(dict).forEach((key) => {
-      if (blocksText.startsWith(key, i)) {
-        if (dict[key] === 'variable') {
-          let variableInfo = {};
-          variableName = blocksText.substring(i + 6).split(' ')[0];
-          let varSubstringValue = blocksText
-            .substring(i + 6 + variableName.length + 1)
-            .split(')')[0];
-          if (varSubstringValue.startsWith(varGetProperty)) {
-            let componentName = varSubstringValue
-              .substring(varGetProperty.length)
-              .split(' ')[0];
+  const commands = allBlocks.map(({ commands }) => {
+    return commands;
+  });
 
-            let componentProperty = varSubstringValue.substring(
-              varGetProperty.length + componentName.length + 2
-            );
-            variableValue = {
-              componentName: componentName,
-              componentProperty: componentProperty,
-            };
-          } else {
-            variableValue = varSubstringValue;
-          }
+  commands.forEach((command) => {
+    command.forEach((c) => {
+      const blockCommands = getBlocksCommands(c.command);
 
-          variableInfo = {
-            variableName: variableName,
-            variableValue: variableValue,
-          };
-          variables = variables.concat(variableInfo);
-        } else if (dict[key] === 'command') {
-          let commandText = blocksText.substring(i).split(endOfCommand)[0];
-          let componentName = commandText.substring(key.length).split(' ')[0];
-          let commandType = commandText
-            .substring(key.length + componentName.length + 1)
-            .split('()')[0];
-          let commandUnparsed = commandText.substring(
-            key.length +
-              componentName.length +
-              commandType.length +
-              startOfAction.length +
-              1
-          );
-          let commandInfo = {
-            componentName: componentName,
-            commandType: commandType,
-            command: commandUnparsed,
-          };
-          commands = commands.concat(commandInfo);
-        } else if (dict[key] === 'procedure') {
-          //console.log('procedure');
-        } else {
-          //console.log('comando não identificado');
-        }
-      }
+      let blockInfo = {
+        componentAction: c.componentName,
+        commandType: c.commandType,
+        commandsToExecute: blockCommands,
+      };
+      fullBlockInfo = fullBlockInfo.concat(blockInfo);
     });
-  }
-  //console.log(variables);
-  //console.log(commands);
-  blocksData.push({ variables: variables, commands: commands });
-  console.log(blocksData);
 
-  let teste = getComponentCode('B1', blocksData);
-  console.log(teste);
+    //const blockCommands = getBlocksCommands(command);
+    /*console.log(blockCommands);
+    fullCommand.push({
+      componentAction: command.componentName,
+      commandType: command.commandType,
+      commandToApply: blockCommands,
+    });
+    console.log(fullCommand);*/
+  });
+  console.log(fullBlockInfo);
 
-  return blocksData;
-}
+  //const blockCommands = getBlocksCommands(commands);
 
-function convertDecimaltoHexColor(decimal) {
-  let size = 8;
+  Object.keys(allBlocks).forEach((abKey) => {
+    /*Object.keys(allComponentsProperties).forEach((cKey) => {
+      let componentProperty = allComponentsProperties[cKey];
 
-  if (decimal >= 0) {
-    var hexadecimal = decimal.toString(16);
+      if (cValue.componentName === cKey) {
+        componentObject = {
+          componentType: cValue.componentType,
+          componentName: cValue.componentName,
+          componentProperties: componentProperty,
+          parentComponent: cValue.parentComponent,
+          parentIsScreen: parentIsScreen,
+        };
+        components = components.concat(componentObject);
+      }
+    });*/
+  });
+  blocks.push({ globalVariables }, { commands: fullBlockInfo });
 
-    while (hexadecimal.length % size != 0) {
-      hexadecimal = '' + 0 + hexadecimal;
-    }
+  return blocks;
+};
 
-    return hexadecimal;
-  } else {
-    var hexadecimal = Math.abs(decimal).toString(16);
-    while (hexadecimal.length % size != 0) {
-      hexadecimal = '' + 0 + hexadecimal;
-    }
-
-    var output = '';
-    for (let i = 0; i < hexadecimal.length; i++) {
-      output += (0x0f - parseInt(hexadecimal[i], 16)).toString(16);
-    }
-
-    output = (0x01 + parseInt(output, 16)).toString(16);
-    output = output.substring(2);
-    return output;
-  }
-}
-
-export { getAllBlocks };
+export { getBlocks };
