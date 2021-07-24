@@ -44,22 +44,7 @@ const getBlocks = async () => {
   });
   console.log(fullBlockInfo);
 
-  Object.keys(allBlocks).forEach((abKey) => {
-    /*Object.keys(allComponentsProperties).forEach((cKey) => {
-      let componentProperty = allComponentsProperties[cKey];
-
-      if (cValue.componentName === cKey) {
-        componentObject = {
-          componentType: cValue.componentType,
-          componentName: cValue.componentName,
-          componentProperties: componentProperty,
-          parentComponent: cValue.parentComponent,
-          parentIsScreen: parentIsScreen,
-        };
-        components = components.concat(componentObject);
-      }
-    });*/
-  });
+  Object.keys(allBlocks).forEach((abKey) => {});
   blocks.push({ variables: variables, commands: fullBlockInfo });
 
   return blocks;
