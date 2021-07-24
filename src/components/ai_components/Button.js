@@ -1,4 +1,3 @@
-import React, { useContext } from 'react';
 import { shapeValue } from '../../helpers/propertiesHelper';
 import {
   defaultTextValue,

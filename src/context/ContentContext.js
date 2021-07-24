@@ -3,9 +3,9 @@ import React, { useEffect, useState, createContext } from 'react';
 import { getComponents } from '../helpers/componentsHelper';
 import { getBlocks } from '../helpers/blocksHelper';
 
-const ComponentContext = createContext();
+const ContentContext = createContext();
 
-export function ComponentProvider({ children }) {
+export function ContentProvider({ children }) {
   const [components, setComponents] = useState([]);
   const [blocks, setBlocks] = useState([]);
 
@@ -13,8 +13,6 @@ export function ComponentProvider({ children }) {
     const getPageComponents = async () => {
       const components = await getComponents();
       const blocks = await getBlocks();
-      console.log(blocks);
-      console.log(components);
       setComponents(components);
       setBlocks(blocks);
     };
@@ -23,10 +21,10 @@ export function ComponentProvider({ children }) {
   }, []);
 
   return (
-    <ComponentContext.Provider value={{ components, blocks }}>
+    <ContentContext.Provider value={{ components, blocks }}>
       {children}
-    </ComponentContext.Provider>
+    </ContentContext.Provider>
   );
 }
 
-export default ComponentContext;
+export default ContentContext;
