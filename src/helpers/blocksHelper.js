@@ -8,6 +8,8 @@ const getBlocks = async () => {
 
   let blocks = [];
 
+  let variables = [];
+
   let procedures = [];
 
   let fullBlockInfo = [];
@@ -18,6 +20,10 @@ const getBlocks = async () => {
   /* Merges both arrays into a new object */
   const globalVariables = allBlocks.map(({ variables }) => {
     return variables;
+  });
+
+  globalVariables.forEach((variable) => {
+    variables = variables.concat(variable);
   });
 
   const commands = allBlocks.map(({ commands }) => {
@@ -35,37 +41,11 @@ const getBlocks = async () => {
       };
       fullBlockInfo = fullBlockInfo.concat(blockInfo);
     });
-
-    //const blockCommands = getBlocksCommands(command);
-    /*console.log(blockCommands);
-    fullCommand.push({
-      componentAction: command.componentName,
-      commandType: command.commandType,
-      commandToApply: blockCommands,
-    });
-    console.log(fullCommand);*/
   });
   console.log(fullBlockInfo);
 
-  //const blockCommands = getBlocksCommands(commands);
-
-  Object.keys(allBlocks).forEach((abKey) => {
-    /*Object.keys(allComponentsProperties).forEach((cKey) => {
-      let componentProperty = allComponentsProperties[cKey];
-
-      if (cValue.componentName === cKey) {
-        componentObject = {
-          componentType: cValue.componentType,
-          componentName: cValue.componentName,
-          componentProperties: componentProperty,
-          parentComponent: cValue.parentComponent,
-          parentIsScreen: parentIsScreen,
-        };
-        components = components.concat(componentObject);
-      }
-    });*/
-  });
-  blocks.push({ globalVariables }, { commands: fullBlockInfo });
+  Object.keys(allBlocks).forEach((abKey) => {});
+  blocks.push({ variables: variables, commands: fullBlockInfo });
 
   return blocks;
 };
