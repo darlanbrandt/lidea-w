@@ -6,6 +6,7 @@ dict['Canvas '] = 'Canvas';
 dict['Clock '] = 'Clock';
 dict['CheckBox '] = 'Checkbox';
 dict['DatePicker '] = 'Date';
+dict['HorizontalArrangement '] = 'HorizontalArrangement';
 dict['Image '] = 'Image';
 dict['ImageSprite '] = 'ImageSprite';
 dict['Label '] = 'Label';

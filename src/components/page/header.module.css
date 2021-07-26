@@ -15,7 +15,7 @@
   width: 100%;
   margin: 0;
   position: fixed;
-  z-index: 10;
+  z-index: 100;
 }
 
 /* Add style to image element */

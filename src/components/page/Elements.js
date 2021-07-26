@@ -1,79 +1,167 @@
 import React from 'react';
-import GridLayout from 'react-grid-layout';
 import Button from '../ai_components/Button';
 import Label from '../ai_components/Label';
 import Image from '../ai_components/Image';
 import TextBox from '../ai_components/TextBox';
 import DatePicker from '../ai_components/DatePicker';
 import Select from '../ai_components/Select';
+import VerticalArrangement from '../ai_components/VerticalArrangement';
+import HorizontalArrangement from '../ai_components/HorizontalArrangement';
 
-export default function Elements({ components }) {
-  let reactElement = [];
+export default function Elements({ components, blocks }) {
+  console.log(components);
+  let reactComponent = [];
+  let childComponents = [];
 
-  for (let i = 0; i < components.length; i++) {
-    switch (components[i].componentType) {
+  function childrenFromParent(parentComponent) {
+    let children = [];
+    components.forEach((component) => {
+      Object.keys(childComponents).forEach((childKey) => {
+        const child = childComponents[childKey];
+        if (
+          child.parentComponent === parentComponent &&
+          child.componentName === component.componentName
+        ) {
+          children.push(getComponent(component.componentName));
+        }
+      });
+    });
+
+    return children;
+  }
+
+  components.forEach((childComponent) => {
+    components.forEach((parentComponent) => {
+      if (childComponent.parentComponent === parentComponent.componentName) {
+        childComponents.push({
+          componentName: childComponent.componentName,
+          componentType: childComponent.componentType,
+          parentComponent: childComponent.parentComponent,
+        });
+      }
+    });
+  });
+
+  function getComponent(componentName) {
+    let component = null;
+    switch (componentType(componentName)) {
       case 'Button':
-        reactElement.push(
+        component = (
           <Button
-            key={components[i].componentName}
-            componentName={components[i].componentName}
-            componentProperties={components[i].componentProperties}
+            key={componentName}
+            componentName={componentName}
+            componentProperties={componentProperties(componentName)}
+            blocks={blocks}
           />
         );
         break;
       case 'Image':
-        reactElement.push(
+        component = (
           <Image
-            key={components[i].componentName}
-            componentName={components[i].componentName}
-            componentProperties={components[i].componentProperties}
+            key={componentName}
+            componentName={componentName}
+            componentProperties={componentProperties(componentName)}
           />
         );
+
         break;
       case 'Label':
-        reactElement.push(
+        component = (
           <Label
-            key={components[i].componentName}
-            componentName={components[i].componentName}
-            componentProperties={components[i].componentProperties}
+            key={componentName}
+            componentName={componentName}
+            componentProperties={componentProperties(componentName)}
           />
         );
+
         break;
       case 'TextBox':
-        reactElement.push(
+        component = (
           <TextBox
-            key={components[i].componentName}
-            componentName={components[i].componentName}
-            componentProperties={components[i].componentProperties}
+            key={componentName}
+            componentName={componentName}
+            componentProperties={componentProperties(componentName)}
           />
         );
+
         break;
       case 'Date':
-        reactElement.push(
+        component = (
           <DatePicker
-            key={components[i].componentName}
-            componentName={components[i].componentName}
-            componentProperties={components[i].componentProperties}
+            key={componentName}
+            componentName={componentName}
+            componentProperties={componentProperties(componentName)}
           />
         );
+
         break;
       case 'Select':
-        reactElement.push(
+        component = (
           <Select
-            key={components[i].componentName}
-            componentName={components[i].componentName}
-            componentProperties={components[i].componentProperties}
+            key={componentName}
+            componentName={componentName}
+            componentProperties={componentProperties(componentName)}
           />
+        );
+
+        break;
+      case 'VerticalArrangement':
+        component = (
+          <VerticalArrangement
+            key={componentName}
+            componentName={componentName}
+            componentProperties={componentProperties(componentName)}>
+            {childrenFromParent(componentName)}
+          </VerticalArrangement>
+        );
+        break;
+      case 'HorizontalArrangement':
+        component = (
+          <HorizontalArrangement
+            key={componentName}
+            componentName={componentName}
+            componentProperties={componentProperties(componentName)}>
+            {childrenFromParent(componentName)}
+          </HorizontalArrangement>
         );
         break;
       default:
         break;
     }
+    return component;
   }
 
-  return (
-    <center>
-      <div className="content">{reactElement}</div>
-    </center>
-  );
+  function componentProperties(componentName) {
+    let properties = {};
+    Object.keys(components).forEach((component) => {
+      const comp = components[component];
+      if (comp.componentName === componentName) {
+        properties = comp.componentProperties;
+      }
+    });
+    return properties;
+  }
+
+  function componentType(componentName) {
+    let type = {};
+    Object.keys(components).forEach((component) => {
+      const comp = components[component];
+      if (comp.componentName === componentName) {
+        type = comp.componentType;
+      }
+    });
+    return type;
+  }
+
+  function pageComponents() {
+    components.forEach((component) => {
+      if (component.parentIsScreen) {
+        reactComponent.push(getComponent(component.componentName));
+      }
+    });
+
+    return reactComponent;
+  }
+
+  return <div className="content">{pageComponents()}</div>;
 }
