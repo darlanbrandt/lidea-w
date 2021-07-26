@@ -80,9 +80,19 @@ const getBlocksCommands = (commands) => {
             propertyValue = { scopeVariable: varName };
             /* Or plain value */
           } else {
-            componentProperty = varPropertyValue.split(' ')[0];
+            componentProperty = varPropertyValue.split(" '")[0];
 
-            propertyValue = componentProperty;
+            let propertyType = varPropertyValue.substring(
+              componentProperty.length + 2
+            );
+
+            if (propertyType === 'number') {
+              propertyValue = parseInt(componentProperty);
+            } else if (propertyType === 'text') {
+              propertyValue = replaceQuotes(componentProperty);
+            } else {
+              propertyValue = componentProperty;
+            }
           }
           commandInfo = {
             commandType: dict[key],
@@ -126,8 +136,8 @@ const getBlocksCommands = (commands) => {
             commandType: dict[key],
             scopeVariableAction: scopeVariableName,
           };
-          console.log(scopeVariableName);
-          console.log('variável');
+          //console.log(scopeVariableName);
+          //console.log('variável');
         }
         /* Adds all objects parsed from commmand into an array */
 
@@ -137,6 +147,11 @@ const getBlocksCommands = (commands) => {
     });
   }
   return allCommands;
+};
+
+const replaceQuotes = (value) => {
+  let replacedQuotesValue = value.replaceAll('\\"', '');
+  return replacedQuotesValue;
 };
 
 export { getBlocksCommands };
