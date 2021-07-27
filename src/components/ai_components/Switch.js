@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Switch as SwitchComponent } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+
 import {
   defaultTextValue,
   defaultBgColorValue,
@@ -9,7 +11,9 @@ import {
   defaultTextAlignmentValue,
 } from './commonProperties';
 
-export default function TextBox({ componentName, componentProperties }) {
+export default function Switch({ componentName, componentProperties }) {
+  const [state, setState] = useState(false);
+
   /*******************************
    *  Coomponents properties     *
    *******************************/
@@ -32,45 +36,31 @@ export default function TextBox({ componentName, componentProperties }) {
   /* Get text alignment of TextBox component */
   const textAlignment = defaultTextAlignmentValue(componentProperties);
 
-  const componentInputType = componentProperties.find(
-    (prop) => prop.propertyName === 'MultiLine'
-  );
-
   const useStyles = makeStyles(() => ({
     div: {
       minHeight: `${height}`,
       minWidth: `${width}`,
       position: 'relative',
-    },
-    text: {
       textAlign: `${textAlignment}`,
-      height: `${height}`,
-      fontSize: `${fontSize}`,
-      fontFamily: 'Roboto',
-      width: '100%',
     },
   }));
 
   const classes = useStyles();
 
-  if (componentInputType === '#t') {
-    return (
-      <div className={classes.div}>
-        <textarea
-          id={componentName}
-          placeholder={textValue}
-          className={classes.text}></textarea>
-      </div>
-    );
-  } else {
-    return (
-      <div>
-        <input
-          type="text"
-          id={componentName}
-          placeholder={textValue}
-          className={classes.text}></input>
-      </div>
-    );
-  }
+  const handleChange = (event) => {
+    setState(event.target.checked);
+  };
+
+  return (
+    <div className={classes.div}>
+      <span>{textValue}</span>
+      <SwitchComponent
+        checked={state}
+        onChange={handleChange}
+        name={componentName}
+        id={componentName}
+        value={state}
+      />
+    </div>
+  );
 }

@@ -9,7 +9,7 @@ import {
   defaultTextAlignmentValue,
 } from './commonProperties';
 
-export default function TextBox({ componentName, componentProperties }) {
+export default function PasswordTextBox({ componentName, componentProperties }) {
   /*******************************
    *  Coomponents properties     *
    *******************************/
@@ -32,10 +32,6 @@ export default function TextBox({ componentName, componentProperties }) {
   /* Get text alignment of TextBox component */
   const textAlignment = defaultTextAlignmentValue(componentProperties);
 
-  const componentInputType = componentProperties.find(
-    (prop) => prop.propertyName === 'MultiLine'
-  );
-
   const useStyles = makeStyles(() => ({
     div: {
       minHeight: `${height}`,
@@ -53,24 +49,13 @@ export default function TextBox({ componentName, componentProperties }) {
 
   const classes = useStyles();
 
-  if (componentInputType === '#t') {
-    return (
-      <div className={classes.div}>
-        <textarea
-          id={componentName}
-          placeholder={textValue}
-          className={classes.text}></textarea>
-      </div>
-    );
-  } else {
-    return (
-      <div>
-        <input
-          type="text"
-          id={componentName}
-          placeholder={textValue}
-          className={classes.text}></input>
-      </div>
-    );
-  }
+  return (
+    <div>
+      <input
+        type="password"
+        id={componentName}
+        defaultValue={textValue}
+        className={classes.text}></input>
+    </div>
+  );
 }

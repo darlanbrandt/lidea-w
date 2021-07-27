@@ -3,10 +3,13 @@ import Button from '../ai_components/Button';
 import Label from '../ai_components/Label';
 import Image from '../ai_components/Image';
 import TextBox from '../ai_components/TextBox';
-import DatePicker from '../ai_components/DatePicker';
 import Select from '../ai_components/Select';
+import DatePicker from '../ai_components/DatePicker';
 import VerticalArrangement from '../ai_components/VerticalArrangement';
 import HorizontalArrangement from '../ai_components/HorizontalArrangement';
+import Slider from '../ai_components/Slider';
+import PasswordTextBox from '../ai_components/PasswordTextBox';
+import Switch from '../ai_components/Switch';
 
 export default function Elements({ components, blocks }) {
   console.log(components);
@@ -85,6 +88,16 @@ export default function Elements({ components, blocks }) {
         );
 
         break;
+      case 'Password':
+        component = (
+          <PasswordTextBox
+            key={componentName}
+            componentName={componentName}
+            componentProperties={componentProperties(componentName)}
+          />
+        );
+
+        break;
       case 'Date':
         component = (
           <DatePicker
@@ -98,6 +111,26 @@ export default function Elements({ components, blocks }) {
       case 'Select':
         component = (
           <Select
+            key={componentName}
+            componentName={componentName}
+            componentProperties={componentProperties(componentName)}
+          />
+        );
+
+        break;
+      case 'Slider':
+        component = (
+          <Slider
+            key={componentName}
+            componentName={componentName}
+            componentProperties={componentProperties(componentName)}
+          />
+        );
+
+        break;
+      case 'Switch':
+        component = (
+          <Switch
             key={componentName}
             componentName={componentName}
             componentProperties={componentProperties(componentName)}

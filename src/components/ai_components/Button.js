@@ -1,4 +1,6 @@
 import React from 'react';
+import { Button as ButtonComponent } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import { shapeValue } from '../../helpers/propertiesHelper';
 import {
   defaultTextValue,
@@ -12,6 +14,28 @@ import {
 import { commandToExecute } from '../../helpers/commandsToExecuteHelper';
 
 export default function Button({ componentName, componentProperties, blocks }) {
+  const useStyles = makeStyles(() => ({
+    div: {
+      padding: '1px',
+    },
+    button: {
+      display: 'flex',
+      alignItems: 'center',
+      backgroundColor: `${bgColor}`,
+      fontSize: `${fontSize}`,
+      width: '100%',
+      borderRadius: `${shape}`,
+      border: 0,
+      whiteSpace: 'nowrap',
+      minHeight: '30px',
+      height: `${height}`,
+      textTransform: 'none',
+    },
+    span: {
+      textAlign: `${textAlignment}`,
+      width: '100%',
+    },
+  }));
   /*******************************
    *  Coomponents properties     *
    *******************************/
@@ -48,50 +72,33 @@ export default function Button({ componentName, componentProperties, blocks }) {
     return commands;
   });
 
+  const variables = blocks.map(({ variables }) => {
+    return variables;
+  });
+
   const handleButtonClick = () => {
     commands.forEach((command) => {
       command.forEach((c) => {
         if (c.commandType === 'Click') {
           if (c.componentAction === componentName) {
             commandToExecute(c.commandsToExecute);
-            /*c.commandsToExecute.forEach((commandToExecute) => {
-              commandToExecute(commandToExecute);
-            });*/
           }
         }
       });
     });
   };
 
+  const classes = useStyles();
+
   return (
-    <div
-      style={{
-        display: 'flex',
-        height: `${height}`,
-        minWidth: `${width}`,
-        maxWidth: `${width}`,
-        position: 'relative',
-      }}>
-      <button
+    <div className={classes.div}>
+      <ButtonComponent
         onClick={handleButtonClick}
         id={componentName}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          backgroundColor: `${bgColor}`,
-          fontSize: `${fontSize}`,
-          width: '100%',
-          borderRadius: `${shape}`,
-          height: '100%',
-          border: 0,
-          padding: '2px',
-          whiteSpace: 'nowrap',
-          position: 'relative',
-        }}>
-        <span style={{ textAlign: `${textAlignment}`, width: '100%' }}>
-          {textValue}
-        </span>
-      </button>
+        variant="contained"
+        className={classes.button}>
+        <span className={classes.span}>{textValue}</span>
+      </ButtonComponent>
     </div>
   );
 }
