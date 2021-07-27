@@ -63,6 +63,7 @@ const textAlignmentValue = (value) => {
       textAlignment = 'right';
       break;
     default:
+      textAlignment = 'center';
       break;
   }
   return textAlignment;
@@ -80,7 +81,7 @@ const shapeValue = (value) => {
   let shape = '';
   switch (parseInt(value)) {
     case 1:
-      shape = '10px';
+      shape = '15px';
       break;
     case 2:
       shape = '0';
