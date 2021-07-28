@@ -81,7 +81,7 @@ export default function Button({ componentName, componentProperties, blocks }) {
       command.forEach((c) => {
         if (c.commandType === 'Click') {
           if (c.componentAction === componentName) {
-            commandToExecute(c.commandsToExecute);
+            commandToExecute(c.commandsToExecute, variables);
           }
         }
       });
