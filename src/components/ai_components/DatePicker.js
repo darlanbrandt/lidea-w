@@ -7,14 +7,14 @@ import {
   defaultHeightValue,
   defaultWidthValue,
   defaultTextAlignmentValue,
-} from './commonProperties';
+} from './helpers/commonPropertiesHelper';
 import { shapeValue } from '../../helpers/propertiesHelper';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import FormControl from '@material-ui/core/FormControl';
 
-export default function DateUI({ componentName, componentProperties }) {
+export default function DatePicker({ componentName, componentProperties }) {
   const [open, setOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
 
@@ -51,6 +51,10 @@ export default function DateUI({ componentName, componentProperties }) {
       width: '100%',
     },
   }));
+
+  /*******************************
+   *  Components properties     *
+   *******************************/
 
   /* Get default text from properties */
   const defaultValue = defaultTextValue(componentProperties);

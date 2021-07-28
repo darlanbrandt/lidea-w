@@ -6,11 +6,11 @@ import {
   defaultHeightValue,
   defaultWidthValue,
   defaultTextAlignmentValue,
-} from './commonProperties';
+} from './helpers/commonPropertiesHelper';
 
 export default function Label({ componentName, componentProperties }) {
   /*******************************
-   *  Coomponents properties     *
+   *  Components properties     *
    *******************************/
 
   /* Get default text from properties */

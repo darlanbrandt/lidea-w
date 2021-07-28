@@ -7,11 +7,14 @@ import {
   defaultHeightValue,
   defaultWidthValue,
   defaultTextAlignmentValue,
-} from './commonProperties';
+} from './helpers/commonPropertiesHelper';
 
-export default function PasswordTextBox({ componentName, componentProperties }) {
+export default function PasswordTextBox({
+  componentName,
+  componentProperties,
+}) {
   /*******************************
-   *  Coomponents properties     *
+   *  Components properties     *
    *******************************/
 
   /* Get default text from properties */

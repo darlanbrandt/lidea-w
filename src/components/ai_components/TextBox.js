@@ -7,11 +7,16 @@ import {
   defaultHeightValue,
   defaultWidthValue,
   defaultTextAlignmentValue,
-} from './commonProperties';
+} from './helpers/commonPropertiesHelper';
+import { commandToExecute } from '../../helpers/commandsToExecuteHelper';
 
-export default function TextBox({ componentName, componentProperties }) {
+export default function TextBox({
+  componentName,
+  componentProperties,
+  blocks,
+}) {
   /*******************************
-   *  Coomponents properties     *
+   *  Components properties     *
    *******************************/
 
   /* Get default text from properties */
@@ -53,11 +58,35 @@ export default function TextBox({ componentName, componentProperties }) {
 
   const classes = useStyles();
 
+  const commands = blocks.map(({ commands }) => {
+    return commands;
+  });
+
+  const variables = blocks.map(({ variables }) => {
+    return variables;
+  });
+
+  function handleTextBox(action) {
+    commands.forEach((command) => {
+      command.forEach((c) => {
+        if (c.commandType === action) {
+          if (c.componentAction === componentName) {
+            commandToExecute(c.commandsToExecute, variables);
+          }
+        }
+      });
+    });
+  }
+
   if (componentInputType === '#t') {
     return (
       <div className={classes.div}>
         <textarea
           id={componentName}
+          onMouseEnter={() => handleTextBox('GotFocus')}
+          onMouseLeave={() => handleTextBox('LostFocus')}
+          onMouseDown={() => handleTextBox('TouchDown')}
+          onMouseUp={() => handleTextBox('TouchUp')}
           placeholder={textValue}
           className={classes.text}></textarea>
       </div>
@@ -68,6 +97,8 @@ export default function TextBox({ componentName, componentProperties }) {
         <input
           type="text"
           id={componentName}
+          onMouseEnter={() => handleTextBox('GotFocus')}
+          onMouseLeave={() => handleTextBox('LostFocus')}
           placeholder={textValue}
           className={classes.text}></input>
       </div>

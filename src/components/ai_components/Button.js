@@ -10,7 +10,7 @@ import {
   defaultWidthValue,
   defaultTextAlignmentValue,
   defaultAlignHorizontalValue,
-} from './commonProperties';
+} from './helpers/commonPropertiesHelper';
 import { commandToExecute } from '../../helpers/commandsToExecuteHelper';
 
 export default function Button({ componentName, componentProperties, blocks }) {
@@ -37,7 +37,7 @@ export default function Button({ componentName, componentProperties, blocks }) {
     },
   }));
   /*******************************
-   *  Coomponents properties     *
+   *  Components properties     *
    *******************************/
 
   /* Get default text from properties */
@@ -88,12 +88,26 @@ export default function Button({ componentName, componentProperties, blocks }) {
     });
   };
 
+  function handleButton(action) {
+    commands.forEach((command) => {
+      command.forEach((c) => {
+        if (c.commandType === action) {
+          if (c.componentAction === componentName) {
+            commandToExecute(c.commandsToExecute, variables);
+          }
+        }
+      });
+    });
+  }
+
   const classes = useStyles();
 
   return (
     <div className={classes.div}>
       <ButtonComponent
-        onClick={handleButtonClick}
+        onClick={() => handleButton('Click')}
+        onMouseEnter={() => handleButton('GotFocus')}
+        onMouseLeave={() => handleButton('LostFocus')}
         id={componentName}
         variant="contained"
         className={classes.button}>

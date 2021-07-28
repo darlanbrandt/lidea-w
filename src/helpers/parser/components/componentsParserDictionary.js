@@ -4,7 +4,7 @@ dict['Button '] = 'Button';
 dict['Camera '] = 'Camera';
 dict['Canvas '] = 'Canvas';
 dict['Clock '] = 'Clock';
-dict['CheckBox '] = 'Checkbox';
+dict['CheckBox '] = 'CheckBox';
 dict['DatePicker '] = 'Date';
 dict['HorizontalArrangement '] = 'HorizontalArrangement';
 dict['Image '] = 'Image';
@@ -18,6 +18,7 @@ dict['Spinner '] = 'Spinner';
 dict['Switch '] = 'Switch';
 dict['TableArrangement '] = 'TableArrangement';
 dict['TextBox '] = 'TextBox';
+dict['TimePicker '] = 'Time';
 dict['VerticalArrangement '] = 'VerticalArrangement';
 
 const startOfElement = '(add-component';

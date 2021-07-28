@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   defaultTextValue,
@@ -7,29 +7,29 @@ import {
   defaultHeightValue,
   defaultWidthValue,
   defaultTextAlignmentValue,
-} from './commonProperties';
+} from './helpers/commonPropertiesHelper';
 import { shapeValue } from '../../helpers/propertiesHelper';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import FormControl from '@material-ui/core/FormControl';
-import { Select as SelectComponent } from '@material-ui/core';
 
-export default function SelectUI({ componentName, componentProperties }) {
+export default function TimePicker({ componentName, componentProperties }) {
   const [open, setOpen] = useState(false);
-  const [selectedValue, setSelectedValue] = useState('');
+  const [selectedTime, setSelectedTime] = useState('');
 
-  const useStyles = makeStyles((theme) => ({
+  const useStyles = makeStyles(() => ({
     div: {
       padding: '1px',
     },
     container: {
       display: 'flex',
       flexWrap: 'wrap',
+      paddingRight: '0',
     },
     formControl: {
-      margin: theme.spacing(1),
       minWidth: 120,
+      paddingRight: '0',
     },
     button: {
       display: 'flex',
@@ -52,34 +52,12 @@ export default function SelectUI({ componentName, componentProperties }) {
     },
   }));
 
+  /*******************************
+   *  Components properties     *
+   *******************************/
+
   /* Get default text from properties */
   const defaultValue = defaultTextValue(componentProperties);
-
-  /* Select values for options*/
-  let options = [];
-  const componentContent = componentProperties.find(
-    (prop) => prop.propertyName === 'ElementsFromString'
-  );
-
-  if (componentContent !== undefined) {
-    options = componentContent.propertyValue.split(/,/u);
-  }
-
-  /* Add default value to options */
-  const optionsList = [
-    <option defaultValue={defaultValue} disabled hidden>
-      {defaultValue}
-    </option>,
-  ];
-
-  /* Get options from properties */
-  for (let i = 0; i < options.length; i++) {
-    optionsList.push(
-      <option key={i + 1} value={options[i]}>
-        {options[i]}
-      </option>
-    );
-  }
 
   /* Get background color of Select component */
   const bgColor = defaultBgColorValue(componentProperties);
@@ -107,8 +85,8 @@ export default function SelectUI({ componentName, componentProperties }) {
   }
 
   const handleChange = (event) => {
-    alert(event.target.value);
-    setSelectedValue(event.target.value);
+    //alert(event.target.value);
+    setSelectedTime(event.target.value);
     setOpen(false);
   };
 
@@ -135,15 +113,11 @@ export default function SelectUI({ componentName, componentProperties }) {
         <DialogContent>
           <form className={classes.container}>
             <FormControl className={classes.formControl}>
-              <SelectComponent
-                native
-                key={componentName}
-                value={selectedValue}
+              <input
+                type="time"
                 onChange={handleChange}
-                className={classes.select}
-                id={componentName}>
-                {optionsList}
-              </SelectComponent>
+                value={selectedTime}
+                id={componentName}></input>
             </FormControl>
           </form>
         </DialogContent>

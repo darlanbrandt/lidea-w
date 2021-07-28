@@ -4,7 +4,7 @@ import {
   alignVerticalValue,
   fontSizeValue,
   textAlignmentValue,
-} from '../../helpers/propertiesHelper';
+} from '../../../helpers/propertiesHelper';
 
 /* Get default value from properties */
 const defaultTextValue = (componentProperties) => {

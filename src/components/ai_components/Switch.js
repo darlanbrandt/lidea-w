@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Switch as SwitchComponent } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 
 import {
   defaultTextValue,
@@ -9,13 +9,13 @@ import {
   defaultHeightValue,
   defaultWidthValue,
   defaultTextAlignmentValue,
-} from './commonProperties';
+} from './helpers/commonPropertiesHelper';
 
 export default function Switch({ componentName, componentProperties }) {
   const [state, setState] = useState(false);
 
   /*******************************
-   *  Coomponents properties     *
+   *  Components properties     *
    *******************************/
 
   /* Get default text from properties */
@@ -36,12 +36,32 @@ export default function Switch({ componentName, componentProperties }) {
   /* Get text alignment of TextBox component */
   const textAlignment = defaultTextAlignmentValue(componentProperties);
 
+  const CustomSwitch = withStyles({
+    switchBase: {
+      color: 'yellow',
+      '&$checked': {
+        color: 'red',
+        '& + $track': {
+          opacity: 1,
+          backgroundColor: 'turquoise',
+        },
+      },
+    },
+    checked: {},
+    track: { backgroundColor: 'blue', opacity: 1 },
+  })(SwitchComponent);
+
   const useStyles = makeStyles(() => ({
     div: {
       minHeight: `${height}`,
       minWidth: `${width}`,
       position: 'relative',
       textAlign: `${textAlignment}`,
+    },
+    span: {
+      textAlign: `${textAlignment}`,
+      width: '100%',
+      fontSize: `${fontSize}`,
     },
   }));
 
@@ -53,8 +73,8 @@ export default function Switch({ componentName, componentProperties }) {
 
   return (
     <div className={classes.div}>
-      <span>{textValue}</span>
-      <SwitchComponent
+      <span className={classes.span}>{textValue}</span>
+      <CustomSwitch
         checked={state}
         onChange={handleChange}
         name={componentName}

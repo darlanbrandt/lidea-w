@@ -11,7 +11,7 @@ export default function HorizontalArrangement({
   children,
 }) {
   /*******************************
-   *  Coomponents properties     *
+   *  Components properties     *
    *******************************/
 
   /* Get background color of VerticalArrangement */
