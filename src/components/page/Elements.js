@@ -1,15 +1,18 @@
 import React from 'react';
 import Button from '../ai_components/Button';
+import CheckBox from '../ai_components/CheckBox';
 import Label from '../ai_components/Label';
 import Image from '../ai_components/Image';
 import TextBox from '../ai_components/TextBox';
-import Select from '../ai_components/Select';
+import ListPicker from '../ai_components/ListPicker';
 import DatePicker from '../ai_components/DatePicker';
 import VerticalArrangement from '../ai_components/VerticalArrangement';
 import HorizontalArrangement from '../ai_components/HorizontalArrangement';
 import Slider from '../ai_components/Slider';
 import PasswordTextBox from '../ai_components/PasswordTextBox';
 import Switch from '../ai_components/Switch';
+import Spinner from '../ai_components/Spinner';
+import TimePicker from '../ai_components/TimePicker';
 
 export default function Elements({ components, blocks }) {
   console.log(components);
@@ -58,12 +61,24 @@ export default function Elements({ components, blocks }) {
           />
         );
         break;
+      case 'CheckBox':
+        component = (
+          <CheckBox
+            key={componentName}
+            componentName={componentName}
+            componentProperties={componentProperties(componentName)}
+            blocks={blocks}
+          />
+        );
+
+        break;
       case 'Image':
         component = (
           <Image
             key={componentName}
             componentName={componentName}
             componentProperties={componentProperties(componentName)}
+            blocks={blocks}
           />
         );
 
@@ -84,6 +99,7 @@ export default function Elements({ components, blocks }) {
             key={componentName}
             componentName={componentName}
             componentProperties={componentProperties(componentName)}
+            blocks={blocks}
           />
         );
 
@@ -94,6 +110,7 @@ export default function Elements({ components, blocks }) {
             key={componentName}
             componentName={componentName}
             componentProperties={componentProperties(componentName)}
+            blocks={blocks}
           />
         );
 
@@ -104,16 +121,41 @@ export default function Elements({ components, blocks }) {
             key={componentName}
             componentName={componentName}
             componentProperties={componentProperties(componentName)}
+            blocks={blocks}
           />
         );
 
         break;
-      case 'Select':
+      case 'Time':
         component = (
-          <Select
+          <TimePicker
             key={componentName}
             componentName={componentName}
             componentProperties={componentProperties(componentName)}
+            blocks={blocks}
+          />
+        );
+
+        break;
+
+      case 'Select':
+        component = (
+          <ListPicker
+            key={componentName}
+            componentName={componentName}
+            componentProperties={componentProperties(componentName)}
+            blocks={blocks}
+          />
+        );
+
+        break;
+      case 'Spinner':
+        component = (
+          <Spinner
+            key={componentName}
+            componentName={componentName}
+            componentProperties={componentProperties(componentName)}
+            blocks={blocks}
           />
         );
 
@@ -124,6 +166,7 @@ export default function Elements({ components, blocks }) {
             key={componentName}
             componentName={componentName}
             componentProperties={componentProperties(componentName)}
+            blocks={blocks}
           />
         );
 
@@ -134,6 +177,7 @@ export default function Elements({ components, blocks }) {
             key={componentName}
             componentName={componentName}
             componentProperties={componentProperties(componentName)}
+            blocks={blocks}
           />
         );
 

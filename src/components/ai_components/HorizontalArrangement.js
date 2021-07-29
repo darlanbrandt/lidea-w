@@ -1,9 +1,11 @@
 import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   measureValue,
   alignHorizontalValue,
   alignVerticalValue,
 } from '../../helpers/propertiesHelper';
+import { getVisibility } from './helpers/commonPropertiesHelper';
 
 export default function HorizontalArrangement({
   componentName,
@@ -11,7 +13,7 @@ export default function HorizontalArrangement({
   children,
 }) {
   /*******************************
-   *  Coomponents properties     *
+   *  Components properties     *
    *******************************/
 
   /* Get background color of VerticalArrangement */
@@ -66,18 +68,30 @@ export default function HorizontalArrangement({
     alignVertical = alignVerticalValue(componentAlignVertical.propertyValue);
   }
 
+  /* Get visibility of component */
+  const visible = getVisibility(componentProperties);
+
+  const useStyles = makeStyles(() => ({
+    div: {
+      display: 'flex',
+      flexDirection: 'row',
+      alignItems: alignHorizontal,
+      justifyContent: alignVertical,
+      backgroundColor: bgColor,
+      minHeight: height,
+      minWidth: width,
+    },
+    invisible: {
+      display: 'none',
+    },
+  }));
+
+  const classes = useStyles();
+
+  let componentClass = visible ? `${classes.div}` : `${classes.invisible}`;
+
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: `${alignHorizontal}`,
-        justifyContent: `${alignVertical}`,
-        backgroundColor: `${bgColor}`,
-        minHeight: `${height}`,
-        minWidth: `${width}`,
-      }}
-      id={componentName}>
+    <div className={componentClass} id={componentName}>
       {children}
     </div>
   );

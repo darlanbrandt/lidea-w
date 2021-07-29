@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import {
   defaultTextValue,
@@ -18,35 +18,40 @@ import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import { commandToExecute } from '../../helpers/commandsToExecuteHelper';
 
-export default function DatePicker({ componentName, componentProperties }) {
+export default function ListPicker({
+  componentName,
+  componentProperties,
+  blocks,
+}) {
   const [open, setOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedValue, setSelectedValue] = useState('');
 
-  const useStyles = makeStyles(() => ({
+  const useStyles = makeStyles((theme) => ({
     div: {
       padding: '1px',
     },
     container: {
       display: 'flex',
       flexWrap: 'wrap',
-      paddingRight: '0',
     },
     formControl: {
+      margin: theme.spacing(1),
       minWidth: 120,
-      paddingRight: '0',
     },
     button: {
       display: 'flex',
       alignItems: 'center',
-      backgroundColor: bgColor,
-      fontSize: fontSize,
+      backgroundColor: `${bgColor}`,
+      fontSize: `${fontSize}`,
       width: '100%',
-      borderRadius: shape,
+      borderRadius: `${shape}`,
       border: 0,
       whiteSpace: 'nowrap',
       minHeight: '30px',
-      height: height,
+      height: `${height}`,
       textTransform: 'none',
     },
     span: {
@@ -65,6 +70,32 @@ export default function DatePicker({ componentName, componentProperties }) {
 
   /* Get default text from properties */
   const defaultValue = defaultTextValue(componentProperties);
+
+  /* Select values for options*/
+  let options = [];
+  const componentContent = componentProperties.find(
+    (prop) => prop.propertyName === 'ElementsFromString'
+  );
+
+  if (componentContent !== undefined) {
+    options = componentContent.propertyValue.split(/,/u);
+  }
+
+  /* Add default value to options */
+  const optionsList = [
+    <option defaultValue={defaultValue} disabled hidden>
+      {defaultValue}
+    </option>,
+  ];
+
+  /* Get options from properties */
+  for (let i = 0; i < options.length; i++) {
+    optionsList.push(
+      <option key={i + 1} value={options[i]}>
+        {options[i]}
+      </option>
+    );
+  }
 
   /* Get background color of Select component */
   const bgColor = defaultBgColorValue(componentProperties);
@@ -106,9 +137,28 @@ export default function DatePicker({ componentName, componentProperties }) {
     shape = shapeValue(componentShape.propertyValue);
   }
 
+  const commands = blocks.map(({ commands }) => {
+    return commands;
+  });
+
+  const variables = blocks.map(({ variables }) => {
+    return variables;
+  });
+
+  function handleListPicker(action) {
+    commands.forEach((command) => {
+      command.forEach((c) => {
+        if (c.commandType === action) {
+          if (c.componentAction === componentName) {
+            commandToExecute(c.commandsToExecute, variables);
+          }
+        }
+      });
+    });
+  }
+
   const handleChange = (event) => {
-    alert(event.target.value);
-    setSelectedDate(event.target.value);
+    setSelectedValue(event.target.value);
     setOpen(false);
   };
 
@@ -146,11 +196,17 @@ export default function DatePicker({ componentName, componentProperties }) {
         <DialogContent>
           <form className={classes.container}>
             <FormControl className={classes.formControl}>
-              <input
-                type="date"
+              <Select
+                native
+                key={componentName}
+                value={selectedValue}
                 onChange={handleChange}
-                value={selectedDate}
-                id={componentName}></input>
+                onMouseEnter={(e) => handleListPicker('GotFocus')}
+                onMouseLeave={(e) => handleListPicker('LostFocus')}
+                className={classes.select}
+                id={componentName}>
+                {optionsList}
+              </Select>
             </FormControl>
           </form>
         </DialogContent>

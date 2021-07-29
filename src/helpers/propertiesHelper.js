@@ -69,6 +69,25 @@ const textAlignmentValue = (value) => {
   return textAlignment;
 };
 
+/* Returns font typeface of text */
+const fontTypefaceValue = (value) => {
+  let fontTypeface = '';
+  switch (parseInt(value)) {
+    case 1:
+      fontTypeface = 'sans-serif';
+      break;
+    case 2:
+      fontTypeface = 'serif';
+      break;
+    case 3:
+      fontTypeface = 'monospace';
+      break;
+    default:
+      fontTypeface = 'sans-serif';
+  }
+  return fontTypeface;
+};
+
 /* Returns correct font size value */
 const fontSizeValue = (value) => {
   let fontSize = value + 'px';
@@ -102,4 +121,5 @@ export {
   textAlignmentValue,
   fontSizeValue,
   shapeValue,
+  fontTypefaceValue
 };

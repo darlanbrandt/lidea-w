@@ -6,15 +6,18 @@ const commandToExecute = (commands, variables) => {
     if (command.commandType === 'set-property') {
       let componentId = '#' + command.componentAction;
       let value = '';
+
       /* If command property value is an object iterate through object */
       if (typeof command.propertyValue === 'object') {
         /* if property is an object with component value */
         if ('component' in command.propertyValue) {
           let componentValueId = '#' + command.propertyValue.component;
           value = document.querySelector(componentValueId).innerHTML;
+
           /* or if it comes from a scope variable */
         } else if ('scopeVariable' in command.propertyValue) {
           console.log(command.propertyValue.scopeVariable);
+
           /* or from a global variable */
         } else if ('globalVariable' in command.propertyValue) {
           variables.forEach((variable) => {
@@ -25,6 +28,7 @@ const commandToExecute = (commands, variables) => {
             value = variableToExecute.variableValue;
           });
         }
+
         /* else, returns its value */
       } else {
         value = command.propertyValue;
@@ -39,6 +43,7 @@ const commandToExecute = (commands, variables) => {
           break;
         case 'Text':
           document.querySelector(componentId).innerHTML = value;
+          document.querySelector(componentId).value = value;
       }
       /* or checks if command sets new value to global variable */
     } else if (command.commandType === 'set-global-var-value') {
