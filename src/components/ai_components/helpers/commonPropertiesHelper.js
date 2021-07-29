@@ -4,6 +4,7 @@ import {
   alignVerticalValue,
   fontSizeValue,
   textAlignmentValue,
+  fontTypefaceValue,
 } from '../../../helpers/propertiesHelper';
 
 /* Get default value from properties */
@@ -52,6 +53,62 @@ const defaultFontSizeValue = (componentProperties) => {
     fontSize = fontSizeValue(componentFontSize.propertyValue);
   }
   return fontSize;
+};
+
+/* Get font style */
+const defaultFontStyleValue = (componentProperties) => {
+  let fontStyle = 'none';
+  const componentFontSize = componentProperties.find(
+    (prop) => prop.propertyName === 'FontItalic'
+  );
+
+  if (componentFontSize !== undefined) {
+    if (componentFontSize.propertyValue === '#t') {
+      fontStyle = 'italic';
+    }
+  }
+  return fontStyle;
+};
+
+/* Get font weight */
+const defaultFontWeightValue = (componentProperties) => {
+  let fontWeight = 'normal';
+  const componentFontWeight = componentProperties.find(
+    (prop) => prop.propertyName === 'FontBold'
+  );
+
+  if (componentFontWeight !== undefined) {
+    if (componentFontWeight.propertyValue === '#t') {
+      fontWeight = 'bold';
+    }
+  }
+  return fontWeight;
+};
+
+/* Get font typeface */
+const defaultFontTypefaceValue = (componentProperties) => {
+  let fontTypeface = 'Roboto';
+  const componentFontTypeface = componentProperties.find(
+    (prop) => prop.propertyName === 'FontTypeface'
+  );
+
+  if (componentFontTypeface !== undefined) {
+    fontTypeface = fontTypefaceValue(componentFontTypeface.propertyValue);
+  }
+  return fontTypeface;
+};
+
+/* Get text color component */
+const defaultTextColorValue = (componentProperties) => {
+  let textColor = 'black';
+  const componentTextColor = componentProperties.find(
+    (prop) => prop.propertyName === 'TextColor'
+  );
+
+  if (componentTextColor !== undefined) {
+    textColor = componentTextColor.propertyValue.replace('#xFF', '#');
+  }
+  return textColor;
 };
 
 /* Get height of component */
@@ -122,6 +179,21 @@ const defaultAlignVerticalValue = (componentProperties) => {
   return alignVertical;
 };
 
+/* Get visibility of component */
+const getVisibility = (componentProperties) => {
+  let visible = true;
+  const componentVisible = componentProperties.find(
+    (prop) => prop.propertyName === 'Visible'
+  );
+
+  if (componentVisible !== undefined) {
+    if (componentVisible.propertyValue === '#f') {
+      visible = false;
+    }
+  }
+  return visible;
+};
+
 export {
   defaultTextValue,
   defaultBgColorValue,
@@ -131,4 +203,9 @@ export {
   defaultTextAlignmentValue,
   defaultAlignHorizontalValue,
   defaultAlignVerticalValue,
+  defaultFontStyleValue,
+  defaultFontWeightValue,
+  defaultTextColorValue,
+  defaultFontTypefaceValue,
+  getVisibility,
 };

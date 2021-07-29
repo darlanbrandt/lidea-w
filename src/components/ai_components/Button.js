@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button as ButtonComponent } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { shapeValue } from '../../helpers/propertiesHelper';
 import {
   defaultTextValue,
@@ -9,7 +9,11 @@ import {
   defaultHeightValue,
   defaultWidthValue,
   defaultTextAlignmentValue,
-  defaultAlignHorizontalValue,
+  defaultFontStyleValue,
+  defaultFontWeightValue,
+  defaultTextColorValue,
+  defaultFontTypefaceValue,
+  getVisibility,
 } from './helpers/commonPropertiesHelper';
 import { commandToExecute } from '../../helpers/commandsToExecuteHelper';
 
@@ -21,21 +25,29 @@ export default function Button({ componentName, componentProperties, blocks }) {
     button: {
       display: 'flex',
       alignItems: 'center',
-      backgroundColor: `${bgColor}`,
-      fontSize: `${fontSize}`,
+      backgroundColor: bgColor,
+      fontSize: fontSize,
       width: '100%',
-      borderRadius: `${shape}`,
+      borderRadius: shape,
       border: 0,
       whiteSpace: 'nowrap',
       minHeight: '30px',
-      height: `${height}`,
+      height: height,
       textTransform: 'none',
     },
     span: {
-      textAlign: `${textAlignment}`,
+      textAlign: textAlignment,
       width: '100%',
+      fontStyle: fontStyle,
+      fontWeight: fontWeight,
+      color: textColor,
+      fontFamily: fontTypeface,
+    },
+    invisible: {
+      display: 'none',
     },
   }));
+
   /*******************************
    *  Components properties     *
    *******************************/
@@ -58,6 +70,21 @@ export default function Button({ componentName, componentProperties, blocks }) {
   /* Get text alignment of Button component */
   const textAlignment = defaultTextAlignmentValue(componentProperties);
 
+  /* Get font style of Button component */
+  const fontStyle = defaultFontStyleValue(componentProperties);
+
+  /* Get font weight of Button component */
+  const fontWeight = defaultFontWeightValue(componentProperties);
+
+  /* Get text color of Button component */
+  const textColor = defaultTextColorValue(componentProperties);
+
+  /* Get font typeface of Button component */
+  const fontTypeface = defaultFontTypefaceValue(componentProperties);
+
+  /* Get visibility of component */
+  const visible = getVisibility(componentProperties);
+
   /* Get border radius of Button component */
   let shape = '';
   const componentShape = componentProperties.find(
@@ -76,18 +103,6 @@ export default function Button({ componentName, componentProperties, blocks }) {
     return variables;
   });
 
-  const handleButtonClick = () => {
-    commands.forEach((command) => {
-      command.forEach((c) => {
-        if (c.commandType === 'Click') {
-          if (c.componentAction === componentName) {
-            commandToExecute(c.commandsToExecute, variables);
-          }
-        }
-      });
-    });
-  };
-
   function handleButton(action) {
     commands.forEach((command) => {
       command.forEach((c) => {
@@ -100,11 +115,22 @@ export default function Button({ componentName, componentProperties, blocks }) {
     });
   }
 
+  const CustomButton = withStyles(() => ({
+    root: {
+      backgroundColor: bgColor,
+      '&:hover': {
+        backgroundColor: bgColor,
+      },
+    },
+  }))(ButtonComponent);
+
   const classes = useStyles();
 
+  let componentClass = visible ? `${classes.div}` : `${classes.invisible}`;
+
   return (
-    <div className={classes.div}>
-      <ButtonComponent
+    <div className={componentClass}>
+      <CustomButton
         onClick={() => handleButton('Click')}
         onMouseEnter={() => handleButton('GotFocus')}
         onMouseLeave={() => handleButton('LostFocus')}
@@ -112,7 +138,7 @@ export default function Button({ componentName, componentProperties, blocks }) {
         variant="contained"
         className={classes.button}>
         <span className={classes.span}>{textValue}</span>
-      </ButtonComponent>
+      </CustomButton>
     </div>
   );
 }

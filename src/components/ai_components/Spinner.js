@@ -2,13 +2,9 @@ import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   defaultTextValue,
-  defaultBgColorValue,
-  defaultFontSizeValue,
-  defaultHeightValue,
   defaultWidthValue,
-  defaultTextAlignmentValue,
+  getVisibility,
 } from './helpers/commonPropertiesHelper';
-import { shapeValue } from '../../helpers/propertiesHelper';
 
 import Select from '@material-ui/core/Select';
 
@@ -17,13 +13,7 @@ export default function Spinner({ componentName, componentProperties }) {
 
   const useStyles = makeStyles(() => ({
     div: {
-      padding: '1px',
-    },
-    select: {
-      backgroundColor: `${bgColor}`,
-      textAlign: `${textAlignment}`,
-      fontSize: `${fontSize}`,
-      width: '100%',
+      minWidth: width,
     },
   }));
 
@@ -60,47 +50,28 @@ export default function Spinner({ componentName, componentProperties }) {
     );
   }
 
-  /* Get background color of Select component */
-  const bgColor = defaultBgColorValue(componentProperties);
-
-  /* Get font size of Select component */
-  const fontSize = defaultFontSizeValue(componentProperties);
-
-  /* Get height of Select component */
-  const height = defaultHeightValue(componentProperties);
-
-  /* Get width of Select component */
+  /* Get width of Spinner component */
   const width = defaultWidthValue(componentProperties);
 
-  /* Get text alignment of Select component */
-  const textAlignment = defaultTextAlignmentValue(componentProperties);
-
-  /* Get border radius of Button component */
-  let shape = '';
-  const componentShape = componentProperties.find(
-    (prop) => prop.propertyName === 'Shape'
-  );
-
-  if (componentShape !== undefined) {
-    shape = shapeValue(componentShape.propertyValue);
-  }
+  /* Get visibility of component */
+  const visible = getVisibility(componentProperties);
 
   const handleChange = (event) => {
-    alert(event.target.value);
     setSelectedValue(event.target.value);
   };
 
   const classes = useStyles();
 
+  let componentClass = visible ? `${classes.div}` : `${classes.invisible}`;
+
   return (
-    <div className={classes.div}>
+    <div className={componentClass}>
       <Select
         native
         key={componentName}
         value={selectedValue}
         onChange={handleChange}
         defaultValue={defaultValue}
-        className={classes.select}
         id={componentName}>
         {optionsList}
       </Select>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import {
   defaultTextValue,
   defaultBgColorValue,
@@ -7,6 +7,11 @@ import {
   defaultHeightValue,
   defaultWidthValue,
   defaultTextAlignmentValue,
+  defaultFontStyleValue,
+  defaultFontWeightValue,
+  defaultTextColorValue,
+  defaultFontTypefaceValue,
+  getVisibility,
 } from './helpers/commonPropertiesHelper';
 import { shapeValue } from '../../helpers/propertiesHelper';
 import Button from '@material-ui/core/Button';
@@ -49,11 +54,13 @@ export default function ListPicker({
       height: `${height}`,
       textTransform: 'none',
     },
-    select: {
-      backgroundColor: `${bgColor}`,
-      textAlign: `${textAlignment}`,
-      fontSize: `${fontSize}`,
+    span: {
+      textAlign: textAlignment,
       width: '100%',
+      fontStyle: fontStyle,
+      fontWeight: fontWeight,
+      color: textColor,
+      fontFamily: fontTypeface,
     },
   }));
 
@@ -105,6 +112,21 @@ export default function ListPicker({
   /* Get text alignment of Select component */
   const textAlignment = defaultTextAlignmentValue(componentProperties);
 
+  /* Get font style of Button component */
+  const fontStyle = defaultFontStyleValue(componentProperties);
+
+  /* Get font weight of Button component */
+  const fontWeight = defaultFontWeightValue(componentProperties);
+
+  /* Get text color of Button component */
+  const textColor = defaultTextColorValue(componentProperties);
+
+  /* Get font typeface of Button component */
+  const fontTypeface = defaultFontTypefaceValue(componentProperties);
+
+  /* Get visibility of component */
+  const visible = getVisibility(componentProperties);
+
   /* Get border radius of Button component */
   let shape = '';
   const componentShape = componentProperties.find(
@@ -148,18 +170,28 @@ export default function ListPicker({
     setOpen(false);
   };
 
+  const CustomButton = withStyles(() => ({
+    root: {
+      backgroundColor: bgColor,
+      '&:hover': {
+        backgroundColor: bgColor,
+      },
+    },
+  }))(Button);
+
   const classes = useStyles();
-  //onChange={handleChange}
+
+  let componentClass = visible ? `${classes.div}` : `${classes.invisible}`;
 
   return (
-    <div className={classes.div}>
-      <Button
+    <div className={componentClass}>
+      <CustomButton
         onClick={handleClickOpen}
         id={componentName}
         variant="contained"
         className={classes.button}>
-        {defaultValue}
-      </Button>
+        <span className={classes.span}>{defaultValue}</span>
+      </CustomButton>
       <Dialog open={open} onClose={handleClose} disableScrollLock>
         <DialogContent>
           <form className={classes.container}>

@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import {
   defaultTextValue,
   defaultBgColorValue,
@@ -7,6 +7,11 @@ import {
   defaultHeightValue,
   defaultWidthValue,
   defaultTextAlignmentValue,
+  defaultFontStyleValue,
+  defaultFontWeightValue,
+  defaultTextColorValue,
+  defaultFontTypefaceValue,
+  getVisibility,
 } from './helpers/commonPropertiesHelper';
 import { shapeValue } from '../../helpers/propertiesHelper';
 import Button from '@material-ui/core/Button';
@@ -34,21 +39,23 @@ export default function DatePicker({ componentName, componentProperties }) {
     button: {
       display: 'flex',
       alignItems: 'center',
-      backgroundColor: `${bgColor}`,
-      fontSize: `${fontSize}`,
+      backgroundColor: bgColor,
+      fontSize: fontSize,
       width: '100%',
-      borderRadius: `${shape}`,
+      borderRadius: shape,
       border: 0,
       whiteSpace: 'nowrap',
       minHeight: '30px',
-      height: `${height}`,
+      height: height,
       textTransform: 'none',
     },
-    select: {
-      backgroundColor: `${bgColor}`,
-      textAlign: `${textAlignment}`,
-      fontSize: `${fontSize}`,
+    span: {
+      textAlign: textAlignment,
       width: '100%',
+      fontStyle: fontStyle,
+      fontWeight: fontWeight,
+      color: textColor,
+      fontFamily: fontTypeface,
     },
   }));
 
@@ -74,6 +81,21 @@ export default function DatePicker({ componentName, componentProperties }) {
   /* Get text alignment of Select component */
   const textAlignment = defaultTextAlignmentValue(componentProperties);
 
+  /* Get font style of Button component */
+  const fontStyle = defaultFontStyleValue(componentProperties);
+
+  /* Get font weight of Button component */
+  const fontWeight = defaultFontWeightValue(componentProperties);
+
+  /* Get text color of Button component */
+  const textColor = defaultTextColorValue(componentProperties);
+
+  /* Get font typeface of Button component */
+  const fontTypeface = defaultFontTypefaceValue(componentProperties);
+
+  /* Get visibility of component */
+  const visible = getVisibility(componentProperties);
+
   /* Get border radius of Button component */
   let shape = '';
   const componentShape = componentProperties.find(
@@ -98,17 +120,28 @@ export default function DatePicker({ componentName, componentProperties }) {
     setOpen(false);
   };
 
+  const CustomButton = withStyles(() => ({
+    root: {
+      backgroundColor: bgColor,
+      '&:hover': {
+        backgroundColor: bgColor,
+      },
+    },
+  }))(Button);
+
   const classes = useStyles();
 
+  let componentClass = visible ? `${classes.div}` : `${classes.invisible}`;
+
   return (
-    <div className={classes.div}>
-      <Button
+    <div className={componentClass}>
+      <CustomButton
         onClick={handleClickOpen}
         id={componentName}
         variant="contained"
         className={classes.button}>
-        {defaultValue}
-      </Button>
+        <span className={classes.span}>{defaultValue}</span>
+      </CustomButton>
       <Dialog open={open} onClose={handleClose} disableScrollLock>
         <DialogContent>
           <form className={classes.container}>
