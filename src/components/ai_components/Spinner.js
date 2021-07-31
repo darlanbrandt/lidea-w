@@ -1,30 +1,35 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-  defaultTextValue,
-  defaultWidthValue,
-  getVisibility,
-} from './helpers/commonPropertiesHelper';
-
 import Select from '@material-ui/core/Select';
+import { getDefaultProperties } from './helpers/commonPropertiesHelper';
 
 export default function Spinner({ componentName, componentProperties }) {
   const [selectedValue, setSelectedValue] = useState('');
+  const properties = getDefaultProperties(componentProperties);
 
+  // Estilização do componente
   const useStyles = makeStyles(() => ({
     div: {
-      minWidth: width,
+      minWidth: properties.width,
     },
   }));
 
-  /*******************************
-   *  Components properties     *
-   *******************************/
+  const classes = useStyles();
 
-  /* Get default text from properties */
-  const defaultValue = defaultTextValue(componentProperties);
+  let componentClass = properties.visible
+    ? `${classes.div}`
+    : `${classes.invisible}`;
 
-  /* Select values for options*/
+  // Retorna as opções do componente
+  let prompt = [];
+  const componentPrompt = componentProperties.find(
+    (prop) => prop.propertyName === 'Prompt'
+  );
+
+  if (componentPrompt !== undefined) {
+    prompt = componentPrompt.propertyValue;
+  }
+
   let options = [];
   const componentContent = componentProperties.find(
     (prop) => prop.propertyName === 'ElementsFromString'
@@ -34,35 +39,25 @@ export default function Spinner({ componentName, componentProperties }) {
     options = componentContent.propertyValue.split(/,/u);
   }
 
-  /* Add default value to options */
+  // Composição do componente
   const optionsList = [
-    <option defaultValue={defaultValue} disabled hidden>
-      {defaultValue}
+    <option key="0" value={prompt} hidden>
+      {prompt}
     </option>,
   ];
 
-  /* Get options from properties */
-  for (let i = 0; i < options.length; i++) {
+  options.forEach((option, index) => {
     optionsList.push(
-      <option key={i + 1} value={options[i]}>
-        {options[i]}
+      <option key={index + 1} value={option}>
+        {option}
       </option>
     );
-  }
+  });
 
-  /* Get width of Spinner component */
-  const width = defaultWidthValue(componentProperties);
-
-  /* Get visibility of component */
-  const visible = getVisibility(componentProperties);
-
+  // Ações realizadas pelo componente
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
   };
-
-  const classes = useStyles();
-
-  let componentClass = visible ? `${classes.div}` : `${classes.invisible}`;
 
   return (
     <div className={componentClass}>
@@ -71,7 +66,6 @@ export default function Spinner({ componentName, componentProperties }) {
         key={componentName}
         value={selectedValue}
         onChange={handleChange}
-        defaultValue={defaultValue}
         id={componentName}>
         {optionsList}
       </Select>

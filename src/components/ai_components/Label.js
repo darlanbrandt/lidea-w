@@ -1,76 +1,29 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-  defaultTextValue,
-  defaultBgColorValue,
-  defaultFontSizeValue,
-  defaultHeightValue,
-  defaultWidthValue,
-  defaultTextAlignmentValue,
-  defaultFontStyleValue,
-  defaultFontWeightValue,
-  defaultTextColorValue,
-  defaultFontTypefaceValue,
-  getVisibility,
-} from './helpers/commonPropertiesHelper';
+import { getDefaultProperties } from './helpers/commonPropertiesHelper';
 
 export default function Label({ componentName, componentProperties }) {
-  /*******************************
-   *  Components properties     *
-   *******************************/
+  const properties = getDefaultProperties(componentProperties);
 
-  /* Get default text from properties */
-  const textValue = defaultTextValue(componentProperties);
-
-  /* Get background color of Label component */
-  const bgColor = defaultBgColorValue(componentProperties);
-
-  /* Get font size of Label component */
-  const fontSize = defaultFontSizeValue(componentProperties);
-
-  /* Get height of Label component */
-  const height = defaultHeightValue(componentProperties);
-
-  /* Get width of Label component */
-  const width = defaultWidthValue(componentProperties);
-
-  /* Get text alignment of Label component */
-  const textAlignment = defaultTextAlignmentValue(componentProperties);
-
-  /* Get font style of Label component */
-  const fontStyle = defaultFontStyleValue(componentProperties);
-
-  /* Get font weight of Label component */
-  const fontWeight = defaultFontWeightValue(componentProperties);
-
-  /* Get text color of Label component */
-  const textColor = defaultTextColorValue(componentProperties);
-
-  /* Get font typeface of Label component */
-  const fontTypeface = defaultFontTypefaceValue(componentProperties);
-
-  /* Get visibility of component */
-  const visible = getVisibility(componentProperties);
-
+  // Estilização do componente
   const useStyles = makeStyles(() => ({
     div: {
-      minWidth: width,
+      minWidth: properties.width,
       position: 'relative',
-      backgroundColor: bgColor,
-      textAlign: textAlignment,
-      minHeight: height,
+      backgroundColor: properties.bgColor,
+      textAlign: properties.textAlignment,
+      minHeight: properties.height,
     },
     span: {
-      textAlign: textAlignment,
+      textAlign: properties.textAlignment,
       width: '100%',
-      fontStyle: fontStyle,
-      fontWeight: fontWeight,
-      color: textColor,
-      width: '100%',
+      fontStyle: properties.fontStyle,
+      fontWeight: properties.fontWeight,
+      color: properties.textColor,
       height: '100%',
-      fontSize: fontSize,
+      fontSize: properties.fontSize,
       whiteSpace: 'nowrap',
-      fontFamily: fontTypeface,
+      fontFamily: properties.fontTypeface,
     },
     invisible: {
       display: 'none',
@@ -79,12 +32,14 @@ export default function Label({ componentName, componentProperties }) {
 
   const classes = useStyles();
 
-  let componentClass = visible ? `${classes.div}` : `${classes.invisible}`;
+  let componentClass = properties.visible
+    ? `${classes.div}`
+    : `${classes.invisible}`;
 
   return (
     <div className={componentClass}>
       <span className={classes.span} id={componentName}>
-        {textValue}
+        {properties.text}
       </span>
     </div>
   );

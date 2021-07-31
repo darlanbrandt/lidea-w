@@ -2,7 +2,7 @@ const getOperation = (commandText) => {
   const start = '(call-yail-primitive ';
   const startOfOperation = '(*list-for-runtime* ';
   const getGlobalVar = '(get-var g';
-  const getScopeVar = '(lexical-value ';
+  const getLocalVar = '(lexical-value ';
   let operation = {};
   let operator = commandText.substring(start.length + 1).split(' ')[0];
 
@@ -13,8 +13,8 @@ const getOperation = (commandText) => {
 
   if (var1Text.startsWith(getGlobalVar)) {
     var1 = var1Text.substring(getGlobalVar.length + 1).split(')')[0];
-  } else if (var1Text.startsWith(getScopeVar)) {
-    var1 = var1Text.substring(getScopeVar.length + 1).split(')')[0];
+  } else if (var1Text.startsWith(getLocalVar)) {
+    var1 = var1Text.substring(getLocalVar.length + 1).split(')')[0];
   } else {
     var1 = var1Text.split(')')[0];
   }
@@ -32,8 +32,8 @@ const getOperation = (commandText) => {
   console.log(var2Text);
   if (var2Text.startsWith(getGlobalVar)) {
     var2 = var2Text.substring(getGlobalVar.length + 1).split(')')[0];
-  } else if (var2Text.startsWith(getScopeVar)) {
-    var2 = var2Text.substring(getScopeVar.length + 1).split(')')[0];
+  } else if (var2Text.startsWith(getLocalVar)) {
+    var2 = var2Text.substring(getLocalVar.length + 1).split(')')[0];
   } else {
     var2 = var2Text.split(')')[0];
   }
