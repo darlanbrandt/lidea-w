@@ -13,7 +13,7 @@ let commandsSetProperty = [];
 
 dict["(set-and-coerce-property! '"] = 'set-property';
 dict['(set-var! g'] = 'set-global-var-value';
-dict['(let ( ('] = 'declare-scope-variable';
+dict['(let ( ('] = 'declare-local-variable';
 
 //(let ( ($y2 (get-var g$y))  )   (forrange $number (begin   (set-lexical! $y2 (call-yail-primitive * (*list-for-runtime* (get-var g$y) (lexical-value $number) ) '(number number ) \"*\"))(set-and-coerce-property! 'L2 'Text (lexical-value $y2) 'text)(set-and-coerce-property! 'HA1 'BackgroundColor -16776961 'number)(set-and-coerce-property! 'VA2 'BackgroundColor -39424 'number)) 1 5 1)
 //"(set-and-coerce-property! 'L1 'Text (get-var g$x) 'text)(set-and-coerce-property! 'TB1 'Text (get-property 'L1 'Text) 'text)(set-and-coerce-property! 'TB1 'BackgroundColor -4144960 'number)(set-var! g$x (call-yail-primitive - (*list-for-runtime* (get-var g$x) 1) '(number number) \"-\")"
@@ -71,13 +71,13 @@ const getBlocksCommands = (commands) => {
               .split(' ')[0];
 
             propertyValue = { globalVariable: varName };
-            /* From a scoped variable */
+            /* From a local variable */
           } else if (varPropertyValue.startsWith(getScopeVarValue)) {
             let varName = varPropertyValue
               .substring(getScopeVarValue.length + 1)
               .split(' ')[0];
 
-            propertyValue = { scopeVariable: varName };
+            propertyValue = { localVariable: varName };
             /* Or plain value */
           } else {
             componentProperty = varPropertyValue.split(" '")[0];
@@ -128,15 +128,15 @@ const getBlocksCommands = (commands) => {
 
           /* Checks if command is Declare Scope Variable Type 
         and returns object with values to be set */
-        } else if (dict[key] === 'declare-scope-variable') {
-          let scopeVariableName = commands
+        } else if (dict[key] === 'declare-local-variable') {
+          let localVariableName = commands
             .substring(i + key.length + 1)
             .split(' ')[0];
           commandInfo = {
             commandType: dict[key],
-            scopeVariableAction: scopeVariableName,
+            localVariableAction: localVariableName,
           };
-          //console.log(scopeVariableName);
+          //console.log(localVariableName);
           //console.log('variável');
         }
         /* Adds all objects parsed from commmand into an array */

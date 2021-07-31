@@ -1,25 +1,12 @@
 import React, { useState } from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import {
-  defaultTextValue,
-  defaultBgColorValue,
-  defaultFontSizeValue,
-  defaultHeightValue,
-  defaultWidthValue,
-  defaultTextAlignmentValue,
-  defaultFontStyleValue,
-  defaultFontWeightValue,
-  defaultTextColorValue,
-  defaultFontTypefaceValue,
-  getVisibility,
-} from './helpers/commonPropertiesHelper';
-import { shapeValue } from '../../helpers/propertiesHelper';
+import { getDefaultProperties } from './helpers/commonPropertiesHelper';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
-import { commandToExecute } from '../../helpers/commandsToExecuteHelper';
+import { handleAction } from './helpers/componentActionHelper';
 
 export default function ListPicker({
   componentName,
@@ -28,7 +15,9 @@ export default function ListPicker({
 }) {
   const [open, setOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState('');
+  const properties = getDefaultProperties(componentProperties);
 
+  // Estilização do componente
   const useStyles = makeStyles((theme) => ({
     div: {
       padding: '1px',
@@ -44,34 +33,42 @@ export default function ListPicker({
     button: {
       display: 'flex',
       alignItems: 'center',
-      backgroundColor: `${bgColor}`,
-      fontSize: `${fontSize}`,
+      backgroundColor: properties.bgColor,
+      fontSize: properties.fontSize,
       width: '100%',
-      borderRadius: `${shape}`,
+      borderRadius: properties.shape,
       border: 0,
       whiteSpace: 'nowrap',
       minHeight: '30px',
-      height: `${height}`,
+      height: properties.height,
       textTransform: 'none',
     },
     span: {
-      textAlign: textAlignment,
+      textAlign: properties.textAlignment,
       width: '100%',
-      fontStyle: fontStyle,
-      fontWeight: fontWeight,
-      color: textColor,
-      fontFamily: fontTypeface,
+      fontStyle: properties.fontStyle,
+      fontWeight: properties.fontWeight,
+      color: properties.textColor,
+      fontFamily: properties.fontTypeface,
     },
   }));
 
-  /*******************************
-   *  Components properties     *
-   *******************************/
+  const CustomButton = withStyles(() => ({
+    root: {
+      backgroundColor: properties.bgColor,
+      '&:hover': {
+        backgroundColor: properties.bgColor,
+      },
+    },
+  }))(Button);
 
-  /* Get default text from properties */
-  const defaultValue = defaultTextValue(componentProperties);
+  const classes = useStyles();
 
-  /* Select values for options*/
+  let componentClass = properties.visible
+    ? `${classes.div}`
+    : `${classes.invisible}`;
+
+  // Retorna as opções do componente
   let options = [];
   const componentContent = componentProperties.find(
     (prop) => prop.propertyName === 'ElementsFromString'
@@ -81,62 +78,17 @@ export default function ListPicker({
     options = componentContent.propertyValue.split(/,/u);
   }
 
-  /* Add default value to options */
-  const optionsList = [
-    <option defaultValue={defaultValue} disabled hidden>
-      {defaultValue}
-    </option>,
-  ];
-
-  /* Get options from properties */
-  for (let i = 0; i < options.length; i++) {
+  // Composição do componente
+  const optionsList = [];
+  options.forEach((option, index) => {
     optionsList.push(
-      <option key={i + 1} value={options[i]}>
-        {options[i]}
+      <option key={index + 1} value={option}>
+        {option}
       </option>
     );
-  }
+  });
 
-  /* Get background color of Select component */
-  const bgColor = defaultBgColorValue(componentProperties);
-
-  /* Get font size of Select component */
-  const fontSize = defaultFontSizeValue(componentProperties);
-
-  /* Get height of Select component */
-  const height = defaultHeightValue(componentProperties);
-
-  /* Get width of Select component */
-  const width = defaultWidthValue(componentProperties);
-
-  /* Get text alignment of Select component */
-  const textAlignment = defaultTextAlignmentValue(componentProperties);
-
-  /* Get font style of Button component */
-  const fontStyle = defaultFontStyleValue(componentProperties);
-
-  /* Get font weight of Button component */
-  const fontWeight = defaultFontWeightValue(componentProperties);
-
-  /* Get text color of Button component */
-  const textColor = defaultTextColorValue(componentProperties);
-
-  /* Get font typeface of Button component */
-  const fontTypeface = defaultFontTypefaceValue(componentProperties);
-
-  /* Get visibility of component */
-  const visible = getVisibility(componentProperties);
-
-  /* Get border radius of Button component */
-  let shape = '';
-  const componentShape = componentProperties.find(
-    (prop) => prop.propertyName === 'Shape'
-  );
-
-  if (componentShape !== undefined) {
-    shape = shapeValue(componentShape.propertyValue);
-  }
-
+  // Blocos
   const commands = blocks.map(({ commands }) => {
     return commands;
   });
@@ -145,17 +97,10 @@ export default function ListPicker({
     return variables;
   });
 
-  function handleListPicker(action) {
-    commands.forEach((command) => {
-      command.forEach((c) => {
-        if (c.commandType === action) {
-          if (c.componentAction === componentName) {
-            commandToExecute(c.commandsToExecute, variables);
-          }
-        }
-      });
-    });
-  }
+  // Ações realizadas pelo componente
+  const handleListPicker = (action) => {
+    handleAction(action, commands, componentName, variables);
+  };
 
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
@@ -170,19 +115,6 @@ export default function ListPicker({
     setOpen(false);
   };
 
-  const CustomButton = withStyles(() => ({
-    root: {
-      backgroundColor: bgColor,
-      '&:hover': {
-        backgroundColor: bgColor,
-      },
-    },
-  }))(Button);
-
-  const classes = useStyles();
-
-  let componentClass = visible ? `${classes.div}` : `${classes.invisible}`;
-
   return (
     <div className={componentClass}>
       <CustomButton
@@ -190,7 +122,7 @@ export default function ListPicker({
         id={componentName}
         variant="contained"
         className={classes.button}>
-        <span className={classes.span}>{defaultValue}</span>
+        <span className={classes.span}>{properties.text}</span>
       </CustomButton>
       <Dialog open={open} onClose={handleClose} disableScrollLock>
         <DialogContent>

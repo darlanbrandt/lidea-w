@@ -1,22 +1,23 @@
-import { convertDecimaltoHexColor } from './commandsHelper';
-/* Receives commands and variables to execute */
+import { convertDecimaltoHexColor } from '../../../helpers/commandsHelper';
+
+// Recebe os comandos e variáveis a serem executados
 const commandToExecute = (commands, variables) => {
   commands.forEach((command) => {
-    /* Checks if command sets properties of components */
+    // Verifica se o comando define propriedade a outro componente
     if (command.commandType === 'set-property') {
       let componentId = '#' + command.componentAction;
       let value = '';
 
-      /* If command property value is an object iterate through object */
+      // Se o valor da propriedade é um objeto, realiza iteração
       if (typeof command.propertyValue === 'object') {
-        /* if property is an object with component value */
+        // Se o valor do objeto vem do valor de um componente
         if ('component' in command.propertyValue) {
           let componentValueId = '#' + command.propertyValue.component;
           value = document.querySelector(componentValueId).innerHTML;
 
-          /* or if it comes from a scope variable */
-        } else if ('scopeVariable' in command.propertyValue) {
-          console.log(command.propertyValue.scopeVariable);
+          // ou se vem de uma variável local
+        } else if ('localVariable' in command.propertyValue) {
+          console.log(command.propertyValue.localVariable);
 
           /* or from a global variable */
         } else if ('globalVariable' in command.propertyValue) {
@@ -44,13 +45,16 @@ const commandToExecute = (commands, variables) => {
         case 'Text':
           document.querySelector(componentId).innerHTML = value;
           document.querySelector(componentId).value = value;
+          break;
+        default:
+          break;
       }
       /* or checks if command sets new value to global variable */
     } else if (command.commandType === 'set-global-var-value') {
       console.log('variavel global');
-      /* or checks if command sets new value to scope variable */
-    } else if (command.commandType === 'declare-scope-variable') {
-      console.log('variável de escopo');
+      /* or checks if command sets new value to local variable */
+    } else if (command.commandType === 'declare-local-variable') {
+      console.log('variável local');
     } else {
       console.log('não identificado');
     }

@@ -1,17 +1,18 @@
 const convertDecimaltoHexColor = (decimal) => {
   let size = 8;
+  let hexadecimal = '';
 
   if (decimal >= 0) {
-    var hexadecimal = decimal.toString(16);
+    hexadecimal = decimal.toString(16);
 
-    while (hexadecimal.length % size != 0) {
+    while (hexadecimal.length % size !== 0) {
       hexadecimal = '' + 0 + hexadecimal;
     }
 
     return hexadecimal;
   } else {
-    var hexadecimal = Math.abs(decimal).toString(16);
-    while (hexadecimal.length % size != 0) {
+    hexadecimal = Math.abs(decimal).toString(16);
+    while (hexadecimal.length % size !== 0) {
       hexadecimal = '' + 0 + hexadecimal;
     }
 

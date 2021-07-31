@@ -1,56 +1,25 @@
 import React, { useState } from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import { Slider as SliderComponent } from '@material-ui/core';
-import {
-  defaultHeightValue,
-  defaultWidthValue,
-  getVisibility,
-} from './helpers/commonPropertiesHelper';
+import { getDefaultProperties } from './helpers/commonPropertiesHelper';
 
-export default function Slider({
-  componentName,
-  componentProperties,
-}) {
-  /*******************************
-   *  Components properties     *
-   *******************************/
+export default function Slider({ componentName, componentProperties }) {
+  const properties = getDefaultProperties(componentProperties);
 
-  /* Get height of TextBox component */
-  const height = defaultHeightValue(componentProperties);
-
-  /* Get width of TextBox component */
-  const width = defaultWidthValue(componentProperties);
-
-  /* Get values of component */
-  let minValue = '';
-  const componentMinValue = componentProperties.find(
-    (prop) => prop.propertyName === 'MinValue'
-  );
-
-  if (componentMinValue !== undefined) {
-    minValue = Number(componentMinValue.propertyValue);
-  }
-
-  let maxValue = '';
-  const componentMaxValue = componentProperties.find(
-    (prop) => prop.propertyName === 'MaxValue'
-  );
-
-  if (componentMaxValue !== undefined) {
-    maxValue = Number(componentMaxValue.propertyValue);
-  }
-
-  /* Get initial value of component */
-  let initialValue = '';
-  const componentInitialValue = componentProperties.find(
-    (prop) => prop.propertyName === 'ThumbPosition'
-  );
-
-  if (componentInitialValue !== undefined) {
-    initialValue = Number(componentInitialValue.propertyValue);
-  }
-
-  /* Get colors of component */
+  // Estilização do componente
+  const useStyles = makeStyles(() => ({
+    div: {
+      minHeight: properties.height,
+      minWidth: properties.width,
+      position: 'relative',
+      textAlign: 'center',
+    },
+    slider: {
+      display: 'none',
+    },
+  }));
+  
+  // Retorna as cores do componente
   let colorLeft = '#ffc800';
   const componentColorLeft = componentProperties.find(
     (prop) => prop.propertyName === 'ColorLeft'
@@ -58,7 +27,7 @@ export default function Slider({
 
   if (componentColorLeft !== undefined) {
     colorLeft = componentColorLeft.propertyValue.replace('#xFF', '#');
-  } 
+  }
 
   let colorRight = '#888';
   const componentColorRight = componentProperties.find(
@@ -67,10 +36,7 @@ export default function Slider({
 
   if (componentColorRight !== undefined) {
     colorRight = componentColorRight.propertyValue.replace('#xFF', '#');
-  } 
-
-  /* Get visibility of component */
-  const visible = getVisibility(componentProperties);
+  }
 
   const CustomSlider = withStyles({
     root: {
@@ -98,49 +64,73 @@ export default function Slider({
     },
   })(SliderComponent);
 
-  const [value, setValue] = useState(initialValue);
-
-  const useStyles = makeStyles(() => ({
-    div: {
-      minHeight: height,
-      minWidth: width,
-      position: 'relative',
-      textAlign: 'center',
-    },
-    slider: {
-      display: 'none',
-    },
-  }));
   const classes = useStyles();
 
-  let sliderValue = '';
+  let componentClass = properties.visible
+    ? `${classes.div}`
+    : `${classes.invisible}`;
 
-  const setSliderValue = (event, val) => {
-    sliderValue = val;
+
+  // Retorna a posição inicial do componente
+  let initialPosition = '';
+  const componentInitialPosition = componentProperties.find(
+    (prop) => prop.propertyName === 'ThumbPosition'
+  );
+
+  if (componentInitialPosition !== undefined) {
+    initialPosition = Number(componentInitialPosition.propertyValue);
+  }
+
+  const [position, setPosition] = useState(initialPosition);
+
+  // Retorna os valores do componente
+  let minValue = '';
+  const componentMinValue = componentProperties.find(
+    (prop) => prop.propertyName === 'MinValue'
+  );
+
+  if (componentMinValue !== undefined) {
+    minValue = Number(componentMinValue.propertyValue);
+  }
+
+  let maxValue = '';
+  const componentMaxValue = componentProperties.find(
+    (prop) => prop.propertyName === 'MaxValue'
+  );
+
+  if (componentMaxValue !== undefined) {
+    maxValue = Number(componentMaxValue.propertyValue);
+  }
+
+  // Ações do componente
+  let sliderPosition = '';
+  const setSliderPosition = (event, val) => {
+    sliderPosition = val;
   };
 
   const handleChange = () => {
-    setValue(sliderValue);
+    setPosition(sliderPosition);
   };
 
-  function convertToNumber(sliderValue) {
-    return Number(sliderValue);
+  function convertToNumber(sliderPosition) {
+    return Number(sliderPosition);
   }
-
-  let componentClass = visible ? `${classes.div}` : `${classes.invisible}`;
 
   return (
     <div className={componentClass}>
       <CustomSlider
-        defaultValue={value}
-        onChange={setSliderValue}
+        defaultValue={position}
+        onChange={setSliderPosition}
         onChangeCommitted={handleChange}
         min={minValue}
         max={maxValue}
         style={{ width: '95%' }}
       />
-      <span id={componentName} value={sliderValue} className={classes.slider}>
-        {convertToNumber(value)}
+      <span
+        id={componentName}
+        value={sliderPosition}
+        className={classes.slider}>
+        {convertToNumber(position)}
       </span>
     </div>
   );

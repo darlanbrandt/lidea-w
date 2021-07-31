@@ -1,19 +1,6 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import {
-  defaultTextValue,
-  defaultBgColorValue,
-  defaultFontSizeValue,
-  defaultHeightValue,
-  defaultWidthValue,
-  defaultTextAlignmentValue,
-  defaultFontStyleValue,
-  defaultFontWeightValue,
-  defaultTextColorValue,
-  defaultFontTypefaceValue,
-  getVisibility,
-} from './helpers/commonPropertiesHelper';
-import { shapeValue } from '../../helpers/propertiesHelper';
+import { getDefaultProperties } from './helpers/commonPropertiesHelper';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -22,7 +9,9 @@ import FormControl from '@material-ui/core/FormControl';
 export default function TimePicker({ componentName, componentProperties }) {
   const [open, setOpen] = useState(false);
   const [selectedTime, setSelectedTime] = useState('');
+  const properties = getDefaultProperties(componentProperties);
 
+  // Estilização do componente
   const useStyles = makeStyles(() => ({
     div: {
       padding: '1px',
@@ -39,73 +28,42 @@ export default function TimePicker({ componentName, componentProperties }) {
     button: {
       display: 'flex',
       alignItems: 'center',
-      backgroundColor: bgColor,
-      fontSize: fontSize,
+      backgroundColor: properties.bgColor,
+      fontSize: properties.fontSize,
       width: '100%',
-      borderRadius: shape,
+      borderRadius: properties.shape,
       border: 0,
       whiteSpace: 'nowrap',
       minHeight: '30px',
-      height: height,
+      height: properties.height,
       textTransform: 'none',
     },
     span: {
-      textAlign: textAlignment,
+      textAlign: properties.textAlignment,
       width: '100%',
-      fontStyle: fontStyle,
-      fontWeight: fontWeight,
-      color: textColor,
-      fontFamily: fontTypeface,
+      fontStyle: properties.fontStyle,
+      fontWeight: properties.fontWeight,
+      color: properties.textColor,
+      fontFamily: properties.fontTypeface,
     },
   }));
 
-  /*******************************
-   *  Components properties     *
-   *******************************/
+  const CustomButton = withStyles(() => ({
+    root: {
+      backgroundColor: properties.bgColor,
+      '&:hover': {
+        backgroundColor: properties.bgColor,
+      },
+    },
+  }))(Button);
 
-  /* Get default text from properties */
-  const defaultValue = defaultTextValue(componentProperties);
+  const classes = useStyles();
 
-  /* Get background color of Select component */
-  const bgColor = defaultBgColorValue(componentProperties);
+  let componentClass = properties.visible
+    ? `${classes.div}`
+    : `${classes.invisible}`;
 
-  /* Get font size of Select component */
-  const fontSize = defaultFontSizeValue(componentProperties);
-
-  /* Get height of Select component */
-  const height = defaultHeightValue(componentProperties);
-
-  /* Get width of Select component */
-  const width = defaultWidthValue(componentProperties);
-
-  /* Get text alignment of Select component */
-  const textAlignment = defaultTextAlignmentValue(componentProperties);
-
-  /* Get font style of Button component */
-  const fontStyle = defaultFontStyleValue(componentProperties);
-
-  /* Get font weight of Button component */
-  const fontWeight = defaultFontWeightValue(componentProperties);
-
-  /* Get text color of Button component */
-  const textColor = defaultTextColorValue(componentProperties);
-
-  /* Get font typeface of Button component */
-  const fontTypeface = defaultFontTypefaceValue(componentProperties);
-
-  /* Get visibility of component */
-  const visible = getVisibility(componentProperties);
-
-  /* Get border radius of Button component */
-  let shape = '';
-  const componentShape = componentProperties.find(
-    (prop) => prop.propertyName === 'Shape'
-  );
-
-  if (componentShape !== undefined) {
-    shape = shapeValue(componentShape.propertyValue);
-  }
-
+  // Ações realizadas no componente
   const handleChange = (event) => {
     //alert(event.target.value);
     setSelectedTime(event.target.value);
@@ -120,19 +78,6 @@ export default function TimePicker({ componentName, componentProperties }) {
     setOpen(false);
   };
 
-  const CustomButton = withStyles(() => ({
-    root: {
-      backgroundColor: bgColor,
-      '&:hover': {
-        backgroundColor: bgColor,
-      },
-    },
-  }))(Button);
-
-  const classes = useStyles();
-
-  let componentClass = visible ? `${classes.div}` : `${classes.invisible}`;
-
   return (
     <div className={componentClass}>
       <CustomButton
@@ -140,7 +85,7 @@ export default function TimePicker({ componentName, componentProperties }) {
         id={componentName}
         variant="contained"
         className={classes.button}>
-        <span className={classes.span}>{defaultValue}</span>
+        <span className={classes.span}>{properties.text}</span>
       </CustomButton>
       <Dialog open={open} onClose={handleClose} disableScrollLock>
         <DialogContent>

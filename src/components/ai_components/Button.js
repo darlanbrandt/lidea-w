@@ -1,23 +1,13 @@
 import React from 'react';
 import { Button as ButtonComponent } from '@material-ui/core';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import { shapeValue } from '../../helpers/propertiesHelper';
-import {
-  defaultTextValue,
-  defaultBgColorValue,
-  defaultFontSizeValue,
-  defaultHeightValue,
-  defaultWidthValue,
-  defaultTextAlignmentValue,
-  defaultFontStyleValue,
-  defaultFontWeightValue,
-  defaultTextColorValue,
-  defaultFontTypefaceValue,
-  getVisibility,
-} from './helpers/commonPropertiesHelper';
-import { commandToExecute } from '../../helpers/commandsToExecuteHelper';
+import { getDefaultProperties } from './helpers/commonPropertiesHelper';
+import { handleAction } from './helpers/componentActionHelper';
 
 export default function Button({ componentName, componentProperties, blocks }) {
+  const properties = getDefaultProperties(componentProperties);
+
+  // Estilização do componente
   const useStyles = makeStyles(() => ({
     div: {
       padding: '1px',
@@ -25,76 +15,45 @@ export default function Button({ componentName, componentProperties, blocks }) {
     button: {
       display: 'flex',
       alignItems: 'center',
-      backgroundColor: bgColor,
-      fontSize: fontSize,
+      backgroundColor: properties.bgColor,
+      fontSize: properties.fontSize,
       width: '100%',
-      borderRadius: shape,
+      borderRadius: properties.shape,
       border: 0,
       whiteSpace: 'nowrap',
       minHeight: '30px',
-      height: height,
+      height: properties.height,
       textTransform: 'none',
     },
     span: {
-      textAlign: textAlignment,
+      textAlign: properties.textAlignment,
       width: '100%',
-      fontStyle: fontStyle,
-      fontWeight: fontWeight,
-      color: textColor,
-      fontFamily: fontTypeface,
+      fontStyle: properties.fontStyle,
+      fontWeight: properties.fontWeight,
+      color: properties.textColor,
+      fontFamily: properties.fontTypeface,
     },
     invisible: {
       display: 'none',
     },
   }));
 
-  /*******************************
-   *  Components properties     *
-   *******************************/
+  const CustomButton = withStyles(() => ({
+    root: {
+      backgroundColor: properties.bgColor,
+      '&:hover': {
+        backgroundColor: properties.bgColor,
+      },
+    },
+  }))(ButtonComponent);
 
-  /* Get default text from properties */
-  const textValue = defaultTextValue(componentProperties);
+  const classes = useStyles();
 
-  /* Get background color of Button component */
-  const bgColor = defaultBgColorValue(componentProperties);
+  let componentClass = properties.visible
+    ? `${classes.div}`
+    : `${classes.invisible}`;
 
-  /* Get font size of Button component */
-  const fontSize = defaultFontSizeValue(componentProperties);
-
-  /* Get height of Button component */
-  const height = defaultHeightValue(componentProperties);
-
-  /* Get width of Button component */
-  const width = defaultWidthValue(componentProperties);
-
-  /* Get text alignment of Button component */
-  const textAlignment = defaultTextAlignmentValue(componentProperties);
-
-  /* Get font style of Button component */
-  const fontStyle = defaultFontStyleValue(componentProperties);
-
-  /* Get font weight of Button component */
-  const fontWeight = defaultFontWeightValue(componentProperties);
-
-  /* Get text color of Button component */
-  const textColor = defaultTextColorValue(componentProperties);
-
-  /* Get font typeface of Button component */
-  const fontTypeface = defaultFontTypefaceValue(componentProperties);
-
-  /* Get visibility of component */
-  const visible = getVisibility(componentProperties);
-
-  /* Get border radius of Button component */
-  let shape = '';
-  const componentShape = componentProperties.find(
-    (prop) => prop.propertyName === 'Shape'
-  );
-
-  if (componentShape !== undefined) {
-    shape = shapeValue(componentShape.propertyValue);
-  }
-
+  // Blocos
   const commands = blocks.map(({ commands }) => {
     return commands;
   });
@@ -103,30 +62,10 @@ export default function Button({ componentName, componentProperties, blocks }) {
     return variables;
   });
 
-  function handleButton(action) {
-    commands.forEach((command) => {
-      command.forEach((c) => {
-        if (c.commandType === action) {
-          if (c.componentAction === componentName) {
-            commandToExecute(c.commandsToExecute, variables);
-          }
-        }
-      });
-    });
-  }
-
-  const CustomButton = withStyles(() => ({
-    root: {
-      backgroundColor: bgColor,
-      '&:hover': {
-        backgroundColor: bgColor,
-      },
-    },
-  }))(ButtonComponent);
-
-  const classes = useStyles();
-
-  let componentClass = visible ? `${classes.div}` : `${classes.invisible}`;
+  // Ações realizadas pelo componente
+  const handleButton = (action) => {
+    handleAction(action, commands, componentName, variables);
+  };
 
   return (
     <div className={componentClass}>
@@ -137,7 +76,7 @@ export default function Button({ componentName, componentProperties, blocks }) {
         id={componentName}
         variant="contained"
         className={classes.button}>
-        <span className={classes.span}>{textValue}</span>
+        <span className={classes.span}>{properties.text}</span>
       </CustomButton>
     </div>
   );

@@ -5,9 +5,10 @@ import {
   fontSizeValue,
   textAlignmentValue,
   fontTypefaceValue,
+  shapeValue,
 } from '../../../helpers/propertiesHelper';
 
-/* Get default value from properties */
+// Retorna o texto do componente
 const defaultTextValue = (componentProperties) => {
   let textValue = <>&nbsp;</>;
 
@@ -15,21 +16,32 @@ const defaultTextValue = (componentProperties) => {
     (prop) => prop.propertyName === 'Text'
   );
 
-  const componentHintValue = componentProperties.find(
-    (prop) => prop.propertyName === 'Hint'
-  );
-
   if (componentTextValue !== undefined) {
     textValue = componentTextValue.propertyValue;
-  } else if (componentHintValue !== undefined) {
-    textValue = componentHintValue.propertyValue;
   } else {
     textValue = '';
   }
   return textValue;
 };
 
-/* Get background color component */
+// Retorna o valor do placeholder do componente
+const defaultHintValue = (componentProperties) => {
+  let hintValue = <>&nbsp;</>;
+
+  const componentHintValue = componentProperties.find(
+    (prop) => prop.propertyName === 'Hint'
+  );
+
+  if (componentHintValue !== undefined) {
+    hintValue = componentHintValue.propertyValue;
+  } else {
+    hintValue = '';
+  }
+
+  return hintValue;
+};
+
+// Retorna a cor de fundo do componente
 const defaultBgColorValue = (componentProperties) => {
   let bgColor = '';
   const componentBgColor = componentProperties.find(
@@ -42,7 +54,22 @@ const defaultBgColorValue = (componentProperties) => {
   return bgColor;
 };
 
-/* Get font size of component */
+// Retorna o estado habilitado/desabilitado do componente
+const defaultEnablementValue = (componentProperties) => {
+  let enabled = '';
+  const componentEnabled = componentProperties.find(
+    (prop) => prop.propertyName === 'Enabled'
+  );
+
+  if (componentEnabled !== undefined) {
+    if (componentEnabled.propertyValue === '#f') {
+      enabled = false;
+    }
+  }
+  return enabled;
+};
+
+// Retorna o tamanho da fonte do texto
 const defaultFontSizeValue = (componentProperties) => {
   let fontSize = '14px';
   const componentFontSize = componentProperties.find(
@@ -55,7 +82,7 @@ const defaultFontSizeValue = (componentProperties) => {
   return fontSize;
 };
 
-/* Get font style */
+// Retorna se a fonte é Itálico
 const defaultFontStyleValue = (componentProperties) => {
   let fontStyle = 'none';
   const componentFontSize = componentProperties.find(
@@ -70,7 +97,7 @@ const defaultFontStyleValue = (componentProperties) => {
   return fontStyle;
 };
 
-/* Get font weight */
+// Retorna se a fonte é Negrito
 const defaultFontWeightValue = (componentProperties) => {
   let fontWeight = 'normal';
   const componentFontWeight = componentProperties.find(
@@ -85,7 +112,7 @@ const defaultFontWeightValue = (componentProperties) => {
   return fontWeight;
 };
 
-/* Get font typeface */
+// Retorna o estilo da fonte (serif/sans-serif/monospace)
 const defaultFontTypefaceValue = (componentProperties) => {
   let fontTypeface = 'Roboto';
   const componentFontTypeface = componentProperties.find(
@@ -98,7 +125,7 @@ const defaultFontTypefaceValue = (componentProperties) => {
   return fontTypeface;
 };
 
-/* Get text color component */
+// Retorna a cor do texto
 const defaultTextColorValue = (componentProperties) => {
   let textColor = 'black';
   const componentTextColor = componentProperties.find(
@@ -111,7 +138,7 @@ const defaultTextColorValue = (componentProperties) => {
   return textColor;
 };
 
-/* Get height of component */
+// Retorna a altura do componente
 const defaultHeightValue = (componentProperties) => {
   let height = defaultFontSizeValue(componentProperties);
   const componentHeight = componentProperties.find(
@@ -124,7 +151,7 @@ const defaultHeightValue = (componentProperties) => {
   return height;
 };
 
-/* Get width of Button component */
+// Retorna a largura do componente
 const defaultWidthValue = (componentProperties) => {
   let width = '25%';
   const componentWidth = componentProperties.find(
@@ -138,7 +165,7 @@ const defaultWidthValue = (componentProperties) => {
   return width;
 };
 
-/* Get text alignment of component */
+// Retorna o alinhamento do texto do componente
 const defaultTextAlignmentValue = (componentProperties) => {
   let textAlignment = '';
   const componentTextAlignment = componentProperties.find(
@@ -151,7 +178,22 @@ const defaultTextAlignmentValue = (componentProperties) => {
   return textAlignment;
 };
 
-/* Get horizontal alignment of VerticalArrangement */
+// Retorna a visibilidade do componente
+const defaultVisibility = (componentProperties) => {
+  let visible = true;
+  const componentVisible = componentProperties.find(
+    (prop) => prop.propertyName === 'Visible'
+  );
+
+  if (componentVisible !== undefined) {
+    if (componentVisible.propertyValue === '#f') {
+      visible = false;
+    }
+  }
+  return visible;
+};
+
+// Retorna o alinhamento horizontal
 const defaultAlignHorizontalValue = (componentProperties) => {
   let alignHorizontal = '';
   const componentAlignHorizontal = componentProperties.find(
@@ -166,7 +208,7 @@ const defaultAlignHorizontalValue = (componentProperties) => {
   return alignHorizontal;
 };
 
-/* Get vertical alignment of VerticalArrangement */
+// Retorna o alinhamento vertical
 const defaultAlignVerticalValue = (componentProperties) => {
   let alignVertical = '';
   const componentAlignVertical = componentProperties.find(
@@ -179,33 +221,41 @@ const defaultAlignVerticalValue = (componentProperties) => {
   return alignVertical;
 };
 
-/* Get visibility of component */
-const getVisibility = (componentProperties) => {
-  let visible = true;
-  const componentVisible = componentProperties.find(
-    (prop) => prop.propertyName === 'Visible'
+// Retorna o formato do botão
+const defaultShapeValue = (componentProperties) => {
+  let shape = '';
+  const componentShape = componentProperties.find(
+    (prop) => prop.propertyName === 'Shape'
   );
 
-  if (componentVisible !== undefined) {
-    if (componentVisible.propertyValue === '#f') {
-      visible = false;
-    }
+  if (componentShape !== undefined) {
+    shape = shapeValue(componentShape.propertyValue);
   }
-  return visible;
+
+  return shape;
 };
 
-export {
-  defaultTextValue,
-  defaultBgColorValue,
-  defaultFontSizeValue,
-  defaultHeightValue,
-  defaultWidthValue,
-  defaultTextAlignmentValue,
-  defaultAlignHorizontalValue,
-  defaultAlignVerticalValue,
-  defaultFontStyleValue,
-  defaultFontWeightValue,
-  defaultTextColorValue,
-  defaultFontTypefaceValue,
-  getVisibility,
+const getDefaultProperties = (componentProperties) => {
+  const defaultProperties = {
+    bgColor: defaultBgColorValue(componentProperties),
+    enabled: defaultEnablementValue(componentProperties),
+    fontWeight: defaultFontWeightValue(componentProperties),
+    fontStyle: defaultFontStyleValue(componentProperties),
+    fontSize: defaultFontSizeValue(componentProperties),
+    fontTypeface: defaultFontTypefaceValue(componentProperties),
+    height: defaultHeightValue(componentProperties),
+    width: defaultWidthValue(componentProperties),
+    hint: defaultHintValue(componentProperties),
+    text: defaultTextValue(componentProperties),
+    textAlignment: defaultTextAlignmentValue(componentProperties),
+    textColor: defaultTextColorValue(componentProperties),
+    visible: defaultVisibility(componentProperties),
+    alignHorizontal: defaultAlignHorizontalValue(componentProperties),
+    alignVertical: defaultAlignVerticalValue(componentProperties),
+    shape: defaultShapeValue(componentProperties),
+  };
+
+  return defaultProperties;
 };
+
+export { getDefaultProperties };

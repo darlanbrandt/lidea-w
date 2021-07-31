@@ -1,69 +1,31 @@
 import React, { useState } from 'react';
 import { Switch as SwitchComponent } from '@material-ui/core';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-
-import {
-  defaultTextValue,
-  defaultBgColorValue,
-  defaultFontSizeValue,
-  defaultHeightValue,
-  defaultWidthValue,
-  defaultTextAlignmentValue,
-  defaultFontStyleValue,
-  defaultFontWeightValue,
-  defaultTextColorValue,
-  defaultFontTypefaceValue,
-  getVisibility,
-} from './helpers/commonPropertiesHelper';
+import { getDefaultProperties } from './helpers/commonPropertiesHelper';
 
 export default function Switch({ componentName, componentProperties }) {
-  /*******************************
-   *  Components properties     *
-   *******************************/
+  const properties = getDefaultProperties(componentProperties);
 
-  /* Get default text from properties */
-  const textValue = defaultTextValue(componentProperties);
+  // Estilização do componente 
+  const useStyles = makeStyles(() => ({
+    div: {
+      minHeight: properties.height,
+      minWidth: properties.width,
+      position: 'relative',
+      textAlign: properties.textAlignment,
+    },
+    span: {
+      textAlign: properties.textAlignment,
+      width: '100%',
+      fontSize: properties.fontSize,
+      fontStyle: properties.fontStyle,
+      fontWeight: properties.fontWeight,
+      color: properties.textColor,
+      fontFamily: properties.fontTypeface,
+    },
+  }));
 
-  /* Get background color of Switch component */
-  const bgColor = defaultBgColorValue(componentProperties);
-
-  /* Get font size of Switch component */
-  const fontSize = defaultFontSizeValue(componentProperties);
-
-  /* Get height of Switch component */
-  const height = defaultHeightValue(componentProperties);
-
-  /* Get width of Switch component */
-  const width = defaultWidthValue(componentProperties);
-
-  /* Get text alignment of Switch component */
-  const textAlignment = defaultTextAlignmentValue(componentProperties);
-
-  /* Get font style of Switch component */
-  const fontStyle = defaultFontStyleValue(componentProperties);
-
-  /* Get font weight of Switch component */
-  const fontWeight = defaultFontWeightValue(componentProperties);
-
-  /* Get text color of Switch component */
-  const textColor = defaultTextColorValue(componentProperties);
-
-  /* Get font typeface of Switch component */
-  const fontTypeface = defaultFontTypefaceValue(componentProperties);
-
-  /* Get initial state of element */
-  let isOn = '';
-  const componentIsOn = componentProperties.find(
-    (prop) => prop.propertyName === 'On'
-  );
-
-  if (componentIsOn !== undefined) {
-    if (componentIsOn.propertyValue === '#t') {
-      isOn = true;
-    }
-  }
-
-  /* Get colors of component */
+  // Retorna as cores do componente
   let thumbColorActive = 'white';
   const componentThumbColorActive = componentProperties.find(
     (prop) => prop.propertyName === 'ThumbColorActive'
@@ -112,11 +74,6 @@ export default function Switch({ componentName, componentProperties }) {
     );
   }
 
-  /* Get visibility of component */
-  const visible = getVisibility(componentProperties);
-
-  const [state, setState] = useState(isOn);
-
   const CustomSwitch = withStyles({
     switchBase: {
       color: thumbColorInactive,
@@ -132,35 +89,36 @@ export default function Switch({ componentName, componentProperties }) {
     track: { backgroundColor: trackColorInactive, opacity: 1 },
   })(SwitchComponent);
 
-  const useStyles = makeStyles(() => ({
-    div: {
-      minHeight: height,
-      minWidth: width,
-      position: 'relative',
-      textAlign: textAlignment,
-    },
-    span: {
-      textAlign: textAlignment,
-      width: '100%',
-      fontSize: fontSize,
-      fontStyle: fontStyle,
-      fontWeight: fontWeight,
-      color: textColor,
-      fontFamily: fontTypeface,
-    },
-  }));
-
   const classes = useStyles();
 
+  let componentClass = properties.visible
+    ? `${classes.div}`
+    : `${classes.invisible}`;
+
+
+  // Retorna o estado inicial do componente
+  let isOn = '';
+  const componentIsOn = componentProperties.find(
+    (prop) => prop.propertyName === 'On'
+  );
+
+  if (componentIsOn !== undefined) {
+    if (componentIsOn.propertyValue === '#t') {
+      isOn = true;
+    }
+  }
+
+  const [state, setState] = useState(isOn);
+
+  // Ações do componente
   const handleChange = (event) => {
     setState(event.target.checked);
   };
 
-  let componentClass = visible ? `${classes.div}` : `${classes.invisible}`;
-
+  
   return (
     <div className={componentClass}>
-      <span className={classes.span}>{textValue}</span>
+      <span className={classes.span}>{properties.text}</span>
       <CustomSwitch
         checked={state}
         onChange={handleChange}

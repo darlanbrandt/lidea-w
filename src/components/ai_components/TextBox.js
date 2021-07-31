@@ -1,89 +1,53 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-  defaultTextValue,
-  defaultBgColorValue,
-  defaultFontSizeValue,
-  defaultHeightValue,
-  defaultWidthValue,
-  defaultTextAlignmentValue,
-  defaultFontStyleValue,
-  defaultFontWeightValue,
-  defaultTextColorValue,
-  defaultFontTypefaceValue,
-  getVisibility,
-} from './helpers/commonPropertiesHelper';
-import { commandToExecute } from '../../helpers/commandsToExecuteHelper';
+import { getDefaultProperties } from './helpers/commonPropertiesHelper';
+import { handleAction } from './helpers/componentActionHelper';
 
 export default function TextBox({
   componentName,
   componentProperties,
   blocks,
 }) {
-  /*******************************
-   *  Components properties     *
-   *******************************/
+  const properties = getDefaultProperties(componentProperties);
 
-  /* Get default text from properties */
-  const textValue = defaultTextValue(componentProperties);
-
-  /* Get background color of TextBox component */
-  const bgColor = defaultBgColorValue(componentProperties);
-
-  /* Get font size of TextBox component */
-  const fontSize = defaultFontSizeValue(componentProperties);
-
-  /* Get height of TextBox component */
-  const height = defaultHeightValue(componentProperties);
-
-  /* Get width of TextBox component */
-  const width = defaultWidthValue(componentProperties);
-
-  /* Get text alignment of TextBox component */
-  const textAlignment = defaultTextAlignmentValue(componentProperties);
-
-  /* Get font style of TextBox component */
-  const fontStyle = defaultFontStyleValue(componentProperties);
-
-  /* Get font weight of TextBox component */
-  const fontWeight = defaultFontWeightValue(componentProperties);
-
-  /* Get text color of TextBox component */
-  const textColor = defaultTextColorValue(componentProperties);
-
-  /* Get font typeface of TextBox component */
-  const fontTypeface = defaultFontTypefaceValue(componentProperties);
-
-  /* Get visibility of component */
-  const visible = getVisibility(componentProperties);
-
-  /* Get type of TextBox component */
-  const componentInputType = componentProperties.find(
-    (prop) => prop.propertyName === 'MultiLine'
-  );
-
+  // Estilização do componente
   const useStyles = makeStyles(() => ({
     div: {
-      minHeight: height,
-      minWidth: width,
+      minHeight: properties.height,
+      minWidth: properties.width,
       position: 'relative',
     },
     text: {
-      textAlign: textAlignment,
-      height: height,
-      fontSize: fontSize,
-      fontFamily: 'Roboto',
+      textAlign: properties.textAlignment,
+      height: properties.height,
+      fontSize: properties.fontSize,
       width: '100%',
-      fontStyle: fontStyle,
-      fontWeight: fontWeight,
-      color: textColor,
-      backgroundColor: bgColor,
-      fontFamily: fontTypeface,
+      fontStyle: properties.fontStyle,
+      fontWeight: properties.fontWeight,
+      color: properties.textColor,
+      backgroundColor: properties.bgColor,
+      fontFamily: properties.fontTypeface,
+      padding: '2px',
     },
   }));
 
   const classes = useStyles();
 
+  let componentClass = properties.visible
+    ? `${classes.div}`
+    : `${classes.invisible}`;
+
+  // Retorna tipo do campo de texto
+  const componentInputType = componentProperties.find(
+    (prop) => prop.propertyName === 'MultiLine'
+  );
+
+  let multiline = false;
+  if (componentInputType === '#t') {
+    multiline = true;
+  }
+
+  // Blocos
   const commands = blocks.map(({ commands }) => {
     return commands;
   });
@@ -92,20 +56,12 @@ export default function TextBox({
     return variables;
   });
 
+  // Ações realizadas no componente
   function handleTextBox(action) {
-    commands.forEach((command) => {
-      command.forEach((c) => {
-        if (c.commandType === action) {
-          if (c.componentAction === componentName) {
-            commandToExecute(c.commandsToExecute, variables);
-          }
-        }
-      });
-    });
+    handleAction(action, commands, componentName, variables);
   }
-  let componentClass = visible ? `${classes.div}` : `${classes.invisible}`;
 
-  if (componentInputType === '#t') {
+  if (multiline) {
     return (
       <div className={componentClass}>
         <textarea
@@ -114,7 +70,8 @@ export default function TextBox({
           onMouseLeave={() => handleTextBox('LostFocus')}
           onMouseDown={() => handleTextBox('TouchDown')}
           onMouseUp={() => handleTextBox('TouchUp')}
-          placeholder={textValue}
+          placeholder={properties.hint}
+          defaultValue={properties.text}
           className={classes.text}></textarea>
       </div>
     );
@@ -126,7 +83,8 @@ export default function TextBox({
           id={componentName}
           onMouseEnter={() => handleTextBox('GotFocus')}
           onMouseLeave={() => handleTextBox('LostFocus')}
-          placeholder={textValue}
+          placeholder={properties.hint}
+          defaultValue={properties.text}
           className={classes.text}></input>
       </div>
     );
