@@ -7,7 +7,8 @@
  * Utiliza MaterialUI para estilização.                                     *
  ****************************************************************************/
 
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import ContentContext from '../../context/ContentContext';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { getDefaultProperties } from './helpers/commonPropertiesHelper';
 import Button from '@material-ui/core/Button';
@@ -16,6 +17,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import FormControl from '@material-ui/core/FormControl';
 
 export default function TimePicker({ componentName, componentProperties }) {
+  const { blocks } = useContext(ContentContext);
   const [open, setOpen] = useState(false);
   const [selectedTime, setSelectedTime] = useState('');
   const properties = getDefaultProperties(componentProperties);

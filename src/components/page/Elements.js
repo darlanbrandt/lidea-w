@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import ContentContext from '../../context/ContentContext';
 import Button from '../ai_components/Button';
 import CheckBox from '../ai_components/CheckBox';
 import Label from '../ai_components/Label';
@@ -20,7 +21,8 @@ import TimePicker from '../ai_components/TimePicker';
  * propriedades e demais dados.                                             *
  ****************************************************************************/
 
-export default function Elements({ components, blocks }) {
+export default function Elements() {
+  const { components } = useContext(ContentContext);
   console.log(components);
   let reactComponent = [];
 
@@ -95,7 +97,6 @@ export default function Elements({ components, blocks }) {
             key={componentName}
             componentName={componentName}
             componentProperties={componentProperties(componentName)}
-            blocks={blocks}
           />
         );
         break;
@@ -105,7 +106,6 @@ export default function Elements({ components, blocks }) {
             key={componentName}
             componentName={componentName}
             componentProperties={componentProperties(componentName)}
-            blocks={blocks}
           />
         );
 
@@ -116,7 +116,6 @@ export default function Elements({ components, blocks }) {
             key={componentName}
             componentName={componentName}
             componentProperties={componentProperties(componentName)}
-            blocks={blocks}
           />
         );
 
@@ -137,7 +136,6 @@ export default function Elements({ components, blocks }) {
             key={componentName}
             componentName={componentName}
             componentProperties={componentProperties(componentName)}
-            blocks={blocks}
           />
         );
 
@@ -148,7 +146,6 @@ export default function Elements({ components, blocks }) {
             key={componentName}
             componentName={componentName}
             componentProperties={componentProperties(componentName)}
-            blocks={blocks}
           />
         );
 
@@ -159,7 +156,6 @@ export default function Elements({ components, blocks }) {
             key={componentName}
             componentName={componentName}
             componentProperties={componentProperties(componentName)}
-            blocks={blocks}
           />
         );
 
@@ -170,7 +166,6 @@ export default function Elements({ components, blocks }) {
             key={componentName}
             componentName={componentName}
             componentProperties={componentProperties(componentName)}
-            blocks={blocks}
           />
         );
 
@@ -182,7 +177,6 @@ export default function Elements({ components, blocks }) {
             key={componentName}
             componentName={componentName}
             componentProperties={componentProperties(componentName)}
-            blocks={blocks}
           />
         );
 
@@ -193,7 +187,6 @@ export default function Elements({ components, blocks }) {
             key={componentName}
             componentName={componentName}
             componentProperties={componentProperties(componentName)}
-            blocks={blocks}
           />
         );
 
@@ -204,7 +197,6 @@ export default function Elements({ components, blocks }) {
             key={componentName}
             componentName={componentName}
             componentProperties={componentProperties(componentName)}
-            blocks={blocks}
           />
         );
 
@@ -215,7 +207,6 @@ export default function Elements({ components, blocks }) {
             key={componentName}
             componentName={componentName}
             componentProperties={componentProperties(componentName)}
-            blocks={blocks}
           />
         );
 

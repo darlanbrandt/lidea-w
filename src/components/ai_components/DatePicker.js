@@ -1,5 +1,5 @@
 /****************************************************************************
- * Componente para representar o componente DatePicker do App Inventor.     * 
+ * Componente para representar o componente DatePicker do App Inventor.     *
  *                                                                          *
  * Segue o padrão do App Inventor, usando um botão para exibir o seletor    *
  * de data.                                                                 *
@@ -7,7 +7,8 @@
  * Utiliza MaterialUI para estilização.                                     *
  ****************************************************************************/
 
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import ContentContext from '../../context/ContentContext';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { getDefaultProperties } from './helpers/commonPropertiesHelper';
 import Button from '@material-ui/core/Button';
@@ -15,11 +16,8 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import FormControl from '@material-ui/core/FormControl';
 
-export default function DatePicker({
-  componentName,
-  componentProperties,
-  blocks,
-}) {
+export default function DatePicker({ componentName, componentProperties }) {
+  const { blocks } = useContext(ContentContext);
   const [open, setOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
   const properties = getDefaultProperties(componentProperties);

@@ -1,5 +1,5 @@
 /****************************************************************************
- * Componente para representar o componente Slider do App Inventor.         * 
+ * Componente para representar o componente Slider do App Inventor.         *
  *                                                                          *                                                                 *
  * Utiliza MaterialUI para estilização.                                     *
  *                                                                          *
@@ -8,12 +8,14 @@
  * e mínimo do componente                                                   *
  ****************************************************************************/
 
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import ContentContext from '../../context/ContentContext';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import { Slider as SliderComponent } from '@material-ui/core';
 import { getDefaultProperties } from './helpers/commonPropertiesHelper';
 
 export default function Slider({ componentName, componentProperties }) {
+  const { blocks } = useContext(ContentContext);
   const properties = getDefaultProperties(componentProperties);
 
   // Estilização do componente
@@ -28,7 +30,7 @@ export default function Slider({ componentName, componentProperties }) {
       display: 'none',
     },
   }));
-  
+
   // Retorna as cores do componente
   let colorLeft = '#ffc800';
   const componentColorLeft = componentProperties.find(
@@ -79,7 +81,6 @@ export default function Slider({ componentName, componentProperties }) {
   let componentClass = properties.visible
     ? `${classes.div}`
     : `${classes.invisible}`;
-
 
   // Retorna a posição inicial do componente
   let initialPosition = '';

@@ -1,11 +1,12 @@
 /****************************************************************************
  * Componente para representar o componente PasswordTextBox do App          *
- * Inventor.                                                                * 
+ * Inventor.                                                                *
  *                                                                          *
  * Utiliza MaterialUI para estilização.                                     *
  ****************************************************************************/
 
-import React from 'react';
+import React, { useContext } from 'react';
+import ContentContext from '../../context/ContentContext';
 import { makeStyles } from '@material-ui/core/styles';
 import { getDefaultProperties } from './helpers/commonPropertiesHelper';
 
@@ -13,6 +14,7 @@ export default function PasswordPasswordTextBox({
   componentName,
   componentProperties,
 }) {
+  const { blocks } = useContext(ContentContext);
   const properties = getDefaultProperties(componentProperties);
 
   // Estilização do componente

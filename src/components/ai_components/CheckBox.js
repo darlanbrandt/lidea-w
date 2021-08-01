@@ -7,16 +7,14 @@
  * chama uma função genérica comum a todos os componentes.                  *
  ****************************************************************************/
 
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import ContentContext from '../../context/ContentContext';
 import Checkbox from '@material-ui/core/Checkbox';
 import { makeStyles } from '@material-ui/core/styles';
 import { getDefaultProperties } from './helpers/commonPropertiesHelper';
 
-export default function CheckBox({
-  componentName,
-  componentProperties,
-  blocks,
-}) {
+export default function CheckBox({ componentName, componentProperties }) {
+  const { blocks } = useContext(ContentContext);
   const [checked, setChecked] = useState(false);
   const properties = getDefaultProperties(componentProperties);
 
