@@ -1,3 +1,13 @@
+/****************************************************************************
+ * Componente para representar o componente Slider do App Inventor.         * 
+ *                                                                          *                                                                 *
+ * Utiliza MaterialUI para estilização.                                     *
+ *                                                                          *
+ * Inclui funções exclusivas do componente, referentes a estilização/cores  *
+ * definidas pelo usuário, no App Inventor, bem como valor inicial, máximo  *
+ * e mínimo do componente                                                   *
+ ****************************************************************************/
+
 import React, { useState } from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import { Slider as SliderComponent } from '@material-ui/core';

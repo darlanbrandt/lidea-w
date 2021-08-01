@@ -1,3 +1,12 @@
+/****************************************************************************
+ * Componente para representar o componente HorizontalArrangement do App    *
+ * Inventor.                                                                *
+ *                                                                          *
+ * Serve como uma <div> para inclusão de demais componentes internamente    *
+ *                                                                          *
+ * Utiliza MaterialUI para estilização.                                     *
+ ****************************************************************************/
+
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { getDefaultProperties } from './helpers/commonPropertiesHelper';

@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import Button from '../ai_components/Button';
 import CheckBox from '../ai_components/CheckBox';
@@ -16,11 +14,36 @@ import Switch from '../ai_components/Switch';
 import Spinner from '../ai_components/Spinner';
 import TimePicker from '../ai_components/TimePicker';
 
+/****************************************************************************
+ * Componente responsável pela listagem e posicionamento dos componentes    *
+ * App Inventor, convertidos em componente React, na página, passando suas  *
+ * propriedades e demais dados.                                             *
+ ****************************************************************************/
+
 export default function Elements({ components, blocks }) {
   console.log(components);
   let reactComponent = [];
-  let childComponents = [];
 
+  // Lista quais são os componentes filhos de algum outro componente
+  function childrenComponents(components) {
+    let children = [];
+    components.forEach((childComponent) => {
+      components.forEach((parentComponent) => {
+        if (childComponent.parentComponent === parentComponent.componentName) {
+          children.push({
+            componentName: childComponent.componentName,
+            componentType: childComponent.componentType,
+            parentComponent: childComponent.parentComponent,
+          });
+        }
+      });
+    });
+    return children;
+  }
+
+  let childComponents = childrenComponents(components);
+
+  // Insere os componentes filhos a um array correspondente ao componente pai
   function childrenFromParent(parentComponent) {
     let children = [];
     components.forEach((component) => {
@@ -38,18 +61,31 @@ export default function Elements({ components, blocks }) {
     return children;
   }
 
-  components.forEach((childComponent) => {
-    components.forEach((parentComponent) => {
-      if (childComponent.parentComponent === parentComponent.componentName) {
-        childComponents.push({
-          componentName: childComponent.componentName,
-          componentType: childComponent.componentType,
-          parentComponent: childComponent.parentComponent,
-        });
+  // Retorna o tipo do componente
+  function componentType(componentName) {
+    let type = {};
+    Object.keys(components).forEach((component) => {
+      const comp = components[component];
+      if (comp.componentName === componentName) {
+        type = comp.componentType;
       }
     });
-  });
+    return type;
+  }
 
+  // Retorna as propriedades do componente
+  function componentProperties(componentName) {
+    let properties = {};
+    Object.keys(components).forEach((component) => {
+      const comp = components[component];
+      if (comp.componentName === componentName) {
+        properties = comp.componentProperties;
+      }
+    });
+    return properties;
+  }
+
+  // Retorna um componente React de acordo com o tipo do componente App Inventor
   function getComponent(componentName) {
     let component = null;
     switch (componentType(componentName)) {
@@ -210,28 +246,7 @@ export default function Elements({ components, blocks }) {
     return component;
   }
 
-  function componentProperties(componentName) {
-    let properties = {};
-    Object.keys(components).forEach((component) => {
-      const comp = components[component];
-      if (comp.componentName === componentName) {
-        properties = comp.componentProperties;
-      }
-    });
-    return properties;
-  }
-
-  function componentType(componentName) {
-    let type = {};
-    Object.keys(components).forEach((component) => {
-      const comp = components[component];
-      if (comp.componentName === componentName) {
-        type = comp.componentType;
-      }
-    });
-    return type;
-  }
-
+  // Lista os componentes já posicionados de acordo com o componente pai
   function pageComponents() {
     components.forEach((component) => {
       if (component.parentIsScreen) {

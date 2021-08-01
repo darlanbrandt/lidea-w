@@ -2,6 +2,10 @@ import React from 'react';
 import css from './header.module.css';
 import logo from '../../assets/images/LideaLogo.png';
 
+/****************************************************************************
+ * Componente Header da página                                              *
+ ****************************************************************************/
+
 export default function Header() {
   return (
     <div className={css.header}>

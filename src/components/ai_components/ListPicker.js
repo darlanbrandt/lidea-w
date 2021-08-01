@@ -1,3 +1,15 @@
+/****************************************************************************
+ * Componente para representar o componente ListPicker do App Inventor.     *
+ *                                                                          *
+ * Segue o padrão do App Inventor, usando um botão para exibir o seletor    *
+ * de opções.                                                               *
+ *                                                                          *
+ * Utiliza MaterialUI para estilização.                                     *
+ *                                                                          *
+ * As ações realizadas pelo botão usam a função handleListPicker que chama  *
+ * uma função genérica para todos os componentes.                           *
+ ****************************************************************************/
+
 import React, { useState } from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { getDefaultProperties } from './helpers/commonPropertiesHelper';
