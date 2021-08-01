@@ -1,3 +1,10 @@
+/****************************************************************************
+ * Componente para representar o componente PasswordTextBox do App          *
+ * Inventor.                                                                * 
+ *                                                                          *
+ * Utiliza MaterialUI para estilização.                                     *
+ ****************************************************************************/
+
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { getDefaultProperties } from './helpers/commonPropertiesHelper';

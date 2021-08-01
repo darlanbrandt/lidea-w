@@ -1,3 +1,12 @@
+/****************************************************************************
+ * Componente para representar o componente Button do App Inventor.         *
+ *                                                                          *
+ * Utiliza MaterialUI para estilização.                                     *
+ *                                                                          *
+ * As ações realizadas pelo botão usam a função handleButton que chama uma  *
+ * função genérica comum a todos os componentes.                            *
+ ****************************************************************************/
+
 import React from 'react';
 import { Button as ButtonComponent } from '@material-ui/core';
 import { makeStyles, withStyles } from '@material-ui/core/styles';

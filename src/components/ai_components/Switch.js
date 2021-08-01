@@ -1,3 +1,12 @@
+/****************************************************************************
+ * Componente para representar o componente Switch do App Inventor.         *
+ *                                                                          *                                                                 *
+ * Utiliza MaterialUI para estilização.                                     *
+ *                                                                          *
+ * Inclui funções exclusivas do componente, referentes a estilização/cores  *
+ * definidas pelo usuário, no App Inventor, bem como estado inicial.        *
+ ****************************************************************************/
+
 import React, { useState } from 'react';
 import { Switch as SwitchComponent } from '@material-ui/core';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
@@ -6,7 +15,7 @@ import { getDefaultProperties } from './helpers/commonPropertiesHelper';
 export default function Switch({ componentName, componentProperties }) {
   const properties = getDefaultProperties(componentProperties);
 
-  // Estilização do componente 
+  // Estilização do componente
   const useStyles = makeStyles(() => ({
     div: {
       minHeight: properties.height,
@@ -95,7 +104,6 @@ export default function Switch({ componentName, componentProperties }) {
     ? `${classes.div}`
     : `${classes.invisible}`;
 
-
   // Retorna o estado inicial do componente
   let isOn = '';
   const componentIsOn = componentProperties.find(
@@ -115,7 +123,6 @@ export default function Switch({ componentName, componentProperties }) {
     setState(event.target.checked);
   };
 
-  
   return (
     <div className={componentClass}>
       <span className={classes.span}>{properties.text}</span>

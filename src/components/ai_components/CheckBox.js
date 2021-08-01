@@ -1,3 +1,12 @@
+/****************************************************************************
+ * Componente para representar o componente CheckBox do App Inventor.       *
+ *                                                                          *
+ * Utiliza MaterialUI para estilização.                                     *
+ *                                                                          *
+ * As ações realizadas pelo componente usam a função handleCheckbox que     *
+ * chama uma função genérica comum a todos os componentes.                  *
+ ****************************************************************************/
+
 import React, { useState } from 'react';
 import Checkbox from '@material-ui/core/Checkbox';
 import { makeStyles } from '@material-ui/core/styles';
@@ -36,7 +45,6 @@ export default function CheckBox({
     ? `${classes.div}`
     : `${classes.invisible}`;
 
-
   // Blocos
   const commands = blocks.map(({ commands }) => {
     return commands;
@@ -45,7 +53,6 @@ export default function CheckBox({
   const variables = blocks.map(({ variables }) => {
     return variables;
   });
-  
 
   // Ações realizadas pelo componente
   const handleChange = (event) => {

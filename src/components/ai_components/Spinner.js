@@ -1,3 +1,13 @@
+/****************************************************************************
+ * Componente para representar o componente Spinner do App Inventor.        * 
+ *                                                                          *                                                                 *
+ * Utiliza MaterialUI para estilização.                                     *
+ *                                                                          *
+ * Funciona como uma lista de seleção simples.                              *
+ * Inclui funções para recuperação dos valores criados pelo usuário no App  *
+ * Inventor                                                                 *
+ ****************************************************************************/
+
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Select from '@material-ui/core/Select';

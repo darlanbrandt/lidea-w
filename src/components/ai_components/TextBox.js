@@ -1,3 +1,15 @@
+/****************************************************************************
+ * Componente para representar o componente TextBox do App Inventor         *
+ *                                                                          *
+ * Utiliza MaterialUI para estilização.                                     *
+ *                                                                          *
+ * Inclui função exclusiva do componente, referente ao tipo do campo, se    *
+ * padrão ou campo multilinhas.                                             *
+ *                                                                          *
+ * As ações realizadas pelo componente usam a função handleTextBox que      *
+ * chama uma função genérica comum a todos os componentes.                  *
+ ****************************************************************************/
+
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { getDefaultProperties } from './helpers/commonPropertiesHelper';

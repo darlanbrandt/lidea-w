@@ -1,3 +1,12 @@
+/****************************************************************************
+ * Componente para representar o componente Label do App Inventor.          *                                                              *
+ *                                                                          *
+ * Utiliza MaterialUI para estilização.                                     *
+ *                                                                          *
+ * As ações realizadas pelo componente usam a função handleCheckbox que     *
+ * chama uma função genérica para todos os componentes.                     *
+ ****************************************************************************/
+
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { getDefaultProperties } from './helpers/commonPropertiesHelper';
