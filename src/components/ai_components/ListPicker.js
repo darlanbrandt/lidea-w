@@ -10,7 +10,8 @@
  * uma função genérica para todos os componentes.                           *
  ****************************************************************************/
 
-import React, { useState } from 'react';
+import React, { useState,useContext } from 'react';
+import ContentContext from '../../context/ContentContext';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { getDefaultProperties } from './helpers/commonPropertiesHelper';
 import Button from '@material-ui/core/Button';
@@ -23,8 +24,8 @@ import { handleAction } from './helpers/componentActionHelper';
 export default function ListPicker({
   componentName,
   componentProperties,
-  blocks,
 }) {
+  const { blocks } = useContext(ContentContext);
   const [open, setOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState('');
   const properties = getDefaultProperties(componentProperties);

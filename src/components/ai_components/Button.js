@@ -7,13 +7,15 @@
  * função genérica comum a todos os componentes.                            *
  ****************************************************************************/
 
-import React from 'react';
+ import React, {useContext} from 'react';
+ import ContentContext from '../../context/ContentContext';
 import { Button as ButtonComponent } from '@material-ui/core';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { getDefaultProperties } from './helpers/commonPropertiesHelper';
 import { handleAction } from './helpers/componentActionHelper';
 
-export default function Button({ componentName, componentProperties, blocks }) {
+export default function Button({ componentName, componentProperties }) {
+  const { blocks } = useContext(ContentContext);
   const properties = getDefaultProperties(componentProperties);
 
   // Estilização do componente

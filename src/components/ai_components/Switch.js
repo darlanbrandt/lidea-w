@@ -7,12 +7,14 @@
  * definidas pelo usuário, no App Inventor, bem como estado inicial.        *
  ****************************************************************************/
 
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import ContentContext from '../../context/ContentContext';
 import { Switch as SwitchComponent } from '@material-ui/core';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { getDefaultProperties } from './helpers/commonPropertiesHelper';
 
 export default function Switch({ componentName, componentProperties }) {
+  const { blocks } = useContext(ContentContext);
   const properties = getDefaultProperties(componentProperties);
 
   // Estilização do componente

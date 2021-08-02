@@ -1,5 +1,5 @@
 /****************************************************************************
- * Componente para representar o componente Spinner do App Inventor.        * 
+ * Componente para representar o componente Spinner do App Inventor.        *
  *                                                                          *                                                                 *
  * Utiliza MaterialUI para estilização.                                     *
  *                                                                          *
@@ -8,12 +8,14 @@
  * Inventor                                                                 *
  ****************************************************************************/
 
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import ContentContext from '../../context/ContentContext';
 import { makeStyles } from '@material-ui/core/styles';
 import Select from '@material-ui/core/Select';
 import { getDefaultProperties } from './helpers/commonPropertiesHelper';
 
 export default function Spinner({ componentName, componentProperties }) {
+  const { blocks } = useContext(ContentContext);
   const [selectedValue, setSelectedValue] = useState('');
   const properties = getDefaultProperties(componentProperties);
 
