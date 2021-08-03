@@ -9,6 +9,7 @@ import ListPicker from '../ai_components/ListPicker';
 import DatePicker from '../ai_components/DatePicker';
 import VerticalArrangement from '../ai_components/VerticalArrangement';
 import HorizontalArrangement from '../ai_components/HorizontalArrangement';
+import TableArrangement from '../ai_components/TableArrangement';
 import Slider from '../ai_components/Slider';
 import PasswordTextBox from '../ai_components/PasswordTextBox';
 import Switch from '../ai_components/Switch';
@@ -231,6 +232,16 @@ export default function Elements() {
           </HorizontalArrangement>
         );
         break;
+        case 'TableArrangement':
+          component = (
+            <TableArrangement
+              key={componentName}
+              componentName={componentName}
+              componentProperties={componentProperties(componentName)}>
+              {childrenFromParent(componentName)}
+            </TableArrangement>
+          );
+          break
       default:
         break;
     }
