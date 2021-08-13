@@ -4,7 +4,8 @@ const getOperation = (commandText) => {
   const getGlobalVar = '(get-var g';
   const getLocalVar = '(lexical-value ';
   let operation = {};
-  let operator = commandText.substring(start.length + 1).split(' ')[0];
+  let operator = commandText.substring(start.length).split(' (')[0];
+  operator = operator.replaceAll(' ', '');
 
   let var1, var2;
   let var1Text = commandText
@@ -15,6 +16,8 @@ const getOperation = (commandText) => {
     var1 = var1Text.substring(getGlobalVar.length + 1).split(')')[0];
   } else if (var1Text.startsWith(getLocalVar)) {
     var1 = var1Text.substring(getLocalVar.length + 1).split(')')[0];
+    /*} else if (var1Text.startsWith(start)) {
+    var1 = getOperation(var1Text);*/
   } else {
     var1 = var1Text.split(')')[0];
   }
@@ -29,7 +32,7 @@ const getOperation = (commandText) => {
         3
     )
     .split(') ')[0];
-  console.log(var2Text);
+  //console.log(var2Text);
   if (var2Text.startsWith(getGlobalVar)) {
     var2 = var2Text.substring(getGlobalVar.length + 1).split(')')[0];
   } else if (var2Text.startsWith(getLocalVar)) {

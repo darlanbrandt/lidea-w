@@ -11,6 +11,7 @@ const endOfBlocksCode = '},"componentYail"';
 const varGetProperty = "(get-property '";
 const endOfCommand = '))"';
 const startOfAction = '()(set-this-form)\\n    ';
+const startOfProcedure = ')  (';
 
 dict['def g'] = 'variable';
 dict['(define-event '] = 'command';
@@ -75,16 +76,38 @@ function getAllBlocks(text) {
           };
           commands = commands.concat(commandInfo);
         } else if (dict[key] === 'procedure') {
-          //console.log('procedure');
+          let procedureText = blocksText.substring(i).split(endOfCommand)[0];
+          let procedureName = procedureText
+            .substring(key.length + 1)
+            .split(' ')[0];
+          let procedureParameter = procedureText
+            .substring(key.length + procedureName.length + 3)
+            .split(')  ')[0];
+
+          let procedureUnparsed = procedureText.substring(
+            key.length +
+              procedureName.length +
+              procedureParameter.length +
+              startOfProcedure.length +
+              2
+          );
+          let procedureInfo = {
+            procedureName: procedureName,
+            procedureParameter: procedureParameter,
+            procedure: procedureUnparsed,
+          };
+          procedures = procedures.concat(procedureInfo);
         } else {
           //console.log('comando não identificado');
         }
       }
     });
   }
-  //console.log(variables);
-  //console.log(commands);
-  blocks.push({ variables: variables, commands: commands });
+  blocks.push({
+    variables: variables,
+    commands: commands,
+    procedures: procedures,
+  });
 
   return blocks;
 }

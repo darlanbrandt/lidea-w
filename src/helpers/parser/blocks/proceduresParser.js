@@ -9,21 +9,15 @@ const operationIndicator = ' (call-yail-primitive';
 let componentProperty = '';
 let commandInfo = {};
 let commandsSetProperty = [];
-let isElseIf = false;
-let isElse = false;
 
 dict["(set-and-coerce-property! '"] = 'set-property';
 dict['(set-var! g'] = 'set-global-var-value';
 dict['(let ( ('] = 'declare-local-variable';
-dict['(if '] = 'opening-if';
-dict['))(if '] = 'following-if';
-dict['(begin (if '] = 'else-if';
 
-const getBlocksCommands = (commands) => {
-  let allCommands = [];
+const getBlocksProcedures = (procedures) => {
+  let allProcedures = [];
 
-  for (let i = 0; i < commands.length; i++) {
-    let commandsProgress = commands.substring(i);
+  for (let i = 0; i < procedures.length; i++) {
     Object.keys(dict).forEach((key) => {
       if (commands.startsWith(key, i)) {
         /* Verifica se o comando é do tipo Set Property e  
@@ -140,65 +134,6 @@ const getBlocksCommands = (commands) => {
           };
           //console.log(localVariableName);
           //console.log('variável');
-        } else if (!isElseIf) {
-          if (dict[key] === 'opening-if') {
-            for (let j = 0; j < commands.length; j++) {
-              let newCommmandText = commands.substring(j);
-              let temporaryText = newCommmandText
-                .substring(j + key.length)
-                .split('(begin')[0];
-              let conditionText = '';
-              /*if (temporaryText.startsWith('(call-yail')) {
-                conditionText = temporaryText;
-                condition = getOperation(conditionText);
-              }*/
-              let ifCommands,
-                elseIfCommands,
-                elseCommands = '';
-
-              if (!isElseIf) {
-                if (newCommmandText.startsWith('(call-yail')) {
-                  conditionText = newCommmandText.split(' (begin')[0];
-                  let condition = getOperation(conditionText);
-                  console.log(condition);
-                  if (
-                    newCommmandText
-                      .substring(conditionText.length)
-                      .startsWith(' (begin   ')
-                  ) {
-                    ifCommands = newCommmandText.substring(12).split(')) (')[0];
-                    //console.log('if: ' + conditionText);
-                    console.log(getBlocksCommands(ifCommands));
-                    //getBlocksCommands(newCommmandText);
-                  }
-                }
-              }
-
-              if (newCommmandText.startsWith('(begin (if')) {
-                conditionText = newCommmandText
-                  .substring(11)
-                  .split('(begin')[0];
-                let condition = getOperation(conditionText);
-                console.log(condition);
-                //console.log(condition);
-                isElseIf = true;
-                elseIfCommands = newCommmandText
-                  .substring(20 + conditionText.length)
-                  .split(')) (')[0];
-                //console.log('else-if: ' + conditionText);
-                console.log(getBlocksCommands(elseIfCommands));
-              }
-
-              if (newCommmandText.startsWith(')) (begin   ', 0)) {
-                //console.log('ELSE');
-                elseCommands = newCommmandText.substring(12).split('))))')[0];
-                //onsole.log('else:');
-                console.log(getBlocksCommands(elseCommands));
-                //isElse = true;
-                //getBlocksCommands(newCommmandText);
-              }
-            }
-          }
         }
         /* Adds all objects parsed from commmand into an array */
 
