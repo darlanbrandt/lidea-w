@@ -1,6 +1,6 @@
 import { getYAIL } from '../services/yailCode';
 import { getAllBlocks } from './parser/blocks/blocksParser';
-import { getBlocksCommands } from './parser/blocks/commandsParser';
+import { getBlocksProcedures } from './parser/blocks/proceduresParser';
 
 const getBlocks = async () => {
   // Retorna o código YAIL recebido
@@ -34,18 +34,14 @@ const getBlocks = async () => {
 
   commands.forEach((command) => {
     command.forEach((c) => {
-      console.log(c);
-      const blockCommands = getBlocksCommands(c.command);
-
       let commandBlockInfo = {
         componentAction: c.componentName,
         commandType: c.commandType,
-        commandsToExecute: blockCommands,
+        commandsToExecute: c.command,
       };
       fullCommandBlockInfo = fullCommandBlockInfo.concat(commandBlockInfo);
     });
   });
-  console.log(fullCommandBlockInfo);
 
   const procedures = allBlocks.map(({ procedures }) => {
     return procedures;
@@ -53,12 +49,10 @@ const getBlocks = async () => {
 
   procedures.forEach((procedure) => {
     procedure.forEach((p) => {
-      //const blockCommands = getBlocksCommands(c.command);
-
       let procedureBlockInfo = {
         procedureName: p.procedureName,
         procedureParameter: p.procedureParameter,
-        //commandsToExecute: blockCommands,
+        proceduresToExecute: p.procedure,
       };
       fullProcedureBlockInfo =
         fullProcedureBlockInfo.concat(procedureBlockInfo);

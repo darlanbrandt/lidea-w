@@ -7,8 +7,8 @@
  * função genérica comum a todos os componentes.                            *
  ****************************************************************************/
 
- import React, {useContext} from 'react';
- import ContentContext from '../../context/ContentContext';
+import React, { useContext } from 'react';
+import ContentContext from '../../context/ContentContext';
 import { Button as ButtonComponent } from '@material-ui/core';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { getDefaultProperties } from './helpers/commonPropertiesHelper';
@@ -64,18 +64,9 @@ export default function Button({ componentName, componentProperties }) {
     ? `${classes.div}`
     : `${classes.invisible}`;
 
-  // Blocos
-  const commands = blocks.map(({ commands }) => {
-    return commands;
-  });
-
-  const variables = blocks.map(({ variables }) => {
-    return variables;
-  });
-
   // Ações realizadas pelo componente
   const handleButton = (action) => {
-    handleAction(action, commands, componentName, variables);
+    handleAction(action, componentName, blocks);
   };
 
   return (
