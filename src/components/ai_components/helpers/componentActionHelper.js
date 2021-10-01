@@ -14,7 +14,6 @@ function handleAction(action, componentName, blocks) {
   const procedures = blocks.map(({ procedures }) => {
     return procedures;
   });
-  console.log(commands);
 
   commands.forEach((command) => {
     command.forEach((c) => {
@@ -22,7 +21,10 @@ function handleAction(action, componentName, blocks) {
         if (c.componentAction === componentName) {
           console.log(c.commandsToExecute);
           //getBlocksCommands(c.commandsToExecute);
-          let execute = getBlocksCommands(c.commandsToExecute).toString();
+          let execute = getBlocksCommands(
+            c.commandsToExecute,
+            variables
+          ).toString();
           console.log(execute);
           eval(execute);
           //commandToExecute(getBlocksCommands(c.commandsToExecute), variables);
