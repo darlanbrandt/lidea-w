@@ -5,8 +5,12 @@ const dict2 = [];
 let stack = [];
 let action = '';
 let command = '';
+let localVariables = [];
+let localVariableIndicator = '(let ( ';
+let setPropertyIndicator = "(set-and-coerce-property! '";
 
 dict["(set-and-coerce-property! '"] = 'document.querySelector("#';
+dict['(let ( '] = 'local-variable';
 dict2['(call-yail-primitive'] = 'operation';
 dict2['(get-var g$'] = 'global-variable';
 
@@ -17,55 +21,83 @@ const getBlocksCommands = (commands, variables) => {
   let fieldValue = '';
 
   for (let i = 0; i < commands.length; i++) {
-    Object.keys(dict).forEach((key) => {
-      if (commands.startsWith(key, i)) {
-        let componentAction = commands.substring(i + key.length).split(' ')[0];
+    //Object.keys(dict).forEach((key) => {
+    if (commands.startsWith(localVariableIndicator, i)) {
+      //if (dict[key] === 'local-variable') {
+      let localVariablesText = commands
+        .substring(i + localVariableIndicator.length)
+        .split(' )')[0];
+      let localVariablesTextArray = localVariablesText
+        .replaceAll(') (', '&')
+        .replaceAll('(', '')
+        .replaceAll(')', '')
+        .trim()
+        .replaceAll('$', '')
+        .split('&');
+      localVariables.push(
+        localVariablesTextArray.map((localVariable) => {
+          return {
+            variableName: localVariable.split(' ')[0],
+            variableValue: localVariable.split(' ')[1],
+          };
+        })
+      );
+    } else if (commands.startsWith(setPropertyIndicator, i)) {
+      let componentAction = commands
+        .substring(i + setPropertyIndicator.length)
+        .split(' ')[0];
 
-        let type = commands
-          .substring(i + key.length + componentAction.length + 2)
-          .split(' ')[0];
+      let type = commands
+        .substring(i + setPropertyIndicator.length + componentAction.length + 2)
+        .split(' ')[0];
 
-        let value = commands
-          .substring(
-            i + key.length + componentAction.length + 2 + type.length + 1
+      let value = commands
+        .substring(
+          i +
+            setPropertyIndicator.length +
+            componentAction.length +
+            2 +
+            type.length +
+            1
+        )
+        .split(") '")[0];
+
+      fieldValue = getValue(value, variables, localVariables)
+        .toString()
+        .startsWith('(get-var g$')
+        ? getVariableValue(
+            variables,
+            getValue(value, variables, localVariables)
           )
-          .split(") '")[0];
+        : getValue(value, variables, localVariables);
 
-        fieldValue = getValue(value, variables)
-          .toString()
-          .startsWith('(get-var g$')
-          ? getVariableValue(variables, getValue(value, variables))
-          : getValue(value, variables);
-
-        switch (type) {
-          case 'BackgroundColor':
-            action =
-              'style.backgroundColor = "#' +
-              convertDecimaltoHexColor(+fieldValue) +
-              '"; ';
-            break;
-          case 'FontSize':
-            action = 'style.fontSize = ' + '"' + fieldValue + 'px"' + '; ';
-            break;
-          case 'Text':
-            action = 'innerHTML = ' + '"' + fieldValue + '"' + '; ';
-            break;
-          case 'TextColor':
-            action =
-              'style.color = "#' +
-              convertDecimaltoHexColor(+fieldValue) +
-              '"; ';
-            break;
-          default:
-            break;
-        }
-
-        stack.push(dict[key]);
-        stack.push(componentAction + '").');
-        stack.push(action);
-        finalResult = stack.join().replaceAll(',', '');
+      switch (type) {
+        case 'BackgroundColor':
+          action =
+            'style.backgroundColor = "#' +
+            convertDecimaltoHexColor(+fieldValue) +
+            '"; ';
+          break;
+        case 'FontSize':
+          action = 'style.fontSize = ' + '"' + fieldValue + 'px"' + '; ';
+          break;
+        case 'Text':
+          action = 'innerHTML = ' + '"' + fieldValue + '"' + '; ';
+          break;
+        case 'TextColor':
+          action =
+            'style.color = "#' + convertDecimaltoHexColor(+fieldValue) + '"; ';
+          break;
+        default:
+          break;
       }
-    });
+
+      stack.push('document.querySelector("#');
+      stack.push(componentAction + '").');
+      stack.push(action);
+      finalResult = stack.join().replaceAll(',', '');
+    }
+    //});
   }
   finalResult.replaceAll("'", "\\'");
   stack = [];
@@ -80,7 +112,7 @@ function getValue(commandText, variables) {
   let globalVariable = '(get-var g$';
   if (commandText.startsWith(operation)) {
     textSubstring = commandText.substring(operation.length + 1).trim();
-    textValue = calculate(textSubstring, variables);
+    textValue = calculate(textSubstring, variables, localVariables);
   } else if (commandText.startsWith(globalVariable)) {
     textValue = commandText.split(')')[0];
   } else {
@@ -89,17 +121,31 @@ function getValue(commandText, variables) {
   return textValue;
 }
 
-function calculate(calculationText, variables) {
+function calculate(calculationText, variables, localVariables) {
+  console.log(calculationText);
   let result = 0;
   let operator = calculationText.split(' ')[0];
   const numberIndicator = ' (*list-for-runtime* ';
-  let numbersArray = calculationText
+  let elementsBeforeFilter = calculationText
+    .substring(operator.length + numberIndicator.length)
+    .split(' ');
+  console.log(elementsBeforeFilter);
+  let globalVariableFilter = elementsBeforeFilter
+    .filter((item) => !(item === '(get-var'))
+    .map((n) => (n.startsWith('g$') ? getVariableValue(variables, n) : n));
+  console.log(globalVariableFilter);
+  let localVariableFilter = globalVariableFilter
+    .filter((item) => !(item === '(lexical-value'))
+    .map((n) => (n.startsWith('$') ? getVariableValue(localVariables, n) : n));
+  console.log(localVariableFilter);
+
+  /*let numbersArray = calculationText
     .substring(operator.length + numberIndicator.length)
     .split(' ')
     .filter((item) => !(item === '(get-var'))
-    .map((n) => (n.startsWith('g$') ? getVariableValue(variables, n) : n));
+    .map((n) => (n.startsWith('g$') ? getVariableValue(variables, n) : n));*/
 
-  let numbers = numbersArray.map(Number);
+  let numbers = localVariableFilter.map(Number);
 
   switch (operator) {
     case '+':
@@ -122,15 +168,28 @@ function calculate(calculationText, variables) {
 
 function getVariableValue(variables, value) {
   let variableName = '';
+  let variableValue = '';
   if (value.startsWith('(get-var g$')) {
     variableName = value.substring('(get-var g$'.length).split(')')[0];
+    variableValue = getVarValue(variables, variableName);
   } else if (value.startsWith('g$')) {
     variableName = value.substring('g$'.length).split(')')[0];
+    variableValue = getVarValue(variables, variableName);
+  } else if (value.startsWith('(lexical-value $')) {
+    variableName = value.substring('(lexical-value $'.length).split(')')[0];
+    variableValue = getVarValue(variables, variableName);
+  } else if (value.startsWith('$')) {
+    variableName = value.substring('$'.length).split(')')[0];
+    variableValue = getVarValue(variables, variableName);
   }
+  return getVarValue(variables, variableName);
+}
+
+function getVarValue(variables, value) {
   let variableValue = '';
   variables.forEach((variable) => {
     variable.forEach((v) => {
-      if (variableName === v.variableName) {
+      if (value === v.variableName) {
         variableValue = v.variableValue;
       }
     });
