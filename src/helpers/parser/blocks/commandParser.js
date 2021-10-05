@@ -62,14 +62,15 @@ const getBlocksCommands = (commands, variables) => {
         )
         .split(") '")[0];
 
-      fieldValue = getValue(value, variables, localVariables)
+      /*if (getValue(value, variables).toString().startsWith('(get-var g$')) {
+        getVariableValue(variables,getValue(value, variables))
+      } else if (getValue(value, variables))*/
+
+      fieldValue = getValue(value, variables)
         .toString()
         .startsWith('(get-var g$')
-        ? getVariableValue(
-            variables,
-            getValue(value, variables, localVariables)
-          )
-        : getValue(value, variables, localVariables);
+        ? getVariableValue(variables, getValue(value, variables))
+        : getValue(value, variables);
 
       switch (type) {
         case 'BackgroundColor':
@@ -110,6 +111,8 @@ function getValue(commandText, variables) {
   let textSubstring = '';
   let operation = '(call-yail-primitive';
   let globalVariable = '(get-var g$';
+  let localVariable = '(lexical-value $';
+  let textFieldValue = '(get-property';
   if (commandText.startsWith(operation)) {
     textSubstring = commandText.substring(operation.length + 1).trim();
     textValue = calculate(textSubstring, variables, localVariables);
