@@ -29,18 +29,13 @@ const getBlocksCommands = (commands, variables) => {
           .substring(
             i + key.length + componentAction.length + 2 + type.length + 1
           )
-          .split(')')[0];
+          .split(") '")[0];
 
-        fieldValue = getValue(value);
-
-        variables.forEach((variable) => {
-          variable.forEach((v) => {
-            if (fieldValue === v.variableName) {
-              variableValue = v.variableValue;
-              console.log(variableValue);
-            }
-          });
-        });
+        fieldValue = getValue(value, variables)
+          .toString()
+          .startsWith('(get-var g$')
+          ? getVariableValue(variables, getValue(value, variables))
+          : getValue(value, variables);
 
         switch (type) {
           case 'BackgroundColor':
@@ -74,40 +69,38 @@ const getBlocksCommands = (commands, variables) => {
   }
   finalResult.replaceAll("'", "\\'");
   stack = [];
-  console.log(finalResult);
+  //console.log(finalResult);
   return finalResult.toString();
 };
 
-function getValue(commandText) {
-  console.log(commandText);
+function getValue(commandText, variables) {
   let textValue = '';
   let textSubstring = '';
   let operation = '(call-yail-primitive';
   let globalVariable = '(get-var g$';
   if (commandText.startsWith(operation)) {
     textSubstring = commandText.substring(operation.length + 1).trim();
-    textValue = calculate(textSubstring);
+    textValue = calculate(textSubstring, variables);
   } else if (commandText.startsWith(globalVariable)) {
-    textSubstring = commandText.substring(globalVariable.length).split(')')[0];
-    textValue = textSubstring;
+    textValue = commandText.split(')')[0];
   } else {
     textValue = commandText.split(' ')[0];
   }
-
   return textValue;
 }
 
-function calculate(calculationText) {
+function calculate(calculationText, variables) {
   let result = 0;
   let operator = calculationText.split(' ')[0];
-  console.log(operator);
   const numberIndicator = ' (*list-for-runtime* ';
-  let numbers = calculationText
+  let numbersArray = calculationText
     .substring(operator.length + numberIndicator.length)
-    .split(')')[0]
     .split(' ')
-    .map(Number);
-  console.log(numbers);
+    .filter((item) => !(item === '(get-var'))
+    .map((n) => (n.startsWith('g$') ? getVariableValue(variables, n) : n));
+
+  let numbers = numbersArray.map(Number);
+
   switch (operator) {
     case '+':
       result = addition(numbers);
@@ -127,8 +120,22 @@ function calculate(calculationText) {
   return result;
 }
 
-function getValueFromVariable(variableName) {
-  return null;
+function getVariableValue(variables, value) {
+  let variableName = '';
+  if (value.startsWith('(get-var g$')) {
+    variableName = value.substring('(get-var g$'.length).split(')')[0];
+  } else if (value.startsWith('g$')) {
+    variableName = value.substring('g$'.length).split(')')[0];
+  }
+  let variableValue = '';
+  variables.forEach((variable) => {
+    variable.forEach((v) => {
+      if (variableName === v.variableName) {
+        variableValue = v.variableValue;
+      }
+    });
+  });
+  return variableValue;
 }
 
 function addition(arr) {
