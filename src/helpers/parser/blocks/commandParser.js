@@ -51,11 +51,20 @@ const getBlocksCommands = (commands, variables) => {
       let componentType = document.querySelector(
         '#' + componentAction
       ).nodeName;
-      console.log(componentType);
+
+      let typeToApply = '';
 
       let type = commands
         .substring(i + setPropertyIndicator.length + componentAction.length + 2)
         .split(' ')[0];
+
+      if (type === 'Text' && componentType === 'INPUT') {
+        typeToApply = 'TextInput';
+      } else if (type === 'Text' && componentType !== 'INPUT') {
+        typeToApply = 'Text';
+      } else {
+        typeToApply = type;
+      }
 
       let value = commands
         .substring(
@@ -78,7 +87,9 @@ const getBlocksCommands = (commands, variables) => {
         ? getVariableValue(variables, getValue(value, variables))
         : getValue(value, variables);
 
-      switch (type) {
+      console.log(typeof fieldValue);
+
+      switch (typeToApply) {
         case 'BackgroundColor':
           setProperty =
             'document.querySelector("#' +
@@ -86,7 +97,6 @@ const getBlocksCommands = (commands, variables) => {
             '").style.backgroundColor = "#' +
             convertDecimaltoHexColor(+fieldValue) +
             '"; ';
-          console.log(setProperty);
           break;
         case 'FontSize':
           setProperty =
@@ -99,16 +109,31 @@ const getBlocksCommands = (commands, variables) => {
             '; ';
           break;
         case 'Text':
+          if (typeof fieldValue === 'number') {
+            setProperty =
+              'document.querySelector("#' +
+              componentAction +
+              '").innerHTML = ' +
+              '"' +
+              fieldValue +
+              '"' +
+              '; ';
+          } else {
+            setProperty =
+              'document.querySelector("#' +
+              componentAction +
+              '").innerHTML = ' +
+              '"' +
+              replaceQuotes(fieldValue) +
+              '"' +
+              '; ';
+          }
+          break;
+        case 'TextInput':
           setProperty =
             'document.querySelector("#' +
             componentAction +
             '").value = ' +
-            '"' +
-            replaceQuotes(fieldValue) +
-            '"' +
-            '; document.querySelector("#' +
-            componentAction +
-            '").innerHTML = ' +
             '"' +
             replaceQuotes(fieldValue) +
             '"' +
@@ -133,7 +158,6 @@ const getBlocksCommands = (commands, variables) => {
   }
   //finalResult.replaceAll("'", "\\'");
   stack = [];
-  console.log(finalResult);
   return finalResult.toString();
 };
 
@@ -150,13 +174,20 @@ function getValue(commandText, variables) {
   } else if (commandText.startsWith(globalVariable)) {
     textValue = commandText.split(')')[0];
   } else if (commandText.startsWith(textFieldValue)) {
-    //console.log(commandText.substring(textFieldValue.length + 1));
+    console.log(commandText.substring(textFieldValue.length));
     let componentId =
       '#' + commandText.substring(textFieldValue.length + 2).split(' ')[0];
-    let componentValue = document.querySelector(componentId).innerHTML;
+    let componentType = document.querySelector(componentId).nodeName;
+    console.log(componentType);
+    let componentValue = '';
+    if (componentType === 'BUTTON') {
+      componentValue = document.querySelector(componentId).value;
+    } else {
+      componentValue = document.querySelector(componentId).innerHTML;
+    }
     textValue = componentValue;
   } else {
-    textValue = commandText.split(' ')[0];
+    textValue = commandText.split(" '")[0];
   }
   return textValue;
 }
