@@ -169,18 +169,19 @@ function getValue(commandText, variables) {
   let localVariable = '(lexical-value $';
   let textFieldValue = '(get-property';
   if (commandText.startsWith(operation)) {
-    textSubstring = commandText.substring(operation.length + 1).trim();
+    textSubstring = commandText
+      .substring(operation.length + 1)
+      .replaceAll(" 'Text)", '')
+      .trim();
     textValue = calculate(textSubstring, variables, localVariables);
   } else if (commandText.startsWith(globalVariable)) {
     textValue = commandText.split(')')[0];
   } else if (commandText.startsWith(textFieldValue)) {
-    console.log(commandText.substring(textFieldValue.length));
     let componentId =
       '#' + commandText.substring(textFieldValue.length + 2).split(' ')[0];
     let componentType = document.querySelector(componentId).nodeName;
-    console.log(componentType);
     let componentValue = '';
-    if (componentType === 'BUTTON') {
+    if (componentType === 'BUTTON' || componentType === 'INPUT') {
       componentValue = document.querySelector(componentId).value;
     } else {
       componentValue = document.querySelector(componentId).innerHTML;
@@ -200,23 +201,21 @@ function calculate(calculationText, variables, localVariables) {
   let elementsBeforeFilter = calculationText
     .substring(operator.length + numberIndicator.length)
     .split(' ');
-  console.log(elementsBeforeFilter);
+
   let globalVariableFilter = elementsBeforeFilter
     .filter((item) => !(item === '(get-var'))
     .map((n) => (n.startsWith('g$') ? getVariableValue(variables, n) : n));
-  console.log(globalVariableFilter);
+
   let localVariableFilter = globalVariableFilter
     .filter((item) => !(item === '(lexical-value'))
     .map((n) => (n.startsWith('$') ? getVariableValue(localVariables, n) : n));
-  console.log(localVariableFilter);
 
-  /*let numbersArray = calculationText
-    .substring(operator.length + numberIndicator.length)
-    .split(' ')
-    .filter((item) => !(item === '(get-var'))
-    .map((n) => (n.startsWith('g$') ? getVariableValue(variables, n) : n));*/
+  let textFieldFilter = localVariableFilter
+    .filter((item) => !(item === '(get-property'))
+    .map((n) => (n.startsWith("'") ? getTextFieldValue(n) : n));
 
-  let numbers = localVariableFilter.map(Number);
+  let numbers = textFieldFilter.map(Number);
+  console.log(numbers);
 
   switch (operator) {
     case '+':
@@ -266,6 +265,14 @@ function getVarValue(variables, value) {
     });
   });
   return variableValue;
+}
+
+function getTextFieldValue(value) {
+  let fieldName = value.substring(1);
+  let fieldValue = document.querySelector('#' + fieldName).value
+    ? document.querySelector('#' + fieldName).value
+    : 0;
+  return fieldValue;
 }
 
 function addition(arr) {
