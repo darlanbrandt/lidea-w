@@ -8,6 +8,7 @@ let command = '';
 let localVariables = [];
 let localVariableIndicator = '(let ( ';
 let setPropertyIndicator = "(set-and-coerce-property! '";
+let setGlobalVariableValue = '(set-var g$';
 
 dict["(set-and-coerce-property! '"] = 'document.querySelector("#';
 dict['(let ( '] = 'local-variable';
@@ -16,7 +17,7 @@ dict2['(get-var g$'] = 'global-variable';
 
 const getBlocksCommands = (commands, variables) => {
   command = '';
-  let variableValue = '';
+  let setProperty = '';
   let finalResult = '';
   let fieldValue = '';
 
@@ -47,6 +48,11 @@ const getBlocksCommands = (commands, variables) => {
         .substring(i + setPropertyIndicator.length)
         .split(' ')[0];
 
+      let componentType = document.querySelector(
+        '#' + componentAction
+      ).nodeName;
+      console.log(componentType);
+
       let type = commands
         .substring(i + setPropertyIndicator.length + componentAction.length + 2)
         .split(' ')[0];
@@ -74,35 +80,60 @@ const getBlocksCommands = (commands, variables) => {
 
       switch (type) {
         case 'BackgroundColor':
-          action =
-            'style.backgroundColor = "#' +
+          setProperty =
+            'document.querySelector("#' +
+            componentAction +
+            '").style.backgroundColor = "#' +
             convertDecimaltoHexColor(+fieldValue) +
             '"; ';
+          console.log(setProperty);
           break;
         case 'FontSize':
-          action = 'style.fontSize = ' + '"' + fieldValue + 'px"' + '; ';
+          setProperty =
+            'document.querySelector("#' +
+            componentAction +
+            '").style.fontSize = ' +
+            '"' +
+            fieldValue +
+            'px"' +
+            '; ';
           break;
         case 'Text':
-          action = 'innerHTML = ' + '"' + fieldValue + '"' + '; ';
+          setProperty =
+            'document.querySelector("#' +
+            componentAction +
+            '").value = ' +
+            '"' +
+            replaceQuotes(fieldValue) +
+            '"' +
+            '; document.querySelector("#' +
+            componentAction +
+            '").innerHTML = ' +
+            '"' +
+            replaceQuotes(fieldValue) +
+            '"' +
+            '; ';
           break;
         case 'TextColor':
-          action =
-            'style.color = "#' + convertDecimaltoHexColor(+fieldValue) + '"; ';
+          setProperty =
+            'document.querySelector("#' +
+            componentAction +
+            '").style.color = "#' +
+            convertDecimaltoHexColor(Number(fieldValue)) +
+            '"; ';
           break;
         default:
           break;
       }
 
-      stack.push('document.querySelector("#');
-      stack.push(componentAction + '").');
-      stack.push(action);
+      stack.push(setProperty);
       finalResult = stack.join().replaceAll(',', '');
     }
     //});
   }
-  finalResult.replaceAll("'", "\\'");
+  //finalResult.replaceAll("'", "\\'");
   stack = [];
-  //console.log(finalResult);
+  console.log(finalResult);
   return finalResult.toString();
 };
 
@@ -118,6 +149,12 @@ function getValue(commandText, variables) {
     textValue = calculate(textSubstring, variables, localVariables);
   } else if (commandText.startsWith(globalVariable)) {
     textValue = commandText.split(')')[0];
+  } else if (commandText.startsWith(textFieldValue)) {
+    //console.log(commandText.substring(textFieldValue.length + 1));
+    let componentId =
+      '#' + commandText.substring(textFieldValue.length + 2).split(' ')[0];
+    let componentValue = document.querySelector(componentId).innerHTML;
+    textValue = componentValue;
   } else {
     textValue = commandText.split(' ')[0];
   }
@@ -234,5 +271,10 @@ function multiplication(arr) {
 function division(arr) {
   return arr[0] / arr[1];
 }
+
+const replaceQuotes = (value) => {
+  let replacedQuotesValue = value.replaceAll('\\"', '');
+  return replacedQuotesValue;
+};
 
 export { getBlocksCommands };
