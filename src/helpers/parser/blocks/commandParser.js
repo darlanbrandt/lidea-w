@@ -3,17 +3,11 @@ import { convertDecimaltoHexColor } from '../../../helpers/commandsHelper';
 const dict = [];
 const dict2 = [];
 let stack = [];
-let action = '';
 let command = '';
 let localVariables = [];
 let localVariableIndicator = '(let ( ';
 let setPropertyIndicator = "(set-and-coerce-property! '";
 let setGlobalVariableValue = '(set-var g$';
-
-dict["(set-and-coerce-property! '"] = 'document.querySelector("#';
-dict['(let ( '] = 'local-variable';
-dict2['(call-yail-primitive'] = 'operation';
-dict2['(get-var g$'] = 'global-variable';
 
 const getBlocksCommands = (commands, variables) => {
   command = '';
@@ -76,10 +70,6 @@ const getBlocksCommands = (commands, variables) => {
             1
         )
         .split(") '")[0];
-
-      /*if (getValue(value, variables).toString().startsWith('(get-var g$')) {
-        getVariableValue(variables,getValue(value, variables))
-      } else if (getValue(value, variables))*/
 
       fieldValue = getValue(value, variables)
         .toString()
