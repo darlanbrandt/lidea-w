@@ -1,10 +1,12 @@
 const getOperation = (commandText) => {
+  const operationText = commandText.trim();
+  console.log(operationText);
   const start = '(call-yail-primitive ';
   const startOfOperation = '(*list-for-runtime* ';
   const getGlobalVar = '(get-var g';
   const getLocalVar = '(lexical-value ';
   let operation = {};
-  let operator = commandText.substring(start.length).split(' (')[0];
+  let operator = operationText.substring(start.length).split(' (')[0];
   operator = operator.replaceAll(' ', '');
 
   let var1, var2;
@@ -16,8 +18,6 @@ const getOperation = (commandText) => {
     var1 = var1Text.substring(getGlobalVar.length + 1).split(')')[0];
   } else if (var1Text.startsWith(getLocalVar)) {
     var1 = var1Text.substring(getLocalVar.length + 1).split(')')[0];
-    /*} else if (var1Text.startsWith(start)) {
-    var1 = getOperation(var1Text);*/
   } else {
     var1 = var1Text.split(')')[0];
   }
@@ -40,8 +40,17 @@ const getOperation = (commandText) => {
   } else {
     var2 = var2Text.split(')')[0];
   }
-  operation = { var1: var1, operator: operator, var2: var2 };
+  operation = {
+    var1: replaceQuotes(var1),
+    operator: replaceQuotes(operator),
+    var2: replaceQuotes(var2),
+  };
   return operation;
+};
+
+const replaceQuotes = (value) => {
+  let replacedQuotesValue = value.replaceAll('\\"', '');
+  return replacedQuotesValue;
 };
 
 export { getOperation };

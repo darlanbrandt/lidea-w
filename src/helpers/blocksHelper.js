@@ -1,23 +1,25 @@
 import { getYAIL } from '../services/yailCode';
 import { getAllBlocks } from './parser/blocks/blocksParser';
-import { getBlocksCommands } from './parser/blocks/commandsParser';
+import { getBlocksProcedures } from './parser/blocks/proceduresParser';
 
 const getBlocks = async () => {
-  /* Get YAIL Code */
+  // Retorna o código YAIL recebido
   const yail = await getYAIL();
 
   let blocks = [];
 
   let variables = [];
 
-  let procedures = [];
+  //let procedures = [];
 
-  let fullBlockInfo = [];
+  let fullCommandBlockInfo = [];
 
-  /* Lists all components in an array */
+  let fullProcedureBlockInfo = [];
+
+  // Lista todos os componentes em um array
   const allBlocks = getAllBlocks(yail);
 
-  /* Merges both arrays into a new object */
+  // Une os arrays de variáveis, commmandos e procedures em um novo objeto
   const globalVariables = allBlocks.map(({ variables }) => {
     return variables;
   });
@@ -32,21 +34,39 @@ const getBlocks = async () => {
 
   commands.forEach((command) => {
     command.forEach((c) => {
-      const blockCommands = getBlocksCommands(c.command);
-
-      let blockInfo = {
+      let commandBlockInfo = {
         componentAction: c.componentName,
         commandType: c.commandType,
-        commandsToExecute: blockCommands,
+        commandsToExecute: c.command,
       };
-      fullBlockInfo = fullBlockInfo.concat(blockInfo);
+      fullCommandBlockInfo = fullCommandBlockInfo.concat(commandBlockInfo);
     });
   });
-  console.log(fullBlockInfo);
+
+  const procedures = allBlocks.map(({ procedures }) => {
+    return procedures;
+  });
+
+  procedures.forEach((procedure) => {
+    procedure.forEach((p) => {
+      let procedureBlockInfo = {
+        procedureName: p.procedureName,
+        procedureParameter: p.procedureParameter,
+        proceduresToExecute: p.procedure,
+      };
+      fullProcedureBlockInfo =
+        fullProcedureBlockInfo.concat(procedureBlockInfo);
+    });
+  });
 
   Object.keys(allBlocks).forEach((abKey) => {});
-  blocks.push({ variables: variables, commands: fullBlockInfo });
+  blocks.push({
+    variables: variables,
+    commands: fullCommandBlockInfo,
+    procedures: fullProcedureBlockInfo,
+  });
 
+  console.log(blocks);
   return blocks;
 };
 

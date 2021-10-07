@@ -68,7 +68,7 @@ export default function TextBox({ componentName, componentProperties }) {
 
   // Ações realizadas no componente
   function handleTextBox(action) {
-    handleAction(action, commands, componentName, variables);
+    handleAction(action, componentName, blocks);
   }
 
   if (multiline) {
