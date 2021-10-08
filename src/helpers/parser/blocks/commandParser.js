@@ -3,6 +3,7 @@ import { convertDecimaltoHexColor } from '../../../helpers/commandsHelper';
 const dict = [];
 const dict2 = [];
 let propertiesStack = [];
+let conditionalStack = [];
 let propertiesInsideIf = false;
 let action = '';
 let command = '';
@@ -33,27 +34,80 @@ const getBlocksCommands = (commands, variables) => {
 
 const getConditionalCommands = (commands, variables, i) => {
   propertiesInsideIf = true;
-  let comparisonCommand = '';
+  //let comparisonCommand = '';
   let ifCommand = '';
-  for (let i = 0; i < commands.length; i++) {
-    comparisonCommand = commands
-      .substring(conditionalIndicator.length)
-      .split(')')[0];
-    if (commands.startsWith(setPropertyIndicator, i)) {
-      ifCommand = commands.substring(i);
-      console.log(ifCommand);
-      //getPropertyCommands(ifCommand, variables, i);
-      console.log(getPropertyCommands(ifCommand, variables, 0));
+  let resultCommand = '';
+  let conditionalProperties = '';
+
+  let comparisonCommand = commands
+    .substring(conditionalIndicator.length)
+    .replaceAll(" 'Text)", '')
+    .trim()
+    .split(") '")[0];
+  let commandsInsideIf = commands
+    .substring(conditionalIndicator.length + comparisonCommand.length)
+    .split('(begin   ')[1];
+  console.log(commandsInsideIf);
+  for (let i = 0; i < commandsInsideIf.length; i++) {
+    if (commandsInsideIf.startsWith(setPropertyIndicator, i)) {
+      conditionalProperties = getPropertyCommands(
+        commandsInsideIf,
+        variables,
+        i
+      );
+      console.log(conditionalProperties);
     }
-    compareConditionalValues(comparisonCommand, variables);
   }
-  return 'document.querySelector("#Button1").innerHTML = "Queijo"';
+  resultCommand =
+    'if(' +
+    compareConditionalValues(comparisonCommand, variables) +
+    ') {' +
+    conditionalProperties +
+    '}';
+  // else { document.querySelector("#Label2").innerHTML = "Falso"}
+  console.log(resultCommand);
+  return resultCommand;
 };
 
 function compareConditionalValues(command, variables) {
-  console.log(command);
-  let comparisonResult = false;
-  return comparisonResult;
+  let comparator = command.split(' ')[0];
+  console.log(comparator);
+  const termsIndicator = ' (*list-for-runtime* ';
+  let terms = command.substring(comparator.length + termsIndicator.length);
+  let elementsBeforeFilter = terms.split(' ');
+
+  let globalVariableFilter = elementsBeforeFilter
+    .filter((item) => !(item === '(get-var'))
+    .map((n) => (n.startsWith('g$') ? getVariableValue(variables, n) : n));
+
+  let localVariableFilter = globalVariableFilter
+    .filter((item) => !(item === '(lexical-value'))
+    .map((n) => (n.startsWith('$') ? getVariableValue(localVariables, n) : n));
+
+  let textFieldFilter = localVariableFilter
+    .filter((item) => !(item === '(get-property'))
+    .map((n) => (n.startsWith("'") ? getTextFieldValue(n) : n));
+
+  return compare(textFieldFilter, comparator);
+}
+
+function compare(arr, comparator) {
+  let result = false;
+  switch (comparator) {
+    case '>':
+      result = arr[0] > arr[1];
+      break;
+    case '<':
+      result = arr[0] < arr[1];
+      break;
+    case '=':
+      result = arr[0] === arr[1];
+      break;
+    default:
+      result = false;
+      break;
+  }
+  return result;
 }
 
 const getPropertyCommands = (commands, variables, i) => {
