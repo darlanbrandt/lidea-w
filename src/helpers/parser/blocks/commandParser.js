@@ -2,164 +2,190 @@ import { convertDecimaltoHexColor } from '../../../helpers/commandsHelper';
 
 const dict = [];
 const dict2 = [];
-let stack = [];
+let propertiesStack = [];
+let propertiesInsideIf = false;
 let action = '';
 let command = '';
 let localVariables = [];
-let localVariableIndicator = '(let ( ';
-let setPropertyIndicator = "(set-and-coerce-property! '";
-let setGlobalVariableValue = '(set-var g$';
-
-dict["(set-and-coerce-property! '"] = 'document.querySelector("#';
-dict['(let ( '] = 'local-variable';
-dict2['(call-yail-primitive'] = 'operation';
-dict2['(get-var g$'] = 'global-variable';
+const localVariableIndicator = '(let ( ';
+const setPropertyIndicator = "(set-and-coerce-property! '";
+const setGlobalVariableValue = '(set-var g$';
+const conditionalIndicator = '(if (call-yail-primitive ';
 
 const getBlocksCommands = (commands, variables) => {
+  let parsedCommand = '';
+  for (let i = 0; i < commands.length; i++) {
+    if (commands.startsWith(localVariableIndicator, i)) {
+      getLocalVariables(commands, i);
+    } else if (
+      commands.startsWith(setPropertyIndicator, i) &&
+      propertiesInsideIf === false
+    ) {
+      parsedCommand = getPropertyCommands(commands, variables, i);
+    } else if (commands.startsWith(conditionalIndicator, i)) {
+      parsedCommand = getConditionalCommands(commands, variables, i);
+    }
+  }
+  propertiesStack = [];
+  propertiesInsideIf = false;
+  return parsedCommand;
+};
+
+const getConditionalCommands = (commands, variables, i) => {
+  propertiesInsideIf = true;
+  let comparisonCommand = '';
+  let ifCommand = '';
+  for (let i = 0; i < commands.length; i++) {
+    comparisonCommand = commands
+      .substring(conditionalIndicator.length)
+      .split(')')[0];
+    if (commands.startsWith(setPropertyIndicator, i)) {
+      ifCommand = commands.substring(i);
+      console.log(ifCommand);
+      //getPropertyCommands(ifCommand, variables, i);
+      console.log(getPropertyCommands(ifCommand, variables, 0));
+    }
+    compareConditionalValues(comparisonCommand, variables);
+  }
+  return 'document.querySelector("#Button1").innerHTML = "Queijo"';
+};
+
+function compareConditionalValues(command, variables) {
+  console.log(command);
+  let comparisonResult = false;
+  return comparisonResult;
+}
+
+const getPropertyCommands = (commands, variables, i) => {
   command = '';
   let setProperty = '';
   let finalResult = '';
   let fieldValue = '';
 
-  for (let i = 0; i < commands.length; i++) {
-    //Object.keys(dict).forEach((key) => {
-    if (commands.startsWith(localVariableIndicator, i)) {
-      //if (dict[key] === 'local-variable') {
-      let localVariablesText = commands
-        .substring(i + localVariableIndicator.length)
-        .split(' )')[0];
-      let localVariablesTextArray = localVariablesText
-        .replaceAll(') (', '&')
-        .replaceAll('(', '')
-        .replaceAll(')', '')
-        .trim()
-        .replaceAll('$', '')
-        .split('&');
-      localVariables.push(
-        localVariablesTextArray.map((localVariable) => {
-          return {
-            variableName: localVariable.split(' ')[0],
-            variableValue: localVariable.split(' ')[1],
-          };
-        })
-      );
-    } else if (commands.startsWith(setPropertyIndicator, i)) {
-      let componentAction = commands
-        .substring(i + setPropertyIndicator.length)
-        .split(' ')[0];
+  let componentAction = commands
+    .substring(i + setPropertyIndicator.length)
+    .split(' ')[0];
 
-      let componentType = document.querySelector(
-        '#' + componentAction
-      ).nodeName;
+  let componentType = document.querySelector('#' + componentAction).nodeName;
 
-      let typeToApply = '';
+  let typeToApply = '';
 
-      let type = commands
-        .substring(i + setPropertyIndicator.length + componentAction.length + 2)
-        .split(' ')[0];
+  let type = commands
+    .substring(i + setPropertyIndicator.length + componentAction.length + 2)
+    .split(' ')[0];
 
-      if (type === 'Text' && componentType === 'INPUT') {
-        typeToApply = 'TextInput';
-      } else if (type === 'Text' && componentType !== 'INPUT') {
-        typeToApply = 'Text';
-      } else {
-        typeToApply = type;
-      }
-
-      let value = commands
-        .substring(
-          i +
-            setPropertyIndicator.length +
-            componentAction.length +
-            2 +
-            type.length +
-            1
-        )
-        .split(") '")[0];
-
-      /*if (getValue(value, variables).toString().startsWith('(get-var g$')) {
-        getVariableValue(variables,getValue(value, variables))
-      } else if (getValue(value, variables))*/
-
-      fieldValue = getValue(value, variables)
-        .toString()
-        .startsWith('(get-var g$')
-        ? getVariableValue(variables, getValue(value, variables))
-        : getValue(value, variables);
-
-      console.log(typeof fieldValue);
-
-      switch (typeToApply) {
-        case 'BackgroundColor':
-          setProperty =
-            'document.querySelector("#' +
-            componentAction +
-            '").style.backgroundColor = "#' +
-            convertDecimaltoHexColor(+fieldValue) +
-            '"; ';
-          break;
-        case 'FontSize':
-          setProperty =
-            'document.querySelector("#' +
-            componentAction +
-            '").style.fontSize = ' +
-            '"' +
-            fieldValue +
-            'px"' +
-            '; ';
-          break;
-        case 'Text':
-          if (typeof fieldValue === 'number') {
-            setProperty =
-              'document.querySelector("#' +
-              componentAction +
-              '").innerHTML = ' +
-              '"' +
-              fieldValue +
-              '"' +
-              '; ';
-          } else {
-            setProperty =
-              'document.querySelector("#' +
-              componentAction +
-              '").innerHTML = ' +
-              '"' +
-              replaceQuotes(fieldValue) +
-              '"' +
-              '; ';
-          }
-          break;
-        case 'TextInput':
-          setProperty =
-            'document.querySelector("#' +
-            componentAction +
-            '").value = ' +
-            '"' +
-            replaceQuotes(fieldValue) +
-            '"' +
-            '; ';
-          break;
-        case 'TextColor':
-          setProperty =
-            'document.querySelector("#' +
-            componentAction +
-            '").style.color = "#' +
-            convertDecimaltoHexColor(Number(fieldValue)) +
-            '"; ';
-          break;
-        default:
-          break;
-      }
-
-      stack.push(setProperty);
-      finalResult = stack.join().replaceAll(',', '');
-    }
-    //});
+  if (type === 'Text' && componentType === 'INPUT') {
+    typeToApply = 'TextInput';
+  } else if (type === 'Text' && componentType !== 'INPUT') {
+    typeToApply = 'Text';
+  } else {
+    typeToApply = type;
   }
-  //finalResult.replaceAll("'", "\\'");
-  stack = [];
+
+  let value = commands
+    .substring(
+      i +
+        setPropertyIndicator.length +
+        componentAction.length +
+        2 +
+        type.length +
+        1
+    )
+    .split(") '")[0];
+
+  fieldValue = getValue(value, variables).toString().startsWith('(get-var g$')
+    ? getVariableValue(variables, getValue(value, variables))
+    : getValue(value, variables);
+
+  console.log(typeof fieldValue);
+
+  switch (typeToApply) {
+    case 'BackgroundColor':
+      setProperty =
+        'document.querySelector("#' +
+        componentAction +
+        '").style.backgroundColor = "#' +
+        convertDecimaltoHexColor(+fieldValue) +
+        '"; ';
+      break;
+    case 'FontSize':
+      setProperty =
+        'document.querySelector("#' +
+        componentAction +
+        '").style.fontSize = ' +
+        '"' +
+        fieldValue +
+        'px"' +
+        '; ';
+      break;
+    case 'Text':
+      if (typeof fieldValue === 'number') {
+        setProperty =
+          'document.querySelector("#' +
+          componentAction +
+          '").innerHTML = ' +
+          '"' +
+          fieldValue +
+          '"' +
+          '; ';
+      } else {
+        setProperty =
+          'document.querySelector("#' +
+          componentAction +
+          '").innerHTML = ' +
+          '"' +
+          replaceQuotes(fieldValue) +
+          '"' +
+          '; ';
+      }
+      break;
+    case 'TextInput':
+      setProperty =
+        'document.querySelector("#' +
+        componentAction +
+        '").value = ' +
+        '"' +
+        replaceQuotes(fieldValue) +
+        '"' +
+        '; ';
+      break;
+    case 'TextColor':
+      setProperty =
+        'document.querySelector("#' +
+        componentAction +
+        '").style.color = "#' +
+        convertDecimaltoHexColor(Number(fieldValue)) +
+        '"; ';
+      break;
+    default:
+      break;
+  }
+
+  propertiesStack.push(setProperty);
+  finalResult = propertiesStack.join().replaceAll(',', '');
   return finalResult.toString();
 };
+
+function getLocalVariables(commands, i) {
+  let localVariablesText = commands
+    .substring(i + localVariableIndicator.length)
+    .split(' )')[0];
+  let localVariablesTextArray = localVariablesText
+    .replaceAll(') (', '&')
+    .replaceAll('(', '')
+    .replaceAll(')', '')
+    .trim()
+    .replaceAll('$', '')
+    .split('&');
+  localVariables.push(
+    localVariablesTextArray.map((localVariable) => {
+      return {
+        variableName: localVariable.split(' ')[0],
+        variableValue: localVariable.split(' ')[1],
+      };
+    })
+  );
+}
 
 function getValue(commandText, variables) {
   let textValue = '';
