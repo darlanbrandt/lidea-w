@@ -1,7 +1,5 @@
 import { convertDecimaltoHexColor } from '../../../helpers/commandsHelper';
 
-const dict = [];
-const dict2 = [];
 let propertiesStack = [];
 let conditionalStack = [];
 let propertiesInsideIf = false;
@@ -33,65 +31,60 @@ const getBlocksCommands = (commands, variables) => {
 };
 
 const getConditionalCommands = (commands, variables, i) => {
-  console.log(commands);
+  let ifStack = [];
   propertiesInsideIf = true;
-  let containsElse = false;
-  let elseCommand = 'begin   (';
-  let ifCommand = '';
-  let resultCommand = '';
-  let ifCommandsStack = [];
-  let commandsToExecute = '';
-  let conditionalProperties = '';
-
-  let comparisonCommand = commands
-    .substring(conditionalIndicator.length)
-    .replaceAll(" 'Text)", '')
-    .trim()
-    .split('(begin   ')[0];
-  console.log(comparisonCommand);
-  let commandsInsideIf = commands.substring(
-    conditionalIndicator.length + comparisonCommand.length + 9
-  );
-  //console.log(commandsInsideIf);
-  for (let i = 0; i < commandsInsideIf.length; i++) {
-    if (commandsInsideIf.startsWith(setPropertyIndicator, i)) {
-      //console.log(commandsInsideIf.substring(i).split(elseCommand)[0]);
-      conditionalProperties = getPropertyCommands(
-        commandsInsideIf.substring(i).split(elseCommand)[0],
-        variables,
-        0
+  conditionalStack = [];
+  let comparisonCommand = '';
+  for (let i = 0; i < commands.length; i++) {
+    if (commands.startsWith('if', i)) {
+      ifStack.push('if ');
+    } else if (commands.startsWith('(call-yail-primitive', i)) {
+      ifStack.push('(');
+      comparisonCommand = commands
+        .substring(i + '(call-yail-primitive'.length + 1)
+        .replaceAll(" 'Text)", '')
+        .trim()
+        .split('(begin   ')[0];
+      ifStack.push(compareConditionalValues(comparisonCommand, variables));
+      ifStack.push(') {');
+    } else if (commands.startsWith(') (begin   ', i)) {
+      ifStack.push(
+        commands.substring(i + ') (begin   '.length).split('(begin')[0]
       );
-      ifCommandsStack.push(conditionalProperties);
-      propertiesStack = [];
-    } else if (commandsInsideIf.startsWith(elseCommand, i)) {
-      ifCommandsStack.push('} else {');
-      containsElse = true;
-    } else if (commandsInsideIf.startsWith(conditionalIndicator, i)) {
-      console.log('Achou');
-      getConditionalCommands(commandsInsideIf.substring(i), variables, 0);
+      ifStack.push('}');
+    } else if (commands.startsWith(') (begin (if', i)) {
+      ifStack.push(' else ');
+    } else if (commands.startsWith(')) (begin   (', i)) {
+      ifStack.push(' else {');
     }
   }
 
-  if (!containsElse) {
-    resultCommand =
-      'if(' +
-      compareConditionalValues(comparisonCommand, variables) +
-      ') {' +
-      conditionalProperties +
-      '}';
-  } else if (containsElse) {
-    commandsToExecute = ifCommandsStack.join().replaceAll(',', '');
-    console.log(commandsToExecute);
-    resultCommand =
-      'if(' +
-      compareConditionalValues(comparisonCommand, variables) +
-      ') {' +
-      commandsToExecute +
-      '}';
-  }
-  console.log(resultCommand);
-  return resultCommand;
+  let commandStack = ifStack.map((element) => {
+    let elementToString = element.toString();
+    if (elementToString.startsWith(setPropertyIndicator)) {
+      for (let i = 0; i < elementToString.length; i++) {
+        if (elementToString.startsWith(setPropertyIndicator, i)) {
+          conditionalStack.push(getPropertyCommands(element, variables, i));
+          propertiesStack = [];
+        }
+      }
+      return conditionalStack.join().replaceAll(',', '');
+    }
+    return element;
+  });
+
+  return removeLastElement(commandStack).join().replaceAll(',', '');
 };
+
+function removeLastElement(arr) {
+  let lastElement = arr.pop();
+  if (lastElement === 'if ') {
+    return arr;
+  } else {
+    arr.push(lastElement);
+    return arr;
+  }
+}
 
 function compareConditionalValues(command, variables) {
   let comparator = command.split(' ')[0];
@@ -244,7 +237,9 @@ const getPropertyCommands = (commands, variables, i) => {
   }
 
   propertiesStack.push(setProperty);
+  console.log(propertiesStack);
   finalResult = propertiesStack.join().replaceAll(',', '');
+  console.log(finalResult);
   return finalResult.toString();
 };
 
