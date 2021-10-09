@@ -33,49 +33,75 @@ const getBlocksCommands = (commands, variables) => {
 };
 
 const getConditionalCommands = (commands, variables, i) => {
+  console.log(commands);
   propertiesInsideIf = true;
-  //let comparisonCommand = '';
+  let containsElse = false;
+  let elseCommand = 'begin   (';
   let ifCommand = '';
   let resultCommand = '';
+  let ifCommandsStack = [];
+  let commandsToExecute = '';
   let conditionalProperties = '';
 
   let comparisonCommand = commands
     .substring(conditionalIndicator.length)
     .replaceAll(" 'Text)", '')
     .trim()
-    .split(") '")[0];
-  let commandsInsideIf = commands
-    .substring(conditionalIndicator.length + comparisonCommand.length)
-    .split('(begin   ')[1];
-  console.log(commandsInsideIf);
+    .split('(begin   ')[0];
+  console.log(comparisonCommand);
+  let commandsInsideIf = commands.substring(
+    conditionalIndicator.length + comparisonCommand.length + 9
+  );
+  //console.log(commandsInsideIf);
   for (let i = 0; i < commandsInsideIf.length; i++) {
     if (commandsInsideIf.startsWith(setPropertyIndicator, i)) {
+      //console.log(commandsInsideIf.substring(i).split(elseCommand)[0]);
       conditionalProperties = getPropertyCommands(
-        commandsInsideIf,
+        commandsInsideIf.substring(i).split(elseCommand)[0],
         variables,
-        i
+        0
       );
-      console.log(conditionalProperties);
+      ifCommandsStack.push(conditionalProperties);
+      propertiesStack = [];
+    } else if (commandsInsideIf.startsWith(elseCommand, i)) {
+      ifCommandsStack.push('} else {');
+      containsElse = true;
+    } else if (commandsInsideIf.startsWith(conditionalIndicator, i)) {
+      console.log('Achou');
+      getConditionalCommands(commandsInsideIf.substring(i), variables, 0);
     }
   }
-  resultCommand =
-    'if(' +
-    compareConditionalValues(comparisonCommand, variables) +
-    ') {' +
-    conditionalProperties +
-    '}';
-  // else { document.querySelector("#Label2").innerHTML = "Falso"}
+
+  if (!containsElse) {
+    resultCommand =
+      'if(' +
+      compareConditionalValues(comparisonCommand, variables) +
+      ') {' +
+      conditionalProperties +
+      '}';
+  } else if (containsElse) {
+    commandsToExecute = ifCommandsStack.join().replaceAll(',', '');
+    console.log(commandsToExecute);
+    resultCommand =
+      'if(' +
+      compareConditionalValues(comparisonCommand, variables) +
+      ') {' +
+      commandsToExecute +
+      '}';
+  }
   console.log(resultCommand);
   return resultCommand;
 };
 
 function compareConditionalValues(command, variables) {
   let comparator = command.split(' ')[0];
-  console.log(comparator);
+  //console.log(comparator);
   const termsIndicator = ' (*list-for-runtime* ';
-  let terms = command.substring(comparator.length + termsIndicator.length);
+  let terms = command
+    .substring(comparator.length + termsIndicator.length)
+    .split(") '(")[0];
   let elementsBeforeFilter = terms.split(' ');
-
+  //console.log(elementsBeforeFilter);
   let globalVariableFilter = elementsBeforeFilter
     .filter((item) => !(item === '(get-var'))
     .map((n) => (n.startsWith('g$') ? getVariableValue(variables, n) : n));
@@ -87,6 +113,8 @@ function compareConditionalValues(command, variables) {
   let textFieldFilter = localVariableFilter
     .filter((item) => !(item === '(get-property'))
     .map((n) => (n.startsWith("'") ? getTextFieldValue(n) : n));
+
+  //console.log(textFieldFilter);
 
   return compare(textFieldFilter, comparator);
 }
@@ -100,7 +128,7 @@ function compare(arr, comparator) {
     case '<':
       result = arr[0] < arr[1];
       break;
-    case '=':
+    case 'yail-equal?':
       result = arr[0] === arr[1];
       break;
     default:
@@ -151,7 +179,7 @@ const getPropertyCommands = (commands, variables, i) => {
     ? getVariableValue(variables, getValue(value, variables))
     : getValue(value, variables);
 
-  console.log(typeof fieldValue);
+  //console.log(typeof fieldValue);
 
   switch (typeToApply) {
     case 'BackgroundColor':
@@ -349,9 +377,17 @@ function getVarValue(variables, value) {
 
 function getTextFieldValue(value) {
   let fieldName = value.substring(1);
-  let fieldValue = document.querySelector('#' + fieldName).value
-    ? document.querySelector('#' + fieldName).value
-    : 0;
+  let fieldType = document.querySelector('#' + fieldName).nodeName;
+  let fieldValue = '';
+  if (fieldType === 'SPAN') {
+    fieldValue = document.querySelector('#' + fieldName).innerHTML
+      ? document.querySelector('#' + fieldName).innerHTML
+      : 0;
+  } else {
+    fieldValue = document.querySelector('#' + fieldName).value
+      ? document.querySelector('#' + fieldName).value
+      : 0;
+  }
   return fieldValue;
 }
 
