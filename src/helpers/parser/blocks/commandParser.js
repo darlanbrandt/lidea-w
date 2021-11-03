@@ -1,4 +1,6 @@
-import { convertDecimaltoHexColor } from '../../../helpers/commandsHelper';
+import {
+  convertDecimaltoHexColor
+} from '../../../helpers/commandsHelper';
 
 let propertiesStack = [];
 let conditionalStack = [];
@@ -37,8 +39,9 @@ const getConditionalCommands = (commands, variables, i) => {
   let comparisonCommand = '';
   for (let i = 0; i < commands.length; i++) {
     if (commands.startsWith('if', i)) {
+      console.log('if')
       ifStack.push('if ');
-    } else if (commands.startsWith('(call-yail-primitive', i)) {
+    } else if (commands.startsWith('(call-yail-primitive', i) && !commands.startsWith('(call-yail-primitive string', i)) {
       ifStack.push('(');
       comparisonCommand = commands
         .substring(i + '(call-yail-primitive'.length + 1)
@@ -47,14 +50,17 @@ const getConditionalCommands = (commands, variables, i) => {
         .split('(begin   ')[0];
       ifStack.push(compareConditionalValues(comparisonCommand, variables));
       ifStack.push(') {');
+      console.log('(' + compareConditionalValues(comparisonCommand, variables) + ') {');
     } else if (commands.startsWith(') (begin   ', i)) {
       ifStack.push(
         commands.substring(i + ') (begin   '.length).split('(begin')[0]
       );
       ifStack.push('}');
+      console.log(commands.substring(i + ') (begin   '.length).split('(begin')[0] + '}');
     } else if (commands.startsWith(') (begin (if', i)) {
       ifStack.push(' else ');
     } else if (commands.startsWith(')) (begin   (', i)) {
+      console.log(' else {')
       ifStack.push(' else {');
     }
   }
@@ -160,17 +166,17 @@ const getPropertyCommands = (commands, variables, i) => {
   let value = commands
     .substring(
       i +
-        setPropertyIndicator.length +
-        componentAction.length +
-        2 +
-        type.length +
-        1
+      setPropertyIndicator.length +
+      componentAction.length +
+      2 +
+      type.length +
+      1
     )
     .split(") '")[0];
 
-  fieldValue = getValue(value, variables).toString().startsWith('(get-var g$')
-    ? getVariableValue(variables, getValue(value, variables))
-    : getValue(value, variables);
+  fieldValue = getValue(value, variables).toString().startsWith('(get-var g$') ?
+    getVariableValue(variables, getValue(value, variables)) :
+    getValue(value, variables);
 
   //console.log(typeof fieldValue);
 
@@ -333,11 +339,34 @@ function calculate(calculationText, variables, localVariables) {
     case 'yail-divide':
       result = division(numbers);
       break;
+    case 'sqrt':
+      result = squareRoot(numbers);
+      break;
+    case 'random-integer':
+      result = randomInteger(numbers);
+      break;
+    case 'random-fraction':
+      result = randomFraction();
+      break;
+    case 'radians->degrees':
+      result = radiansToDegrees(numbers);
+      break;
+    case 'min':
+      result = minNumber(numbers);
+      break;
+    case 'max':
+      result = maxNumber(numbers);
+      break;
+    case 'abs':
+      result = absNumber(numbers);
+      break;
     default:
       break;
   }
   return result;
 }
+
+
 
 function getVariableValue(variables, value) {
   let variableName = '';
@@ -375,13 +404,13 @@ function getTextFieldValue(value) {
   let fieldType = document.querySelector('#' + fieldName).nodeName;
   let fieldValue = '';
   if (fieldType === 'SPAN') {
-    fieldValue = document.querySelector('#' + fieldName).innerHTML
-      ? document.querySelector('#' + fieldName).innerHTML
-      : 0;
+    fieldValue = document.querySelector('#' + fieldName).innerHTML ?
+      document.querySelector('#' + fieldName).innerHTML :
+      0;
   } else {
-    fieldValue = document.querySelector('#' + fieldName).value
-      ? document.querySelector('#' + fieldName).value
-      : 0;
+    fieldValue = document.querySelector('#' + fieldName).value ?
+      document.querySelector('#' + fieldName).value :
+      0;
   }
   return fieldValue;
 }
@@ -421,9 +450,40 @@ function division(arr) {
   return arr[0] / arr[1];
 }
 
+function squareRoot(arr) {
+  return Math.sqrt(arr[0]);
+}
+
+function randomInteger(arr) {
+  return Math.floor(Math.random() * arr[1]) + arr[0];
+}
+
+function randomFraction() {
+  return (Math.floor(Math.random() * 10) + 1) / (Math.floor(Math.random() * 100) + 1);
+}
+
+function radiansToDegrees(arr) {
+  let pi = Math.PI;
+  return arr[0] * (180 / pi);
+}
+
+function minNumber(arr) {
+  return Math.min(...arr);
+}
+
+function maxNumber(arr) {
+  return Math.max(...arr);
+}
+
+function absNumber(arr) {
+  return Math.abs(arr[0]);
+}
+
 const replaceQuotes = (value) => {
   let replacedQuotesValue = value.replaceAll('\\"', '');
   return replacedQuotesValue;
 };
 
-export { getBlocksCommands };
+export {
+  getBlocksCommands
+};
