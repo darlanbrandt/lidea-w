@@ -8,6 +8,7 @@ let propertiesInsideIf = false;
 let action = '';
 let command = '';
 let localVariables = [];
+const PI = Math.PI;
 const localVariableIndicator = '(let ( ';
 const setPropertyIndicator = "(set-and-coerce-property! '";
 const setGlobalVariableValue = '(set-var g$';
@@ -351,6 +352,9 @@ function calculate(calculationText, variables, localVariables) {
     case 'radians->degrees':
       result = radiansToDegrees(numbers);
       break;
+    case 'degrees->radians':
+      result = degreesToRadians(numbers);
+      break;
     case 'min':
       result = minNumber(numbers);
       break;
@@ -359,6 +363,42 @@ function calculate(calculationText, variables, localVariables) {
       break;
     case 'abs':
       result = absNumber(numbers);
+      break;
+    case 'neg':
+      result = negNumber(numbers);
+      break;
+    case 'log':
+      result = logNumber(numbers);
+      break;
+    case 'exp':
+      result = expNumber(numbers);
+      break;
+    case 'round':
+      result = roundNumber(numbers);
+      break;
+    case 'ceil':
+      result = ceilNumber(numbers);
+      break;
+    case 'floor':
+      result = floorNumber(numbers);
+      break;
+    case 'sin':
+      result = sinNumber(numbers);
+      break;
+    case 'cos':
+      result = cosNumber(numbers);
+      break;
+    case 'tan':
+      result = tanNumber(numbers);
+      break;
+      case 'modulo':
+        result = moduloNumber(numbers);
+        break;
+        case 'remainder':
+      result = remainderNumber(numbers);
+      break;
+      case 'quotient':
+      result = quotientNumber(numbers);
       break;
     default:
       break;
@@ -459,12 +499,15 @@ function randomInteger(arr) {
 }
 
 function randomFraction() {
-  return (Math.floor(Math.random() * 10) + 1) / (Math.floor(Math.random() * 100) + 1);
+  return Math.random();
 }
 
 function radiansToDegrees(arr) {
-  let pi = Math.PI;
-  return arr[0] * (180 / pi);
+  return arr[0] * (180 / PI);
+}
+
+function degreesToRadians(arr) {
+  return arr[0] * (PI / 180);
 }
 
 function minNumber(arr) {
@@ -477,6 +520,54 @@ function maxNumber(arr) {
 
 function absNumber(arr) {
   return Math.abs(arr[0]);
+}
+
+function negNumber(arr) {
+  return arr[0] * -1;
+}
+
+function logNumber(arr) {
+  return Math.log(arr[0]);
+}
+
+function expNumber(arr) {
+  return Math.exp(arr[0]);
+}
+
+function roundNumber(arr) {
+  return Math.round(arr[0]);
+}
+
+function ceilNumber(arr) {
+  return Math.ceil(arr[0]);
+}
+
+function floorNumber(arr) {
+  return Math.floor(arr[0]);
+}
+
+function sinNumber(arr) {
+  return Math.sin(arr[0] * (PI / 180));
+}
+
+function cosNumber(arr) {
+  return Math.cos(arr[0] * (PI / 180));
+}
+
+function tanNumber(arr) {
+  return Math.tan(arr[0] * (PI / 180));
+}
+
+function moduloNumber(arr) {
+  return ((arr[0] % arr[1]) + arr[1]) % arr[1];
+}
+
+function remainderNumber(arr) {
+  return arr[0] % arr[1];
+}
+
+function quotientNumber(arr) {
+  return Math.floor(arr[0] / arr[1]);
 }
 
 const replaceQuotes = (value) => {
