@@ -503,11 +503,11 @@ function randomFraction() {
 }
 
 function radiansToDegrees(arr) {
-  return arr[0] * (180 / PI);
+  return (arr[0] || arr) * (180 / PI);
 }
 
 function degreesToRadians(arr) {
-  return arr[0] * (PI / 180);
+  return (arr[0] || arr) * (PI / 180);
 }
 
 function minNumber(arr) {
@@ -547,15 +547,15 @@ function floorNumber(arr) {
 }
 
 function sinNumber(arr) {
-  return Math.sin(arr[0] * (PI / 180));
+  return Math.sin(degreesToRadians(arr[0]));
 }
 
 function cosNumber(arr) {
-  return Math.cos(arr[0] * (PI / 180));
+  return Math.cos(degreesToRadians(arr[0]));
 }
 
 function tanNumber(arr) {
-  return Math.tan(arr[0] * (PI / 180));
+  return Math.tan(degreesToRadians(arr[0]));
 }
 
 function moduloNumber(arr) {

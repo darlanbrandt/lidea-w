@@ -24,7 +24,7 @@ import TimePicker from '../ai_components/TimePicker';
 
 export default function Elements() {
   const { components } = useContext(ContentContext);
-  console.log(components);
+  console.table(components);
   let reactComponent = [];
 
   // Lista quais são os componentes filhos de algum outro componente
