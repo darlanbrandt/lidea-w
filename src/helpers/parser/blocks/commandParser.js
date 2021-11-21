@@ -17,7 +17,16 @@ const TRUE = true.toString();
 const FALSE = false.toString();
 const SPLIT_CHARACTER = 'character';
 const SPLIT_SPACES = 'spaces';
-const SPLIT_FIRST = 'first'
+const SPLIT_FIRST = 'first';
+const EQUAL = 'yail-equal';
+const NOT_EQUAL = 'yail-not-equal';
+const LESS_THAN = '<';
+const LESS_EQUAL = '<=';
+const GREATER_THAN = '>';
+const GREATER_EQUAL = '>=';
+const BITWISE_AND = 'and';
+const BITWISE_OR = 'or';
+const BITWISE_XOR = 'xor';
 
 const getBlocksCommands = (commands, variables) => {
   let parsedCommand = '';
@@ -355,13 +364,13 @@ function textActions(textString, variables, localVariables) {
       result = emptyText(removedQuotes);
       break;
     case 'string<?':
-      result = compareText(removedQuotes, '<');
+      result = compareText(removedQuotes, LESS_THAN);
       break;
     case 'string=?':
-      result = compareText(removedQuotes, '=');
+      result = compareText(removedQuotes, EQUAL);
       break;
     case 'string>?':
-      result = compareText(removedQuotes, '>');
+      result = compareText(removedQuotes, GREATER_THAN);
       break;
     case 'string-trim':
       result = trimText(removedQuotes);
@@ -444,6 +453,24 @@ function calculate(calculationText, variables, localVariables) {
     case 'yail-divide':
       result = division(numbers);
       break;
+    case 'yail-equal':
+      result = compareNumbers(numbers, EQUAL);
+      break;
+    case 'yail-not-equal':
+      result = compareNumbers(numbers, NOT_EQUAL);
+      break;
+    case '<':
+      result = compareNumbers(numbers, LESS_THAN);
+      break;
+    case '<=':
+      result = compareNumbers(numbers, LESS_EQUAL);
+      break;
+    case '>':
+      result = compareNumbers(numbers, GREATER_THAN);
+      break;
+    case '>=':
+      result = compareNumbers(numbers, GREATER_EQUAL);
+      break;
     case 'sqrt':
       result = squareRoot(numbers);
       break;
@@ -458,6 +485,9 @@ function calculate(calculationText, variables, localVariables) {
       break;
     case 'degrees->radians':
       result = degreesToRadians(numbers);
+      break;
+    case 'is-number?': 
+      result = isNumber(numbers);
       break;
     case 'min':
       result = minNumber(numbers);
@@ -515,6 +545,30 @@ function calculate(calculationText, variables, localVariables) {
       break;
     case 'format-as-decimal':
       result = decimalNumber(numbers);
+      break;
+    case 'math-convert-dec-hex':
+      result = decimalToHexNumber(numbers);
+      break;
+    case 'math-convert-hex-dec':
+      result = HexToDecimalNumber(numbers);
+      break;
+    case 'math-convert-dec-bin':
+      result = decimalToBinaryNumber(numbers);
+      break;
+    case 'math-convert-bin-dec':
+      result = binaryToDecimalNumber(numbers);
+      break;
+    case 'is-number?':
+      result = isNumber(numbers);
+      break;
+    case 'bitwise-and':
+      result = bitwiseNumber(numbers, BITWISE_AND);
+      break;
+    case 'bitwise-ior':
+      result = bitwiseNumber(numbers, BITWISE_OR);
+      break;
+    case 'bitwise-xor':
+      result = bitwiseNumber(numbers, BITWISE_XOR);
       break;
     default:
       break;
@@ -592,6 +646,25 @@ function multiplication(arr) {
 
 function division(arr) {
   return arr[0] / arr[1];
+}
+
+function compareNumbers(arr, type) {
+  switch (type) {
+    case EQUAL:
+      return arr[0] === arr[1];
+    case NOT_EQUAL:
+      return arr[0] !== arr[1];
+    case LESS_THAN:
+      return arr[0] < arr[1];
+    case LESS_EQUAL:
+      return arr[0] <= arr[1];
+    case GREATER_THAN:
+      return arr[0] > arr[1];
+    case GREATER_EQUAL:
+      return arr[0] >= arr[1];
+    default:
+      break;
+  }
 }
 
 function squareRoot(arr) {
@@ -691,12 +764,53 @@ function decimalNumber(arr) {
 }
 
 function isNumber(arr) {
-  return typeof arr[0] === 'number' ? TRUE : FALSE;
+  console.log(arr[0]);
+  console.log(Number(arr[0]));
+  return typeof Number(arr[0]) === 'number' ? true : false;
 }
 
-function bitwiseAndNumber(arr) {
-  return 0;
+function decimalToBinaryNumber(arr) {
+  return (arr[0] >>> 0).toString(2);
 }
+
+function binaryToDecimalNumber(arr) {
+  return parseInt(arr[0], 2).toString(10);
+}
+
+function decimalToHexNumber(arr) {
+  return arr[0].toString(16);
+}
+
+function HexToDecimalNumber(arr) {
+  return parseInt(arr[0], 16);
+}
+
+function bitwiseNumber(arr, type) {
+  let result = arr[0];
+  const arrayLength = arr.length;
+
+  switch (type) {
+    case BITWISE_AND:
+      for (let i = 0; i < arrayLength; i++) {
+        result = result & arr[i];
+      }
+      break;
+    case BITWISE_OR:
+      for (let i = 0; i < arrayLength; i++) {
+        result = result | arr[i];
+      }
+      break;
+    case BITWISE_XOR:
+      for (let i = 0; i < arrayLength; i++) {
+        result = result ^ arr[i];
+      }
+      break;
+    default:
+      break;
+  }
+  return result;
+}
+
 /*======================= TEXT BLOCKS =======================*/
 
 function joinText(arr) {
@@ -708,7 +822,7 @@ function lengthText(arr) {
 }
 
 function emptyText(arr) {
-  return arr[0] === null ? TRUE : FALSE;
+  return arr[0] === null ? true : false;
 }
 
 function trimText(arr) {
@@ -719,11 +833,11 @@ function compareText(arr, comparator) {
   let comparisonResult = arr[0].localeCompare(arr[1]);
   switch (comparisonResult) {
     case -1:
-      return comparator === '<' ? TRUE : FALSE;
+      return comparator === LESS_THAN ? true : false;
     case 0:
-      return comparator === '=' ? TRUE : FALSE;
+      return comparator === EQUAL ? true : false;
     case 1:
-      return comparator === '>' ? TRUE : FALSE;
+      return comparator === GREATER_THAN ? true : false;
     default:
       break;
   }
@@ -778,7 +892,7 @@ function splitText(arr, type) {
 }
 
 function isStringText(arr) {
-  return Number.isNaN(Number(arr[0])) ? TRUE : FALSE;
+  return Number.isNaN(Number(arr[0])) ? true : false;
 }
 
 function substringText(arr) {
@@ -794,7 +908,7 @@ function replaceText(arr) {
 
 
 const replaceQuotes = (value) => {
-  let replacedQuotesValue = value.replaceAll('\\"', '');
+  let replacedQuotesValue = value.toString().replaceAll('\\"', '');
   return replacedQuotesValue;
 };
 
