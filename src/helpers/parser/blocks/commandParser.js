@@ -1,6 +1,4 @@
-import {
-  convertDecimaltoHexColor
-} from '../../../helpers/commandsHelper';
+import { convertDecimaltoHexColor } from '../../../helpers/commandsHelper';
 
 let propertiesStack = [];
 let conditionalStack = [];
@@ -13,6 +11,7 @@ const localVariableIndicator = '(let ( ';
 const setPropertyIndicator = "(set-and-coerce-property! '";
 const setGlobalVariableValue = '(set-var g$';
 const conditionalIndicator = '(if (call-yail-primitive ';
+const listIndicator = 'call-yail-primitive yail-list';
 const TRUE = true.toString();
 const FALSE = false.toString();
 const SPLIT_CHARACTER = 'character';
@@ -40,6 +39,8 @@ const getBlocksCommands = (commands, variables) => {
       parsedCommand = getPropertyCommands(commands, variables, i);
     } else if (commands.startsWith(conditionalIndicator, i)) {
       parsedCommand = getConditionalCommands(commands, variables, i);
+    } else if (commands.startsWith(listIndicator, i)) {
+      console.log('Comando de Lista');
     }
   }
   propertiesStack = [];
@@ -54,9 +55,12 @@ const getConditionalCommands = (commands, variables, i) => {
   let comparisonCommand = '';
   for (let i = 0; i < commands.length; i++) {
     if (commands.startsWith('if', i)) {
-      console.log('if')
+      console.log('if');
       ifStack.push('if ');
-    } else if (commands.startsWith('(call-yail-primitive', i) && !commands.startsWith('(call-yail-primitive string', i)) {
+    } else if (
+      commands.startsWith('(call-yail-primitive', i) &&
+      !commands.startsWith('(call-yail-primitive string', i)
+    ) {
       ifStack.push('(');
       comparisonCommand = commands
         .substring(i + '(call-yail-primitive'.length + 1)
@@ -65,17 +69,21 @@ const getConditionalCommands = (commands, variables, i) => {
         .split('(begin   ')[0];
       ifStack.push(compareConditionalValues(comparisonCommand, variables));
       ifStack.push(') {');
-      console.log('(' + compareConditionalValues(comparisonCommand, variables) + ') {');
+      console.log(
+        '(' + compareConditionalValues(comparisonCommand, variables) + ') {'
+      );
     } else if (commands.startsWith(') (begin   ', i)) {
       ifStack.push(
         commands.substring(i + ') (begin   '.length).split('(begin')[0]
       );
       ifStack.push('}');
-      console.log(commands.substring(i + ') (begin   '.length).split('(begin')[0] + '}');
+      console.log(
+        commands.substring(i + ') (begin   '.length).split('(begin')[0] + '}'
+      );
     } else if (commands.startsWith(') (begin (if', i)) {
       ifStack.push(' else ');
     } else if (commands.startsWith(')) (begin   (', i)) {
-      console.log(' else {')
+      console.log(' else {');
       ifStack.push(' else {');
     }
   }
@@ -181,17 +189,18 @@ const getPropertyCommands = (commands, variables, i) => {
   let value = commands
     .substring(
       i +
-      setPropertyIndicator.length +
-      componentAction.length +
-      2 +
-      type.length +
-      1
+        setPropertyIndicator.length +
+        componentAction.length +
+        2 +
+        type.length +
+        1
     )
     .split(") '")[0];
+  console.log(value);
 
-  fieldValue = getValue(value, variables).toString().startsWith('(get-var g$') ?
-    getVariableValue(variables, getValue(value, variables)) :
-    getValue(value, variables);
+  fieldValue = getValue(value, variables).toString().startsWith('(get-var g$')
+    ? getVariableValue(variables, getValue(value, variables))
+    : getValue(value, variables);
 
   //console.log(typeof fieldValue);
 
@@ -299,6 +308,11 @@ function getValue(commandText, variables) {
       .trim();
     if (textSubstring.startsWith('string')) {
       textValue = textActions(textSubstring, variables, localVariables);
+    } else if (
+      textSubstring.startsWith('make-yail-list') ||
+      textSubstring.startsWith('yail-list')
+    ) {
+      textValue = listActions(textSubstring, variables, localVariables);
     } else {
       textValue = calculate(textSubstring, variables, localVariables);
     }
@@ -321,9 +335,60 @@ function getValue(commandText, variables) {
   return textValue;
 }
 
+function listActions(listString, variables, localVariables) {
+  console.log(listString);
+  let result = [];
+  let operator = listString.split(' ')[0];
+  console.log(operator);
+  const listIndicator = ' (*list-for-runtime* ';
+  let elementsBeforeFilter = '';
+  let listElements = listString
+    .substring(operator.length + listIndicator.length)
+    .replaceAll('\\', '')
+    .replaceAll(' make-yail-list', '')
+    .replaceAll(' (*list-for-runtime*', '')
+    .replaceAll('(call-yail-primitive ', '');
+
+  /*console.log(listElements.split(' '));
+  console.log(listElements);*/
+  if (
+    listElements.startsWith('(get-var') ||
+    listElements.startsWith('(lexical-value') ||
+    listElements.startsWith('(get-property')
+  ) {
+    elementsBeforeFilter = listElements.split(' ');
+  } else {
+    elementsBeforeFilter = listElements.split('" "');
+  }
+
+  let globalVariableFilter = elementsBeforeFilter
+    .filter((item) => !(item === '(get-var'))
+    .map((n) => (n.startsWith('g$') ? getVariableValue(variables, n) : n));
+
+  let localVariableFilter = globalVariableFilter
+    .filter((item) => !(item === '(lexical-value'))
+    .map((n) => (n.startsWith('$') ? getVariableValue(localVariables, n) : n));
+
+  let textFieldFilter = localVariableFilter
+    .filter((item) => !(item === '(get-property'))
+    .map((n) => (n.startsWith("'") ? getTextFieldValue(n) : n));
+
+  let removedQuotes = textFieldFilter.map((text) =>
+    text.startsWith('"') || text.endsWith('"') ? text.replaceAll('"', '') : text
+  );
+  console.log(removedQuotes);
+
+  switch (operator) {
+    case 'yail-list-reverse':
+      console.log(removedQuotes.reverse());
+  }
+
+  return result;
+}
+
 function textActions(textString, variables, localVariables) {
   console.log(textString);
-  let result = 'Texto';
+  let result = '';
   let operator = textString.split(' ')[0];
   console.log(operator);
   const textIndicator = ' (*list-for-runtime* ';
@@ -332,7 +397,11 @@ function textActions(textString, variables, localVariables) {
     .substring(operator.length + textIndicator.length)
     .replaceAll('\\', '');
   console.log(textElements);
-  if (textElements.startsWith('(get-var') || textElements.startsWith('(lexical-value') || textElements.startsWith('(get-property')) {
+  if (
+    textElements.startsWith('(get-var') ||
+    textElements.startsWith('(lexical-value') ||
+    textElements.startsWith('(get-property')
+  ) {
     elementsBeforeFilter = textElements.split(' ');
   } else {
     elementsBeforeFilter = textElements.split('" "');
@@ -350,7 +419,9 @@ function textActions(textString, variables, localVariables) {
     .filter((item) => !(item === '(get-property'))
     .map((n) => (n.startsWith("'") ? getTextFieldValue(n) : n));
 
-  let removedQuotes = textFieldFilter.map(text => text.startsWith('"') || text.endsWith('"') ? text.replaceAll('"', '') : text);
+  let removedQuotes = textFieldFilter.map((text) =>
+    text.startsWith('"') || text.endsWith('"') ? text.replaceAll('"', '') : text
+  );
   console.log(removedQuotes);
 
   switch (operator) {
@@ -486,7 +557,7 @@ function calculate(calculationText, variables, localVariables) {
     case 'degrees->radians':
       result = degreesToRadians(numbers);
       break;
-    case 'is-number?': 
+    case 'is-number?':
       result = isNumber(numbers);
       break;
     case 'min':
@@ -576,8 +647,6 @@ function calculate(calculationText, variables, localVariables) {
   return result;
 }
 
-
-
 function getVariableValue(variables, value) {
   let variableName = '';
   let variableValue = '';
@@ -614,17 +683,16 @@ function getTextFieldValue(value) {
   let fieldType = document.querySelector('#' + fieldName).nodeName;
   let fieldValue = '';
   if (fieldType === 'SPAN') {
-    fieldValue = document.querySelector('#' + fieldName).textContent ?
-      document.querySelector('#' + fieldName).textContent :
-      0;
+    fieldValue = document.querySelector('#' + fieldName).textContent
+      ? document.querySelector('#' + fieldName).textContent
+      : 0;
   } else {
-    fieldValue = document.querySelector('#' + fieldName).value ?
-      document.querySelector('#' + fieldName).value :
-      0;
+    fieldValue = document.querySelector('#' + fieldName).value
+      ? document.querySelector('#' + fieldName).value
+      : 0;
   }
   return fieldValue;
 }
-
 
 /*======================= MATH BLOCKS =======================*/
 
@@ -882,13 +950,13 @@ function splitText(arr, type) {
       break;
   }
   finalString = '[';
-  splitString.forEach(element => {
-    finalString += `'${element}' ,`
-  })
-  finalString = finalString.replace(/,\s*$/, "");
+  splitString.forEach((element) => {
+    finalString += `'${element}' ,`;
+  });
+  finalString = finalString.replace(/,\s*$/, '');
   finalString += ']';
-  console.log(finalString);
-  return finalString;
+  console.log(splitString);
+  return splitString;
 }
 
 function isStringText(arr) {
@@ -896,22 +964,44 @@ function isStringText(arr) {
 }
 
 function substringText(arr) {
-  return 'ANALISAR COMO SEPARAR ELEMENTOS';
+  const stringLength = arr[0].length;
+  const splitPositionArray = [];
+  for (let i = 0; i < stringLength; i++) {
+    if (arr[0][i] === ' ') {
+      splitPositionArray.push(i);
+    }
+  }
+  const initialPos = Number(
+    arr[0]
+      .substring(splitPositionArray[splitPositionArray.length - 2] + 1)
+      .split(' ')[0]
+  );
+  const substringLength = Number(
+    arr[0]
+      .substring(splitPositionArray[splitPositionArray.length - 1] + 1)
+      .split(' ')[0]
+  );
+  const finalString = arr[0].substring(
+    0,
+    splitPositionArray[splitPositionArray.length - 2]
+  );
+  const finalResult = finalString.substring(
+    initialPos,
+    initialPos + substringLength
+  );
+  console.log(finalString);
+  return finalResult;
 }
 
 function replaceText(arr) {
   return arr[0].replaceAll(arr[1], arr[2]);
 }
 
-
-
-
+/*======================= LIST BLOCKS =======================*/
 
 const replaceQuotes = (value) => {
   let replacedQuotesValue = value.toString().replaceAll('\\"', '');
   return replacedQuotesValue;
 };
 
-export {
-  getBlocksCommands
-};
+export { getBlocksCommands, textActions, listActions };
