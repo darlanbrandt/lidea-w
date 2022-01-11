@@ -1,11 +1,11 @@
-import './App.css';
-import Header from './components/page/Header';
-import Main from './components/page/Main';
+import './styles/global.css';
+import Header from './components/Header';
 import { ContentProvider } from './context/ContentContext';
+import Main from './components/Main';
 
 function App() {
   return (
-    <div className="App">
+    <div className='App'>
       <Header />
       <ContentProvider>
         <Main />

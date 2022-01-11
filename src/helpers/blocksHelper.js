@@ -1,6 +1,5 @@
 import { getYAIL } from '../services/yailCode';
 import { getAllBlocks } from './parser/blocks/blocksParser';
-import { getBlocksProcedures } from './parser/blocks/proceduresParser';
 
 const getBlocks = async () => {
   // Retorna o código YAIL recebido

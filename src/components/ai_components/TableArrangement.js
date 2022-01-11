@@ -70,7 +70,7 @@ export default function TableArrangement({
       columnNumber = j;
 
       childrenProps.forEach(({ name, row, column }) => {
-        if (row == i && column == j) {
+        if (row === i && column === j) {
           children.forEach((child) => {
             if (child.key === name) {
               tableComponent = child;

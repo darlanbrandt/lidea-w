@@ -1,0 +1,68 @@
+.phone-area {
+  margin-top: 10rem;
+  background-color: white;
+  min-width: 75rem;
+  min-height: 82rem;
+  border-radius: 2rem;
+  box-shadow: 0px 2px 5px rgba(128, 128, 128, 0.5);
+  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.device {
+  min-width: 476px;
+  max-width: 476px;
+  min-height: 794px;
+  max-height: 794px;
+  background-image: url('../../assets/images/DeviceSmall.png');
+  z-index: 2;
+  position: relative;
+}
+
+.device-screen {
+  position: absolute;
+  left: 24px;
+  top: 73px;
+  min-width: 431px;
+  max-width: 431px;
+  min-height: 658px;
+  max-height: 658px;
+}
+
+.device-screen::-webkit-scrollbar-track
+{
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  background-color: #F5F5F5;
+}
+
+.device-screen::-webkit-scrollbar
+{
+  width: 5px;
+  background-color: lightgray;
+}
+
+.device-screen::-webkit-scrollbar-thumb
+{
+  background-color: dimgray;
+  border: 0;
+}
+
+
+@media (max-width: 768px) {
+  .phone-area {
+    margin-top: 8rem;
+    min-width: 80vw;
+    max-width: 80vw;
+  }
+}
+
+
+@media (max-width: 640px) {
+  .phone-area {
+    max-width: 48rem;
+    min-width: 48rem;
+  }
+}
