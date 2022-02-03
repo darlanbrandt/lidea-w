@@ -1,5 +1,4 @@
 import { getAllBlocks } from './parser/blocks/blocksParser';
-import { getBlocksProcedures } from './parser/blocks/proceduresParser';
 
 const getBlocks = async (yail) => {
   let blocks = [];

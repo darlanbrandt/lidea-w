@@ -1,4 +1,7 @@
+import { textActions, listActions } from './commandParser';
+
 let variables = [];
+let localVariables = [];
 let commands = [];
 let procedures = [];
 
@@ -9,6 +12,7 @@ const dict = [];
 const beginOfBlocksCode = '(init-runtime)';
 const endOfBlocksCode = '},"componentYail"';
 const varGetProperty = "(get-property '";
+const varGetFromBlock = '(call-yail-primitive ';
 const endOfCommand = '))"';
 const startOfAction = '()(set-this-form)\\n    ';
 const startOfProcedure = ')  (';
@@ -47,6 +51,23 @@ function getAllBlocks(text) {
               componentName: componentName,
               componentProperty: componentProperty,
             };
+          } else if (varSubstringValue.startsWith(varGetFromBlock)) {
+            let componentProperty = varSubstringValue.substring(
+              varGetFromBlock.length
+            );
+            if (componentProperty.startsWith('string')) {
+              variableValue = textActions(
+                componentProperty,
+                variables,
+                localVariables
+              );
+            } else if (componentProperty.startsWith('make-yail-list')) {
+              variableValue = listActions(
+                componentProperty,
+                variables,
+                localVariables
+              );
+            }
           } else {
             variableValue = varSubstringValue;
           }

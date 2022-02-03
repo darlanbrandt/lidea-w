@@ -22,7 +22,7 @@ import TimePicker from '../ai_components/TimePicker';
  * propriedades e demais dados.                                             *
  ****************************************************************************/
 
-export default function Elements() {
+export default function ElementsContainer() {
   const { components } = useContext(ContentContext);
   console.table(components);
   let reactComponent = [];
@@ -217,7 +217,8 @@ export default function Elements() {
           <VerticalArrangement
             key={componentName}
             componentName={componentName}
-            componentProperties={componentProperties(componentName)}>
+            componentProperties={componentProperties(componentName)}
+          >
             {childrenFromParent(componentName)}
           </VerticalArrangement>
         );
@@ -227,21 +228,23 @@ export default function Elements() {
           <HorizontalArrangement
             key={componentName}
             componentName={componentName}
-            componentProperties={componentProperties(componentName)}>
+            componentProperties={componentProperties(componentName)}
+          >
             {childrenFromParent(componentName)}
           </HorizontalArrangement>
         );
         break;
-        case 'TableArrangement':
-          component = (
-            <TableArrangement
-              key={componentName}
-              componentName={componentName}
-              componentProperties={componentProperties(componentName)}>
-              {childrenFromParent(componentName)}
-            </TableArrangement>
-          );
-          break
+      case 'TableArrangement':
+        component = (
+          <TableArrangement
+            key={componentName}
+            componentName={componentName}
+            componentProperties={componentProperties(componentName)}
+          >
+            {childrenFromParent(componentName)}
+          </TableArrangement>
+        );
+        break;
       default:
         break;
     }
@@ -259,5 +262,5 @@ export default function Elements() {
     return reactComponent;
   }
 
-  return <div className="content">{pageComponents()}</div>;
+  return <div className='content'>{pageComponents()}</div>;
 }
