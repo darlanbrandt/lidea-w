@@ -9,7 +9,7 @@ let blocks = [];
 
 //const varValues = [];
 const dict = [];
-const beginOfBlocksCode = 'blockYail';
+const beginOfBlocksCode = '(init-runtime)';
 const endOfBlocksCode = '},"componentYail"';
 const varGetProperty = "(get-property '";
 const varGetFromBlock = '(call-yail-primitive ';
@@ -24,7 +24,7 @@ dict['(def (p'] = 'procedure';
 function getAllBlocks(text) {
   const texto = JSON.stringify(text);
   const startPos = texto.indexOf(beginOfBlocksCode);
-  const endPos = texto.indexOf(endOfBlocksCode);
+  const endPos = texto.length;
 
   const blocksText = texto.substring(startPos, endPos);
 
