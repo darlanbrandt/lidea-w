@@ -1,14 +1,10 @@
-import { getYAIL } from '../services/yailCode';
 import {
   getAllComponents,
   getComponentProperties,
   getScreensInfo,
 } from './parser/components/componentsParser';
 
-const getComponents = async () => {
-  /* Get YAIL Code */
-  const yail = await getYAIL();
-
+const getComponents = async (yail) => {
   let componentObject = {};
   let components = [];
 
