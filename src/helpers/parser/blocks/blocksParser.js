@@ -83,13 +83,15 @@ function getAllBlocks(text) {
           let commandType = commandText
             .substring(key.length + componentName.length + 1)
             .split('()')[0];
-          let commandUnparsed = commandText.substring(
-            key.length +
-              componentName.length +
-              commandType.length +
-              startOfAction.length +
-              1
-          );
+          let commandUnparsed = commandText
+            .substring(
+              key.length +
+                componentName.length +
+                commandType.length +
+                startOfAction.length +
+                1
+            )
+            .split(')(define-event')[0];
           let commandInfo = {
             componentName: componentName,
             commandType: commandType,
