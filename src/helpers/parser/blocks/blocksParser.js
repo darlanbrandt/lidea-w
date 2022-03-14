@@ -1,9 +1,9 @@
-import { textActions, listActions } from './commandParser';
+import { textActions } from './commandParser';
 
 let variables = [];
 let localVariables = [];
 let commands = [];
-let procedures = [];
+//let procedures = [];
 
 let blocks = [];
 
@@ -27,6 +27,10 @@ function getAllBlocks(text) {
   const endPos = texto.length;
 
   const blocksText = texto.substring(startPos, endPos);
+
+  blocks = [];
+  commands = [];
+  variables = [];
 
   for (let i = 0; i < blocksText.length; i++) {
     let variableName = '';
@@ -57,12 +61,6 @@ function getAllBlocks(text) {
             );
             if (componentProperty.startsWith('string')) {
               variableValue = textActions(
-                componentProperty,
-                variables,
-                localVariables
-              );
-            } else if (componentProperty.startsWith('make-yail-list')) {
-              variableValue = listActions(
                 componentProperty,
                 variables,
                 localVariables
@@ -98,6 +96,9 @@ function getAllBlocks(text) {
             command: commandUnparsed,
           };
           commands = commands.concat(commandInfo);
+          /* TO DO */
+          /* Concluir a conversão de YAIL para as procedures */
+          /*
         } else if (dict[key] === 'procedure') {
           let procedureText = blocksText.substring(i).split(endOfCommand)[0];
           let procedureName = procedureText
@@ -122,6 +123,7 @@ function getAllBlocks(text) {
           procedures = procedures.concat(procedureInfo);
         } else {
           //console.log('comando não identificado');
+          */
         }
       }
     });
@@ -129,7 +131,6 @@ function getAllBlocks(text) {
   blocks.push({
     variables: variables,
     commands: commands,
-    procedures: procedures,
   });
 
   return blocks;

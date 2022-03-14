@@ -17,8 +17,8 @@ export function ContentProvider({ children }) {
       const latestYail = await getYAIL();
 
       if (latestYail) {
-        console.log(`latest yail: ${latestYail}`);
         setYail(latestYail);
+        console.log(latestYail);
         // adicionado para não ficar enviando requests para o servidor. para retormar, remover linha abaixo
         /*setTimeout(setPaused(true), 500);
         console.log(paused);*/
@@ -27,23 +27,22 @@ export function ContentProvider({ children }) {
 
     //comando que envia solicitações ao servidor de alguma alteração no código, recebendo atualizações de código YAIL
     if (!paused) {
-      const timerId = setInterval(updateYAIL, 10000);
+      const timerId = setInterval(updateYAIL, 2000);
 
       return () => clearInterval(timerId);
     }
   }, [paused]);
 
   //console.log(yail);
+  const getPageComponents = async () => {
+    const components = await getComponents(yail);
+    const blocks = await getBlocks(yail);
+    console.log(blocks);
+    setComponents(components);
+    setBlocks(blocks);
+  };
 
   useEffect(() => {
-    setComponents([]);
-    const getPageComponents = async () => {
-      const components = await getComponents(yail);
-      const blocks = await getBlocks(yail);
-      setComponents(components);
-      setBlocks(blocks);
-    };
-
     getPageComponents();
   }, [yail]);
 
