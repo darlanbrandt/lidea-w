@@ -55,7 +55,6 @@ const getConditionalCommands = (commands, variables, i) => {
   let comparisonCommand = '';
   for (let i = 0; i < commands.length; i++) {
     if (commands.startsWith('if', i)) {
-      console.log('if');
       ifStack.push('if ');
     } else if (
       commands.startsWith('(call-yail-primitive', i) &&
@@ -67,42 +66,48 @@ const getConditionalCommands = (commands, variables, i) => {
         .replaceAll(" 'Text)", '')
         .trim()
         .split('(begin   ')[0];
-      console.log(comparisonCommand);
+
       ifStack.push(compareConditionalValues(comparisonCommand, variables));
+
       ifStack.push(') {');
-      console.log(
-        '(' + compareConditionalValues(comparisonCommand, variables) + ') {'
-      );
     } else if (commands.startsWith(') (begin   ', i)) {
       ifStack.push(
         commands.substring(i + ') (begin   '.length).split('(begin')[0]
       );
       ifStack.push('}');
-      console.log(
-        commands.substring(i + ') (begin   '.length).split('(begin')[0] + '}'
-      );
     } else if (commands.startsWith(') (begin (if', i)) {
       ifStack.push(' else ');
     } else if (commands.startsWith(')) (begin   (', i)) {
-      console.log(' else {');
       ifStack.push(' else {');
     }
   }
-  //console.log(ifStack);
+  console.log(ifStack);
 
   let commandStack = ifStack.map((element) => {
     if (element.toString().startsWith(setPropertyIndicator)) {
-      return getPropertyCommands(element, variables, i);
+      return getPropertyCommands(element, variables, 0);
+    } else if (element.toString().startsWith(conditionalIndicator)) {
+      return getConditionalCommands(element, variables, 0);
     } else {
       return element;
     }
   });
 
-  return removeLastElement(commandStack).join().replaceAll(',', '');
+  console.log(
+    removeLastElement(commandStack)
+      .join()
+      .replaceAll(',', '')
+      .replaceAll('(false) { else', ' else')
+      .replaceAll('; }(false) {', ';')
+  );
+  return removeLastElement(commandStack)
+    .join()
+    .replaceAll(',', '')
+    .replaceAll('(false) { else', ' else')
+    .replaceAll('; }(false) {', ';');
 };
 
 function removeLastElement(arr) {
-  console.log(arr);
   let lastElement = arr.pop();
   if (lastElement === 'if ') {
     return arr;
@@ -113,31 +118,29 @@ function removeLastElement(arr) {
 }
 
 function compareConditionalValues(command, variables) {
-  console.log(command);
+  //console.log(command);
   let comparator = command.split(' ')[0];
   //console.log(comparator);
   const termsIndicator = ' (*list-for-runtime* ';
   let terms = command
     .substring(comparator.length + termsIndicator.length)
-    .split(") '(")[0];
-  console.log(terms);
-  let termsCorrect = terms.replace('\\"\\"', '');
-  console.log(termsCorrect);
-  let elementsBeforeFilter = termsCorrect.split(' ');
-  console.log(elementsBeforeFilter);
+    .split(") '(")[0]
+    .replaceAll('\\"', '');
+  let elementsBeforeFilter = terms.split(' ');
+  //console.log(elementsBeforeFilter);
   let globalVariableFilter = elementsBeforeFilter
     .filter((item) => !(item === '(get-var'))
     .map((n) => (n.startsWith('g$') ? getVariableValue(variables, n) : n));
-  console.log(globalVariableFilter);
+  //console.log(globalVariableFilter);
   let localVariableFilter = globalVariableFilter
     .filter((item) => !(item === '(lexical-value'))
     .map((n) => (n.startsWith('$') ? getVariableValue(localVariables, n) : n));
-  console.log(localVariableFilter);
+  //console.log(localVariableFilter);
   let textFieldFilter = localVariableFilter
     .filter((item) => !(item === '(get-property'))
     .map((n) => (n.startsWith("'") ? getTextFieldValue(n) : n));
 
-  console.log(textFieldFilter);
+  //console.log(textFieldFilter);
 
   return compare(textFieldFilter, comparator);
 }
@@ -167,7 +170,8 @@ const getPropertyCommands = (commands, variables, i) => {
   if (amountOfProperties === 1) {
     propertiesStack = [];
   }
- 
+
+  console.log(commands);
   command = '';
   let setProperty = '';
   let finalResult = '';
@@ -176,6 +180,7 @@ const getPropertyCommands = (commands, variables, i) => {
   let componentAction = commands
     .substring(i + setPropertyIndicator.length)
     .split(' ')[0];
+  console.log(componentAction);
 
   let componentType = document.querySelector('#' + componentAction).nodeName;
 
