@@ -1,72 +1,51 @@
 import React, { useState } from 'react';
+import ReactModal from 'react-modal';
 import api from '../../services/api';
+import style from './main.module.css';
 
-export default function Modal() {
+export const Modal = ({ isOpen, onRequestClose }) => {
   const [key, setKey] = useState('');
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     await api.post('/rendezvous/', { key: key });
+    onRequestClose();
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="name">Código de 6 dígitos</label>
-        <input
-          type="text"
-          name="key"
-          id="key"
-          value={key}
-          placeholder="Insira o código aqui"
-          onChange={(e) => setKey(e.target.value)}
-        />
-      </div>
-      <button type="submit">Enviar</button>
-    </form>
-  );
-}
-
-/*export default function Main() {
-  return (
-    <div>
-      <form className={css.form}>
-        <div className={css.inputFields}>
-          <label htmlFor="name" className={css.srOnly}>
-            Insira o código de 6 dígitos
-          </label>
+    <ReactModal
+      isOpen={isOpen}
+      onRequestClose={onRequestClose}
+      appElement={document.getElementById('root')}
+      overlayClassName={style.modalOverlay}
+      className={style.modal}>
+      <span>
+        Para visualizar a aplicação criada no App Inventor, digite a chave de 6
+        caracteres no campo abaixo
+      </span>
+      <form onSubmit={handleSubmit}>
+        <div>
           <input
             type="text"
-            name="name"
-            id="name"
-            value={name}
-            placeholder="Código de 6 dígitos"
-            required
-            onChange={(event) => this.handleNameInput(event.target.value)}
-          />
-          <label htmlFor="email" className={css.srOnly}>
-            Enter your e-mail
-          </label>
-          <input
-            type="text"
-            name="email"
-            id="email"
-            value={email}
-            placeholder="Your email"
-            required
-            onChange={(e) => this.handleEmailInput(e.target.value)}
+            name="key"
+            id="key"
+            value={key}
+            placeholder="Chave de 6 caracteres"
+            onChange={(e) => setKey(e.target.value)}
           />
         </div>
-        <button
-          type="submit"
-          className={`${css.button} ${isDisabled ? css.disabled : null}`}
-          disabled={isDisabled}
-          onClick={(e) => {
-            e.preventDefault();
-          }}>
-          Send
-        </button>
+        <button type="submit">Enviar</button>
       </form>
-    </div>
+    </ReactModal>
   );
-}*/
+};
+/*onAfterOpen={() => {
+        document.body.style.top = `-${window.scrollY}px`;
+        document.body.style.position = 'fixed';
+      }}
+      onAfterClose={() => {
+        const scrollY = document.body.style.top;
+        document.body.style.position = '';
+        document.body.style.top = '';
+        window.scrollTo(0, parseInt(scrollY || '0') * -1);
+      }}*/
