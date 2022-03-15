@@ -19,11 +19,11 @@ export const Modal = ({ isOpen, onRequestClose }) => {
       appElement={document.getElementById('root')}
       overlayClassName={style.modalOverlay}
       className={style.modal}>
-      <span>
+      <span className={style['modal-text']}>
         Para visualizar a aplicação criada no App Inventor, digite a chave de 6
         caracteres no campo abaixo
       </span>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className={style.form}>
         <div>
           <input
             type="text"
@@ -34,7 +34,7 @@ export const Modal = ({ isOpen, onRequestClose }) => {
             onChange={(e) => setKey(e.target.value)}
           />
         </div>
-        <button type="submit">Enviar</button>
+        <button type="submit">Conectar</button>
       </form>
     </ReactModal>
   );

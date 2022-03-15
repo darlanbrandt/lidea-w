@@ -7,7 +7,7 @@ export default function Header({ onOpenModal }) {
     <header className={style.header}>
       <img src={logo} alt="LIDEA-w logo" />
       <p className={style['app-title']}>Web Live Debugging for App Inventor</p>
-      <button onClick={onOpenModal}>Inserir código</button>
+      <button onClick={onOpenModal}>Iniciar Sessão</button>
     </header>
   );
 }
