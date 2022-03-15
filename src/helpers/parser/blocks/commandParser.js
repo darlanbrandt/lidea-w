@@ -28,6 +28,7 @@ const BITWISE_OR = 'or';
 const BITWISE_XOR = 'xor';
 
 const getBlocksCommands = (commands, variables) => {
+  propertiesStack = [];
   let parsedCommand = '';
   for (let i = 0; i < commands.length; i++) {
     if (commands.startsWith(localVariableIndicator, i)) {
@@ -43,7 +44,6 @@ const getBlocksCommands = (commands, variables) => {
       console.log('Comando de Lista');
     }
   }
-  propertiesStack = [];
   propertiesInsideIf = false;
   return parsedCommand;
 };
@@ -67,6 +67,7 @@ const getConditionalCommands = (commands, variables, i) => {
         .replaceAll(" 'Text)", '')
         .trim()
         .split('(begin   ')[0];
+      console.log(comparisonCommand);
       ifStack.push(compareConditionalValues(comparisonCommand, variables));
       ifStack.push(') {');
       console.log(
@@ -87,25 +88,21 @@ const getConditionalCommands = (commands, variables, i) => {
       ifStack.push(' else {');
     }
   }
+  //console.log(ifStack);
 
   let commandStack = ifStack.map((element) => {
-    let elementToString = element.toString();
-    if (elementToString.startsWith(setPropertyIndicator)) {
-      for (let i = 0; i < elementToString.length; i++) {
-        if (elementToString.startsWith(setPropertyIndicator, i)) {
-          conditionalStack.push(getPropertyCommands(element, variables, i));
-          propertiesStack = [];
-        }
-      }
-      return conditionalStack.join().replaceAll(',', '');
+    if (element.toString().startsWith(setPropertyIndicator)) {
+      return getPropertyCommands(element, variables, i);
+    } else {
+      return element;
     }
-    return element;
   });
 
   return removeLastElement(commandStack).join().replaceAll(',', '');
 };
 
 function removeLastElement(arr) {
+  console.log(arr);
   let lastElement = arr.pop();
   if (lastElement === 'if ') {
     return arr;
@@ -116,27 +113,31 @@ function removeLastElement(arr) {
 }
 
 function compareConditionalValues(command, variables) {
+  console.log(command);
   let comparator = command.split(' ')[0];
   //console.log(comparator);
   const termsIndicator = ' (*list-for-runtime* ';
   let terms = command
     .substring(comparator.length + termsIndicator.length)
     .split(") '(")[0];
-  let elementsBeforeFilter = terms.split(' ');
-  //console.log(elementsBeforeFilter);
+  console.log(terms);
+  let termsCorrect = terms.replace('\\"\\"', '');
+  console.log(termsCorrect);
+  let elementsBeforeFilter = termsCorrect.split(' ');
+  console.log(elementsBeforeFilter);
   let globalVariableFilter = elementsBeforeFilter
     .filter((item) => !(item === '(get-var'))
     .map((n) => (n.startsWith('g$') ? getVariableValue(variables, n) : n));
-
+  console.log(globalVariableFilter);
   let localVariableFilter = globalVariableFilter
     .filter((item) => !(item === '(lexical-value'))
     .map((n) => (n.startsWith('$') ? getVariableValue(localVariables, n) : n));
-
+  console.log(localVariableFilter);
   let textFieldFilter = localVariableFilter
     .filter((item) => !(item === '(get-property'))
     .map((n) => (n.startsWith("'") ? getTextFieldValue(n) : n));
 
-  //console.log(textFieldFilter);
+  console.log(textFieldFilter);
 
   return compare(textFieldFilter, comparator);
 }
@@ -161,6 +162,12 @@ function compare(arr, comparator) {
 }
 
 const getPropertyCommands = (commands, variables, i) => {
+  let amountOfProperties = (commands.match(/set-and-coerce-property!/g) || [])
+    .length;
+  if (amountOfProperties === 1) {
+    propertiesStack = [];
+  }
+ 
   command = '';
   let setProperty = '';
   let finalResult = '';
@@ -278,7 +285,6 @@ const getPropertyCommands = (commands, variables, i) => {
   }
 
   propertiesStack.push(setProperty);
-  console.log(propertiesStack);
   finalResult = propertiesStack.join().replaceAll(',', '');
   console.log(finalResult);
   return finalResult.toString();
@@ -696,11 +702,11 @@ function getTextFieldValue(value) {
   if (fieldType === 'SPAN') {
     fieldValue = document.querySelector('#' + fieldName).textContent
       ? document.querySelector('#' + fieldName).textContent
-      : 0;
+      : '';
   } else {
     fieldValue = document.querySelector('#' + fieldName).value
       ? document.querySelector('#' + fieldName).value
-      : 0;
+      : '';
   }
   return fieldValue;
 }
