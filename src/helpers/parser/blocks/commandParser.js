@@ -245,14 +245,25 @@ const getPropertyCommands = (commands, variables, i) => {
       }
       break;
     case 'TextInput':
-      setProperty =
-        'document.querySelector("#' +
-        componentAction +
-        '").value = ' +
-        '"' +
-        replaceQuotes(fieldValue) +
-        '"' +
-        '; ';
+      if (typeof fieldValue === 'number') {
+        setProperty =
+          'document.querySelector("#' +
+          componentAction +
+          '").value = ' +
+          '"' +
+          fieldValue +
+          '"' +
+          '; ';
+      } else {
+        setProperty =
+          'document.querySelector("#' +
+          componentAction +
+          '").value = ' +
+          '"' +
+          replaceQuotes(fieldValue) +
+          '"' +
+          '; ';
+      }
       break;
     case 'TextColor':
       setProperty =

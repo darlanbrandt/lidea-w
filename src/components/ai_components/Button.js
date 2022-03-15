@@ -73,8 +73,6 @@ export default function Button({ componentName, componentProperties }) {
     <div className={componentClass}>
       <CustomButton
         onClick={() => handleButton('Click')}
-        onMouseEnter={() => handleButton('GotFocus')}
-        onMouseLeave={() => handleButton('LostFocus')}
         id={componentName}
         variant="contained"
         className={classes.button}>

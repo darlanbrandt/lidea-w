@@ -6,7 +6,7 @@ const getBlocks = async (yail) => {
 
   let fullCommandBlockInfo = [];
 
-  let fullProcedureBlockInfo = [];
+  //let fullProcedureBlockInfo = [];
 
   // Lista todos os componentes em um array
   const allBlocks = getAllBlocks(yail);
@@ -35,7 +35,10 @@ const getBlocks = async (yail) => {
     });
   });
 
-  const procedures = allBlocks.map(({ procedures }) => {
+  /* TO DO */
+  /* Concluir a conversão de YAIL para as procedures */
+  /*
+          const procedures = allBlocks.map(({ procedures }) => {
     return procedures;
   });
 
@@ -50,12 +53,13 @@ const getBlocks = async (yail) => {
         fullProcedureBlockInfo.concat(procedureBlockInfo);
     });
   });
+  */
 
   Object.keys(allBlocks).forEach((abKey) => {});
   blocks.push({
     variables: variables,
     commands: fullCommandBlockInfo,
-    procedures: fullProcedureBlockInfo,
+    //procedures: fullProcedureBlockInfo,
   });
 
   return blocks;

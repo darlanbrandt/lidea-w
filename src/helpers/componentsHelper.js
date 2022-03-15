@@ -42,6 +42,7 @@ const getComponents = async (yail) => {
       }
     });
   });
+
   return components;
 };
 

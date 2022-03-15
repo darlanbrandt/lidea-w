@@ -217,8 +217,7 @@ export default function ElementsContainer() {
           <VerticalArrangement
             key={componentName}
             componentName={componentName}
-            componentProperties={componentProperties(componentName)}
-          >
+            componentProperties={componentProperties(componentName)}>
             {childrenFromParent(componentName)}
           </VerticalArrangement>
         );
@@ -228,8 +227,7 @@ export default function ElementsContainer() {
           <HorizontalArrangement
             key={componentName}
             componentName={componentName}
-            componentProperties={componentProperties(componentName)}
-          >
+            componentProperties={componentProperties(componentName)}>
             {childrenFromParent(componentName)}
           </HorizontalArrangement>
         );
@@ -239,8 +237,7 @@ export default function ElementsContainer() {
           <TableArrangement
             key={componentName}
             componentName={componentName}
-            componentProperties={componentProperties(componentName)}
-          >
+            componentProperties={componentProperties(componentName)}>
             {childrenFromParent(componentName)}
           </TableArrangement>
         );
@@ -253,6 +250,7 @@ export default function ElementsContainer() {
 
   // Lista os componentes já posicionados de acordo com o componente pai
   function pageComponents() {
+    reactComponent = [];
     components.forEach((component) => {
       if (component.parentIsScreen) {
         reactComponent.push(getComponent(component.componentName));
@@ -262,5 +260,5 @@ export default function ElementsContainer() {
     return reactComponent;
   }
 
-  return <div className='content'>{pageComponents()}</div>;
+  return <div className="content">{pageComponents()}</div>;
 }

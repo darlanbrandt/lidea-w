@@ -102,6 +102,7 @@ function getComponentName(text) {
 /* Returns an array of components with type and name */
 function getAllComponents(text) {
   const allComponents = returnFullComponentText(text);
+  components = [];
 
   allComponents.forEach((allComponent) => {
     let componentText = allComponent;
@@ -125,7 +126,6 @@ function getAllComponents(text) {
       }
     });
   });
-
   return components;
 }
 

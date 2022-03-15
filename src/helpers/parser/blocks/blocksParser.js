@@ -1,9 +1,9 @@
-import { textActions, listActions } from './commandParser';
+import { textActions } from './commandParser';
 
 let variables = [];
 let localVariables = [];
 let commands = [];
-let procedures = [];
+//let procedures = [];
 
 let blocks = [];
 
@@ -27,6 +27,10 @@ function getAllBlocks(text) {
   const endPos = texto.length;
 
   const blocksText = texto.substring(startPos, endPos);
+
+  blocks = [];
+  commands = [];
+  variables = [];
 
   for (let i = 0; i < blocksText.length; i++) {
     let variableName = '';
@@ -61,12 +65,6 @@ function getAllBlocks(text) {
                 variables,
                 localVariables
               );
-            } else if (componentProperty.startsWith('make-yail-list')) {
-              variableValue = listActions(
-                componentProperty,
-                variables,
-                localVariables
-              );
             }
           } else {
             variableValue = varSubstringValue;
@@ -83,19 +81,24 @@ function getAllBlocks(text) {
           let commandType = commandText
             .substring(key.length + componentName.length + 1)
             .split('()')[0];
-          let commandUnparsed = commandText.substring(
-            key.length +
-              componentName.length +
-              commandType.length +
-              startOfAction.length +
-              1
-          );
+          let commandUnparsed = commandText
+            .substring(
+              key.length +
+                componentName.length +
+                commandType.length +
+                startOfAction.length +
+                1
+            )
+            .split(')(define-event')[0];
           let commandInfo = {
             componentName: componentName,
             commandType: commandType,
             command: commandUnparsed,
           };
           commands = commands.concat(commandInfo);
+          /* TO DO */
+          /* Concluir a conversão de YAIL para as procedures */
+          /*
         } else if (dict[key] === 'procedure') {
           let procedureText = blocksText.substring(i).split(endOfCommand)[0];
           let procedureName = procedureText
@@ -120,6 +123,7 @@ function getAllBlocks(text) {
           procedures = procedures.concat(procedureInfo);
         } else {
           //console.log('comando não identificado');
+          */
         }
       }
     });
@@ -127,7 +131,6 @@ function getAllBlocks(text) {
   blocks.push({
     variables: variables,
     commands: commands,
-    procedures: procedures,
   });
 
   return blocks;

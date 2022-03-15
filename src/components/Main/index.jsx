@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ElementsContainer from '../ElementsContainer';
 import style from './main.module.css';
 import ScreenTitle from '../ai_components/ScreenTitle';
