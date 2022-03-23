@@ -3,6 +3,7 @@ import { getBlocksCommands } from '../../../helpers/parser/blocks/commandParser'
 
 // Função para executar as ações realizadas no componente
 function handleAction(action, componentName, blocks) {
+  console.log(blocks);
   const commands = blocks.map(({ commands }) => {
     return commands;
   });

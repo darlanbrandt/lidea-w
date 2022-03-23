@@ -17,6 +17,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   width: 60%;
   max-width: 75%;
   height: 81rem;
@@ -24,4 +25,44 @@
   margin: 8rem 0 0 0;
   z-index: 20;
   box-shadow: 0px 2px 5px rgba(128, 128, 128, 0.5);
+}
+
+.modal-text {
+  font-family: 'Roboto', sans-serif;
+  font-size: 2.4rem;
+  font-weight: 300;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 50ch;
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form input {
+  font-family: 'Roboto', sans-serif;
+  font-size: 2.4rem;
+  font-weight: 300;
+  padding: 1rem 2rem;
+  border-radius: 5rem;
+  border: solid 1px lightgray;
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.form button {
+  border: none;
+  background-color: #00346C;
+  color: white;
+  font-family: 'Roboto', sans-serif;
+  font-size: 2.4rem;
+  font-weight: 300;
+  padding: 1rem 2rem;
+  border-radius: 5rem;
 }

@@ -28,6 +28,7 @@ const BITWISE_OR = 'or';
 const BITWISE_XOR = 'xor';
 
 const getBlocksCommands = (commands, variables) => {
+  propertiesStack = [];
   let parsedCommand = '';
   for (let i = 0; i < commands.length; i++) {
     if (commands.startsWith(localVariableIndicator, i)) {
@@ -43,7 +44,6 @@ const getBlocksCommands = (commands, variables) => {
       console.log('Comando de Lista');
     }
   }
-  propertiesStack = [];
   propertiesInsideIf = false;
   return parsedCommand;
 };
@@ -55,7 +55,6 @@ const getConditionalCommands = (commands, variables, i) => {
   let comparisonCommand = '';
   for (let i = 0; i < commands.length; i++) {
     if (commands.startsWith('if', i)) {
-      console.log('if');
       ifStack.push('if ');
     } else if (
       commands.startsWith('(call-yail-primitive', i) &&
@@ -67,42 +66,45 @@ const getConditionalCommands = (commands, variables, i) => {
         .replaceAll(" 'Text)", '')
         .trim()
         .split('(begin   ')[0];
+
       ifStack.push(compareConditionalValues(comparisonCommand, variables));
+
       ifStack.push(') {');
-      console.log(
-        '(' + compareConditionalValues(comparisonCommand, variables) + ') {'
-      );
     } else if (commands.startsWith(') (begin   ', i)) {
       ifStack.push(
         commands.substring(i + ') (begin   '.length).split('(begin')[0]
       );
       ifStack.push('}');
-      console.log(
-        commands.substring(i + ') (begin   '.length).split('(begin')[0] + '}'
-      );
     } else if (commands.startsWith(') (begin (if', i)) {
       ifStack.push(' else ');
     } else if (commands.startsWith(')) (begin   (', i)) {
-      console.log(' else {');
       ifStack.push(' else {');
     }
   }
+  console.log(ifStack);
 
   let commandStack = ifStack.map((element) => {
-    let elementToString = element.toString();
-    if (elementToString.startsWith(setPropertyIndicator)) {
-      for (let i = 0; i < elementToString.length; i++) {
-        if (elementToString.startsWith(setPropertyIndicator, i)) {
-          conditionalStack.push(getPropertyCommands(element, variables, i));
-          propertiesStack = [];
-        }
-      }
-      return conditionalStack.join().replaceAll(',', '');
+    if (element.toString().startsWith(setPropertyIndicator)) {
+      return getPropertyCommands(element, variables, 0);
+    } else if (element.toString().startsWith(conditionalIndicator)) {
+      return getConditionalCommands(element, variables, 0);
+    } else {
+      return element;
     }
-    return element;
   });
 
-  return removeLastElement(commandStack).join().replaceAll(',', '');
+  console.log(
+    removeLastElement(commandStack)
+      .join()
+      .replaceAll(',', '')
+      .replaceAll('(false) { else', ' else')
+      .replaceAll('; }(false) {', ';')
+  );
+  return removeLastElement(commandStack)
+    .join()
+    .replaceAll(',', '')
+    .replaceAll('(false) { else', ' else')
+    .replaceAll('; }(false) {', ';');
 };
 
 function removeLastElement(arr) {
@@ -116,22 +118,24 @@ function removeLastElement(arr) {
 }
 
 function compareConditionalValues(command, variables) {
+  //console.log(command);
   let comparator = command.split(' ')[0];
   //console.log(comparator);
   const termsIndicator = ' (*list-for-runtime* ';
   let terms = command
     .substring(comparator.length + termsIndicator.length)
-    .split(") '(")[0];
+    .split(") '(")[0]
+    .replaceAll('\\"', '');
   let elementsBeforeFilter = terms.split(' ');
   //console.log(elementsBeforeFilter);
   let globalVariableFilter = elementsBeforeFilter
     .filter((item) => !(item === '(get-var'))
     .map((n) => (n.startsWith('g$') ? getVariableValue(variables, n) : n));
-
+  //console.log(globalVariableFilter);
   let localVariableFilter = globalVariableFilter
     .filter((item) => !(item === '(lexical-value'))
     .map((n) => (n.startsWith('$') ? getVariableValue(localVariables, n) : n));
-
+  //console.log(localVariableFilter);
   let textFieldFilter = localVariableFilter
     .filter((item) => !(item === '(get-property'))
     .map((n) => (n.startsWith("'") ? getTextFieldValue(n) : n));
@@ -161,6 +165,13 @@ function compare(arr, comparator) {
 }
 
 const getPropertyCommands = (commands, variables, i) => {
+  let amountOfProperties = (commands.match(/set-and-coerce-property!/g) || [])
+    .length;
+  if (amountOfProperties === 1) {
+    propertiesStack = [];
+  }
+
+  console.log(commands);
   command = '';
   let setProperty = '';
   let finalResult = '';
@@ -169,6 +180,7 @@ const getPropertyCommands = (commands, variables, i) => {
   let componentAction = commands
     .substring(i + setPropertyIndicator.length)
     .split(' ')[0];
+  console.log(componentAction);
 
   let componentType = document.querySelector('#' + componentAction).nodeName;
 
@@ -278,7 +290,6 @@ const getPropertyCommands = (commands, variables, i) => {
   }
 
   propertiesStack.push(setProperty);
-  console.log(propertiesStack);
   finalResult = propertiesStack.join().replaceAll(',', '');
   console.log(finalResult);
   return finalResult.toString();
@@ -696,11 +707,11 @@ function getTextFieldValue(value) {
   if (fieldType === 'SPAN') {
     fieldValue = document.querySelector('#' + fieldName).textContent
       ? document.querySelector('#' + fieldName).textContent
-      : 0;
+      : '';
   } else {
     fieldValue = document.querySelector('#' + fieldName).value
       ? document.querySelector('#' + fieldName).value
-      : 0;
+      : '';
   }
   return fieldValue;
 }

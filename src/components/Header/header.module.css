@@ -27,6 +27,16 @@
   font-weight: 300;
 }
 
+.header button {
+  border: none;
+  background-color: #00346C;
+  color: white;
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 300;
+  padding: 1rem 2rem;
+  border-radius: 5rem;
+}
 
 /* Add style to header on small screens */
 @media (max-width: 768px) {
