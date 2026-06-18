@@ -9,6 +9,7 @@ const getComponents = async (yail) => {
   let components = [];
 
   const screenInfo = getScreensInfo(yail);
+  const screenName = Object.keys(screenInfo)[0] || '';
 
   /* Lists all components in an array */
   const allComponents = getAllComponents(yail);
@@ -43,7 +44,7 @@ const getComponents = async (yail) => {
     });
   });
 
-  return components;
+  return { components, screenName };
 };
 
 export { getComponents };

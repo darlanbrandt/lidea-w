@@ -7,19 +7,13 @@ import { Modal } from './components/Modal';
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  function handleOpenModal() {
-    setIsModalOpen(true);
-  }
 
-  function handleCloseModal() {
-    setIsModalOpen(false);
-  }
   return (
     <div className="App">
-      <Header onOpenModal={handleOpenModal} />
-      <Modal isOpen={isModalOpen} onRequestClose={handleCloseModal} />
       <ContentProvider>
-        <Main />
+        <Header onOpenModal={() => setIsModalOpen(true)} />
+        <Modal isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)} />
+        <Main onOpenModal={() => setIsModalOpen(true)} />
       </ContentProvider>
     </div>
   );
