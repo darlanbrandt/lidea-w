@@ -5,11 +5,21 @@ import style from './main.module.css';
 
 export const Modal = ({ isOpen, onRequestClose }) => {
   const [key, setKey] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    await api.post('/rendezvous/', { key: key });
-    onRequestClose();
+    setError('');
+    setLoading(true);
+    try {
+      await api.post('/rendezvous/', { key: key });
+      onRequestClose();
+    } catch (err) {
+      setError('Erro ao conectar. Verifique a chave e tente novamente.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -34,18 +44,11 @@ export const Modal = ({ isOpen, onRequestClose }) => {
             onChange={(e) => setKey(e.target.value)}
           />
         </div>
-        <button type="submit">Conectar</button>
+        {error && <span className={style.error}>{error}</span>}
+        <button type="submit" disabled={loading}>
+          {loading ? 'Conectando...' : 'Conectar'}
+        </button>
       </form>
     </ReactModal>
   );
 };
-/*onAfterOpen={() => {
-        document.body.style.top = `-${window.scrollY}px`;
-        document.body.style.position = 'fixed';
-      }}
-      onAfterClose={() => {
-        const scrollY = document.body.style.top;
-        document.body.style.position = '';
-        document.body.style.top = '';
-        window.scrollTo(0, parseInt(scrollY || '0') * -1);
-      }}*/

@@ -14,35 +14,38 @@ export function ContentProvider({ children }) {
 
   useEffect(() => {
     const updateYAIL = async () => {
-      const latestYail = await getYAIL();
-
-      if (latestYail) {
-        setYail(latestYail);
-        console.log(latestYail);
-        // adicionado para não ficar enviando requests para o servidor. para retormar, remover linha abaixo
-        /*setTimeout(setPaused(true), 500);
-        console.log(paused);*/
+      try {
+        const latestYail = await getYAIL();
+        if (latestYail) {
+          setYail(latestYail);
+        }
+      } catch (err) {
+        if (process.env.NODE_ENV === 'development') {
+          console.error('[LIDEA-w] Erro ao atualizar YAIL:', err.message);
+        }
       }
     };
 
-    //comando que envia solicitações ao servidor de alguma alteração no código, recebendo atualizações de código YAIL
     if (!paused) {
       const timerId = setInterval(updateYAIL, 2000);
-
       return () => clearInterval(timerId);
     }
   }, [paused]);
 
-  //console.log(yail);
-  const getPageComponents = async () => {
-    const components = await getComponents(yail);
-    const blocks = await getBlocks(yail);
-    console.log(blocks);
-    setComponents(components);
-    setBlocks(blocks);
-  };
-
   useEffect(() => {
+    const getPageComponents = async () => {
+      try {
+        const components = await getComponents(yail);
+        const blocks = await getBlocks(yail);
+        setComponents(components);
+        setBlocks(blocks);
+      } catch (err) {
+        if (process.env.NODE_ENV === 'development') {
+          console.error('[LIDEA-w] Erro ao processar YAIL:', err.message);
+        }
+      }
+    };
+
     getPageComponents();
   }, [yail]);
 

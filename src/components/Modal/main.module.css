@@ -65,4 +65,18 @@
   font-weight: 300;
   padding: 1rem 2rem;
   border-radius: 5rem;
+  cursor: pointer;
+}
+
+.form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.6rem;
+  color: #c0392b;
+  margin-bottom: 1.5rem;
+  text-align: center;
 }
