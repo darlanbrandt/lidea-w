@@ -44,7 +44,7 @@ export function ContentProvider({ children }) {
           setYail(latestYail);
         }
       } catch (err) {
-        if (process.env.NODE_ENV === 'development') {
+        if (import.meta.env.DEV) {
           console.error('[LIDEA-w] Erro ao atualizar YAIL:', err.message);
         }
       }
@@ -65,7 +65,7 @@ export function ContentProvider({ children }) {
         setBlocks(blks);
         if (name) setScreenName(name);
       } catch (err) {
-        if (process.env.NODE_ENV === 'development') {
+        if (import.meta.env.DEV) {
           console.error('[LIDEA-w] Erro ao processar YAIL:', err.message);
         }
       }

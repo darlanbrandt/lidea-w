@@ -14,7 +14,7 @@ const getYAIL = async () => {
 
     return null;
   } catch (err) {
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.DEV) {
       console.error('[LIDEA-w] Erro ao buscar YAIL:', err.message);
     }
     return null;

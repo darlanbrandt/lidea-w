@@ -18,6 +18,7 @@ dict['(define-event '] = 'command';
 dict['(def (p'] = 'procedure';
 
 function getAllBlocks(text) {
+  if (text == null) return [];
   const texto = JSON.stringify(text);
   const startPos = texto.indexOf(beginOfBlocksCode);
   const endPos = texto.length;

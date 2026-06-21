@@ -13,6 +13,7 @@ let properties = [];
 let screenProperties = [];
 
 function getScreensInfo(fullText) {
+  if (fullText == null) return {};
   let screenTitleText = '';
   let screenName = '';
   screenProperties = [];
@@ -78,6 +79,7 @@ function getComponentName(text) {
 }
 
 function getAllComponents(text) {
+  if (text == null) return {};
   const allComponents = returnFullComponentText(text);
   components = [];
   allComponents.forEach((allComponent) => {
@@ -97,6 +99,7 @@ function getAllComponents(text) {
 }
 
 function getComponentProperties(text) {
+  if (text == null) return {};
   let propertiesArray = {};
   const allComponents = returnFullComponentText(text);
   allComponents.forEach((allComponent) => {

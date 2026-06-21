@@ -1,27 +1,40 @@
 /****************************************************************************
- * Componente para representar o componente Button do App Inventor.         *
+ * Componente para representar o componente ListPicker do App Inventor.     *
+ *                                                                          *
+ * Segue o padrão do App Inventor, usando um botão para exibir o seletor    *
+ * de data.                                                                 *
  *                                                                          *
  * Utiliza MaterialUI para estilização.                                     *
- *                                                                          *
- * As ações realizadas pelo botão usam a função handleButton que chama uma  *
- * função genérica comum a todos os componentes.                            *
  ****************************************************************************/
 
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import ContentContext from '../../context/ContentContext';
-import { Button as ButtonComponent } from '@material-ui/core';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@mui/styles';
 import { getDefaultProperties } from './helpers/commonPropertiesHelper';
-import { handleAction } from './helpers/componentActionHelper';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import FormControl from '@mui/material/FormControl';
 
-export default function Button({ componentName, componentProperties }) {
+export default function TimePicker({ componentName, componentProperties }) {
   const { blocks } = useContext(ContentContext);
+  const [open, setOpen] = useState(false);
+  const [selectedTime, setSelectedTime] = useState('');
   const properties = getDefaultProperties(componentProperties);
 
   // Estilização do componente
   const useStyles = makeStyles(() => ({
     div: {
       padding: '1px',
+    },
+    container: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      paddingRight: '0',
+    },
+    formControl: {
+      minWidth: 120,
+      paddingRight: '0',
     },
     button: {
       display: 'flex',
@@ -44,9 +57,6 @@ export default function Button({ componentName, componentProperties }) {
       color: properties.textColor,
       fontFamily: properties.fontTypeface,
     },
-    invisible: {
-      display: 'none',
-    },
   }));
 
   const CustomButton = withStyles(() => ({
@@ -56,7 +66,7 @@ export default function Button({ componentName, componentProperties }) {
         backgroundColor: properties.bgColor,
       },
     },
-  }))(ButtonComponent);
+  }))(Button);
 
   const classes = useStyles();
 
@@ -64,20 +74,43 @@ export default function Button({ componentName, componentProperties }) {
     ? `${classes.div}`
     : `${classes.invisible}`;
 
-  // Ações realizadas pelo componente
-  const handleButton = (action) => {
-    handleAction(action, componentName, blocks);
+  // Ações realizadas no componente
+  const handleChange = (event) => {
+    //alert(event.target.value);
+    setSelectedTime(event.target.value);
+    setOpen(false);
+  };
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   return (
     <div className={componentClass}>
       <CustomButton
-        onClick={() => handleButton('Click')}
+        onClick={handleClickOpen}
         id={componentName}
         variant="contained"
         className={classes.button}>
         <span className={classes.span}>{properties.text}</span>
       </CustomButton>
+      <Dialog open={open} onClose={handleClose} disableScrollLock>
+        <DialogContent>
+          <form className={classes.container}>
+            <FormControl className={classes.formControl}>
+              <input
+                type="time"
+                onChange={handleChange}
+                value={selectedTime}
+                id={componentName}></input>
+            </FormControl>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

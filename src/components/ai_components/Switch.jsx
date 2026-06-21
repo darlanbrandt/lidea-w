@@ -9,8 +9,8 @@
 
 import React, { useState, useContext } from 'react';
 import ContentContext from '../../context/ContentContext';
-import { Switch as SwitchComponent } from '@material-ui/core';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { Switch as SwitchComponent } from '@mui/material';
+import { makeStyles, withStyles } from '@mui/styles';
 import { getDefaultProperties } from './helpers/commonPropertiesHelper';
 
 export default function Switch({ componentName, componentProperties }) {

@@ -29,7 +29,7 @@ function applySingleCommand(cmd) {
     return;
   }
 
-  if (process.env.NODE_ENV === 'development') {
+  if (import.meta.env.DEV) {
     console.warn('[LIDEA-w] Comando não reconhecido (ignorado):', cmd);
   }
 }

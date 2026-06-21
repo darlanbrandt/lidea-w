@@ -1,41 +1,41 @@
 /****************************************************************************
- * Componente para representar o componente PasswordTextBox do App          *
- * Inventor.                                                                *
+ * Componente para representar o componente Label do App Inventor.          *                                                              *
  *                                                                          *
  * Utiliza MaterialUI para estilização.                                     *
+ *                                                                          *
+ * As ações realizadas pelo componente usam a função handleCheckbox que     *
+ * chama uma função genérica para todos os componentes.                     *
  ****************************************************************************/
 
-import React, { useContext } from 'react';
-import ContentContext from '../../context/ContentContext';
-import { makeStyles } from '@material-ui/core/styles';
+import React from 'react';
+import { makeStyles } from '@mui/styles';
 import { getDefaultProperties } from './helpers/commonPropertiesHelper';
 
-export default function PasswordPasswordTextBox({
-  componentName,
-  componentProperties,
-}) {
-  const { blocks } = useContext(ContentContext);
+export default function Label({ componentName, componentProperties }) {
   const properties = getDefaultProperties(componentProperties);
 
   // Estilização do componente
   const useStyles = makeStyles(() => ({
     div: {
-      minHeight: properties.height,
       minWidth: properties.width,
       position: 'relative',
-    },
-    password: {
+      backgroundColor: properties.bgColor,
       textAlign: properties.textAlignment,
-      height: properties.height,
-      fontSize: properties.fontSize,
+      minHeight: properties.height,
+    },
+    span: {
+      textAlign: properties.textAlignment,
+      width: '100%',
       fontStyle: properties.fontStyle,
       fontWeight: properties.fontWeight,
-      backgroundColor: properties.bgColor,
       color: properties.textColor,
-      border: 'none',
+      height: '100%',
+      fontSize: properties.fontSize,
+      whiteSpace: 'nowrap',
       fontFamily: properties.fontTypeface,
-      width: '100%',
-      padding: '2px',
+    },
+    invisible: {
+      display: 'none',
     },
   }));
 
@@ -47,11 +47,9 @@ export default function PasswordPasswordTextBox({
 
   return (
     <div className={componentClass}>
-      <input
-        type="password"
-        id={componentName}
-        placeholder={properties.hint}
-        className={classes.password}></input>
+      <span className={classes.span} id={componentName}>
+        {properties.text}
+      </span>
     </div>
   );
 }

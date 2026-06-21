@@ -10,8 +10,8 @@
 
 import React, { useState, useContext } from 'react';
 import ContentContext from '../../context/ContentContext';
-import { makeStyles } from '@material-ui/core/styles';
-import Select from '@material-ui/core/Select';
+import { makeStyles } from '@mui/styles';
+import Select from '@mui/material/Select';
 import { getDefaultProperties } from './helpers/commonPropertiesHelper';
 
 export default function Spinner({ componentName, componentProperties }) {
