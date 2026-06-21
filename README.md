@@ -44,11 +44,12 @@ Usuário no App Inventor
 
 | Camada | Tecnologia |
 |---|---|
-| Framework | React 17 (function components + hooks) |
-| Estilização | CSS Modules + Material-UI v4 |
-| HTTP | Axios |
+| Framework | React 18 (function components + hooks) |
+| Estilização | CSS Modules + MUI v5 |
+| HTTP | Axios 1.x |
 | Back-end (separado) | Node.js — não está neste repositório |
-| Bundler | Create React App (react-scripts 4) |
+| Bundler | Vite 5 |
+| Testes | Vitest + React Testing Library |
 
 ---
 
@@ -88,10 +89,17 @@ npm install
 
 # Criar arquivo de configuração
 cp .env.example .env
+# Edite .env e ajuste VITE_API_URL se necessário
 
 # Iniciar em modo desenvolvimento
 npm start
-# Abre em http://localhost:3000
+# Abre em http://localhost:5173
+
+# Rodar testes
+npm test
+
+# Build de produção
+npm run build
 ```
 
 Para testar com o App Inventor:
