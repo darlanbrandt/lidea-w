@@ -146,8 +146,8 @@ export default function ListPicker({
                 key={componentName}
                 value={selectedValue}
                 onChange={handleChange}
-                onMouseEnter={(e) => handleListPicker('GotFocus')}
-                onMouseLeave={(e) => handleListPicker('LostFocus')}
+                onMouseEnter={() => handleListPicker('GotFocus')}
+                onMouseLeave={() => handleListPicker('LostFocus')}
                 className={classes.select}
                 id={componentName}>
                 {optionsList}

@@ -8,14 +8,12 @@
  * Inventor                                                                 *
  ****************************************************************************/
 
-import React, { useState, useContext } from 'react';
-import ContentContext from '../../context/ContentContext';
+import React, { useState } from 'react';
 import { makeStyles } from '@mui/styles';
 import Select from '@mui/material/Select';
 import { getDefaultProperties } from './helpers/commonPropertiesHelper';
 
 export default function Spinner({ componentName, componentProperties }) {
-  const { blocks } = useContext(ContentContext);
   const [selectedValue, setSelectedValue] = useState('');
   const properties = getDefaultProperties(componentProperties);
 

@@ -1,19 +1,12 @@
 import { convertDecimaltoHexColor } from '../../../helpers/commandsHelper';
 
 let propertiesStack = [];
-let conditionalStack = [];
 let propertiesInsideIf = false;
-let action = '';
-let command = '';
 let localVariables = [];
 const PI = Math.PI;
 const localVariableIndicator = '(let ( ';
 const setPropertyIndicator = "(set-and-coerce-property! '";
-const setGlobalVariableValue = '(set-var g$';
 const conditionalIndicator = '(if (call-yail-primitive ';
-const listIndicator = 'call-yail-primitive yail-list';
-const TRUE = true.toString();
-const FALSE = false.toString();
 const SPLIT_CHARACTER = 'character';
 const SPLIT_SPACES = 'spaces';
 const SPLIT_FIRST = 'first';
@@ -40,18 +33,15 @@ const getBlocksCommands = (commands, variables) => {
       parsedCommand = getPropertyCommands(commands, variables, i);
     } else if (commands.startsWith(conditionalIndicator, i)) {
       parsedCommand = getConditionalCommands(commands, variables, i);
-    } else if (commands.startsWith(listIndicator, i)) {
-      console.log('Comando de Lista');
     }
   }
   propertiesInsideIf = false;
   return parsedCommand;
 };
 
-const getConditionalCommands = (commands, variables, i) => {
+const getConditionalCommands = (commands, variables) => {
   let ifStack = [];
   propertiesInsideIf = true;
-  conditionalStack = [];
   let comparisonCommand = '';
   for (let i = 0; i < commands.length; i++) {
     if (commands.startsWith('if', i)) {
@@ -81,7 +71,6 @@ const getConditionalCommands = (commands, variables, i) => {
       ifStack.push(' else {');
     }
   }
-  console.log(ifStack);
 
   let commandStack = ifStack.map((element) => {
     if (element.toString().startsWith(setPropertyIndicator)) {
@@ -93,13 +82,6 @@ const getConditionalCommands = (commands, variables, i) => {
     }
   });
 
-  console.log(
-    removeLastElement(commandStack)
-      .join()
-      .replaceAll(',', '')
-      .replaceAll('(false) { else', ' else')
-      .replaceAll('; }(false) {', ';')
-  );
   return removeLastElement(commandStack)
     .join()
     .replaceAll(',', '')
@@ -171,8 +153,6 @@ const getPropertyCommands = (commands, variables, i) => {
     propertiesStack = [];
   }
 
-  console.log(commands);
-  command = '';
   let setProperty = '';
   let finalResult = '';
   let fieldValue = '';
@@ -180,7 +160,6 @@ const getPropertyCommands = (commands, variables, i) => {
   let componentAction = commands
     .substring(i + setPropertyIndicator.length)
     .split(' ')[0];
-  console.log(componentAction);
 
   let componentType = document.querySelector('#' + componentAction).nodeName;
 
@@ -208,7 +187,6 @@ const getPropertyCommands = (commands, variables, i) => {
         1
     )
     .split(") '")[0];
-  console.log(value);
 
   fieldValue = getValue(value, variables).toString().startsWith('(get-var g$')
     ? getVariableValue(variables, getValue(value, variables))
@@ -291,7 +269,6 @@ const getPropertyCommands = (commands, variables, i) => {
 
   propertiesStack.push(setProperty);
   finalResult = propertiesStack.join().replaceAll(',', '');
-  console.log(finalResult);
   return finalResult.toString();
 };
 
@@ -321,7 +298,6 @@ function getValue(commandText, variables) {
   let textSubstring = '';
   let operation = '(call-yail-primitive';
   let globalVariable = '(get-var g$';
-  let localVariable = '(lexical-value $';
   let textFieldValue = '(get-property';
   if (commandText.startsWith(operation)) {
     textSubstring = commandText
@@ -358,10 +334,8 @@ function getValue(commandText, variables) {
 }
 
 function listActions(listString, variables, localVariables) {
-  console.log(listString);
   let result = [];
   let operator = listString.split(' ')[0];
-  console.log(operator);
   const listIndicator = ' (*list-for-runtime* ';
   let elementsBeforeFilter = '';
   let listElements = listString
@@ -398,27 +372,26 @@ function listActions(listString, variables, localVariables) {
   let removedQuotes = textFieldFilter.map((text) =>
     text.startsWith('"') || text.endsWith('"') ? text.replaceAll('"', '') : text
   );
-  console.log(removedQuotes);
-
   switch (operator) {
     case 'yail-list-reverse':
-      console.log(removedQuotes.reverse());
+      result = [...removedQuotes].reverse();
+      break;
+    default:
+      result = removedQuotes;
+      break;
   }
 
   return result;
 }
 
 function textActions(textString, variables, localVariables) {
-  console.log(textString);
   let result = '';
   let operator = textString.split(' ')[0];
-  console.log(operator);
   const textIndicator = ' (*list-for-runtime* ';
   let elementsBeforeFilter = '';
   let textElements = textString
     .substring(operator.length + textIndicator.length)
     .replaceAll('\\', '');
-  console.log(textElements);
   if (
     textElements.startsWith('(get-var') ||
     textElements.startsWith('(lexical-value') ||
@@ -444,7 +417,6 @@ function textActions(textString, variables, localVariables) {
   let removedQuotes = textFieldFilter.map((text) =>
     text.startsWith('"') || text.endsWith('"') ? text.replaceAll('"', '') : text
   );
-  console.log(removedQuotes);
 
   switch (operator) {
     case 'string-append':
@@ -509,10 +481,8 @@ function textActions(textString, variables, localVariables) {
 }
 
 function calculate(calculationText, variables, localVariables) {
-  console.log(calculationText);
   let result = 0;
   let operator = calculationText.split(' ')[0];
-  console.log(operator);
   const numberIndicator = ' (*list-for-runtime* ';
   let elementsBeforeFilter = calculationText
     .substring(operator.length + numberIndicator.length)
@@ -531,7 +501,6 @@ function calculate(calculationText, variables, localVariables) {
     .map((n) => (n.startsWith("'") ? getTextFieldValue(n) : n));
 
   let numbers = textFieldFilter.map(Number);
-  console.log(numbers);
 
   switch (operator) {
     case '+':
@@ -651,9 +620,6 @@ function calculate(calculationText, variables, localVariables) {
     case 'math-convert-bin-dec':
       result = binaryToDecimalNumber(numbers);
       break;
-    case 'is-number?':
-      result = isNumber(numbers);
-      break;
     case 'bitwise-and':
       result = bitwiseNumber(numbers, BITWISE_AND);
       break;
@@ -671,19 +637,14 @@ function calculate(calculationText, variables, localVariables) {
 
 function getVariableValue(variables, value) {
   let variableName = '';
-  let variableValue = '';
   if (value.startsWith('(get-var g$')) {
     variableName = value.substring('(get-var g$'.length).split(')')[0];
-    variableValue = getVarValue(variables, variableName);
   } else if (value.startsWith('g$')) {
     variableName = value.substring('g$'.length).split(')')[0];
-    variableValue = getVarValue(variables, variableName);
   } else if (value.startsWith('(lexical-value $')) {
     variableName = value.substring('(lexical-value $'.length).split(')')[0];
-    variableValue = getVarValue(variables, variableName);
   } else if (value.startsWith('$')) {
     variableName = value.substring('$'.length).split(')')[0];
-    variableValue = getVarValue(variables, variableName);
   }
   return getVarValue(variables, variableName);
 }
@@ -854,8 +815,6 @@ function decimalNumber(arr) {
 }
 
 function isNumber(arr) {
-  console.log(arr[0]);
-  console.log(Number(arr[0]));
   return typeof Number(arr[0]) === 'number' ? true : false;
 }
 
@@ -955,29 +914,22 @@ function containsText(arr) {
 
 function splitText(arr, type) {
   let splitString = [];
-  let finalString = '';
   switch (type) {
     case SPLIT_CHARACTER:
       splitString = arr[0].split(arr[1]);
       break;
     case SPLIT_SPACES:
       splitString = arr[0].split(' ');
-      console.log(splitString);
       break;
-    case SPLIT_FIRST:
+    case SPLIT_FIRST: {
       const [firstPart, ...rest] = arr[0].split(arr[1]);
       const lastPart = rest.join(arr[1]);
       splitString = [firstPart, lastPart];
+      break;
+    }
     default:
       break;
   }
-  finalString = '[';
-  splitString.forEach((element) => {
-    finalString += `'${element}' ,`;
-  });
-  finalString = finalString.replace(/,\s*$/, '');
-  finalString += ']';
-  console.log(splitString);
   return splitString;
 }
 
@@ -1011,7 +963,6 @@ function substringText(arr) {
     initialPos,
     initialPos + substringLength
   );
-  console.log(finalString);
   return finalResult;
 }
 

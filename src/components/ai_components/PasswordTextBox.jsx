@@ -5,8 +5,7 @@
  * Utiliza MaterialUI para estilização.                                     *
  ****************************************************************************/
 
-import React, { useContext } from 'react';
-import ContentContext from '../../context/ContentContext';
+import React from 'react';
 import { makeStyles } from '@mui/styles';
 import { getDefaultProperties } from './helpers/commonPropertiesHelper';
 
@@ -14,7 +13,6 @@ export default function PasswordPasswordTextBox({
   componentName,
   componentProperties,
 }) {
-  const { blocks } = useContext(ContentContext);
   const properties = getDefaultProperties(componentProperties);
 
   // Estilização do componente

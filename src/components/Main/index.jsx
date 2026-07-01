@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import ContentContext from '../../context/ContentContext';
 import ElementsContainer from '../ElementsContainer';
+import ErrorBoundary from '../ErrorBoundary';
 import ScreenTitle from '../ai_components/ScreenTitle';
 import style from './main.module.css';
 
@@ -59,7 +60,9 @@ export default function Main({ onOpenModal }) {
                   <span className={style['loading-text']}>Carregando aplicativo…</span>
                 </div>
               ) : (
-                <ElementsContainer />
+                <ErrorBoundary resetKey={components}>
+                  <ElementsContainer />
+                </ErrorBoundary>
               )}
             </div>
           </div>

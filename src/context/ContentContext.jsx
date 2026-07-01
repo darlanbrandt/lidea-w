@@ -50,11 +50,11 @@ export function ContentProvider({ children }) {
       }
     };
 
-    if (!paused) {
+    if (isConnected && !paused) {
       const timerId = setInterval(updateYAIL, 2000);
       return () => clearInterval(timerId);
     }
-  }, [paused]);
+  }, [isConnected, paused]);
 
   useEffect(() => {
     const getPageComponents = async () => {

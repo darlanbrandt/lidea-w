@@ -7,8 +7,7 @@
  * Utiliza MaterialUI para estilização.                                     *
  ****************************************************************************/
 
-import React, { useState, useContext } from 'react';
-import ContentContext from '../../context/ContentContext';
+import React, { useState } from 'react';
 import { makeStyles, withStyles } from '@mui/styles';
 import { getDefaultProperties } from './helpers/commonPropertiesHelper';
 import Button from '@mui/material/Button';
@@ -17,7 +16,6 @@ import DialogContent from '@mui/material/DialogContent';
 import FormControl from '@mui/material/FormControl';
 
 export default function DatePicker({ componentName, componentProperties }) {
-  const { blocks } = useContext(ContentContext);
   const [open, setOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState('');
   const properties = getDefaultProperties(componentProperties);
@@ -74,14 +72,6 @@ export default function DatePicker({ componentName, componentProperties }) {
     ? `${classes.div}`
     : `${classes.invisible}`;
 
-  // Blocos
-  const commands = blocks.map(({ commands }) => {
-    return commands;
-  });
-
-  const variables = blocks.map(({ variables }) => {
-    return variables;
-  });
 
   // Ações realizadas pelo componente
   const handleChange = (event) => {

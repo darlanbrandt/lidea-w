@@ -55,7 +55,6 @@ const getBlocks = async (yail) => {
   });
   */
 
-  Object.keys(allBlocks).forEach((abKey) => {});
   blocks.push({
     variables: variables,
     commands: fullCommandBlockInfo,

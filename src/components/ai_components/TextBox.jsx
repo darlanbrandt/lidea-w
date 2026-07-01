@@ -57,14 +57,6 @@ export default function TextBox({ componentName, componentProperties }) {
     multiline = true;
   }
 
-  // Blocos
-  const commands = blocks.map(({ commands }) => {
-    return commands;
-  });
-
-  const variables = blocks.map(({ variables }) => {
-    return variables;
-  });
 
   // Ações realizadas no componente
   function handleTextBox(action) {
