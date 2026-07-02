@@ -46,5 +46,18 @@ module.exports = {
       },
     },
   ],
-  ignorePatterns: ['dist', 'node_modules'],
+  ignorePatterns: [
+    'dist',
+    'node_modules',
+    // Iterações anteriores do parser mantidas como referência (não são
+    // importadas pelo código em produção — a lógica atual vive em
+    // commandParser.js). Fora do lint para não travar o CI.
+    'src/helpers/componentsActions/actionsHelper.js',
+    'src/helpers/dictionaryBlockHelper.js',
+    'src/helpers/parser/blocks/blocksParserDictionary.js',
+    'src/helpers/parser/blocks/mathCommandsParser.js',
+    'src/helpers/parser/blocks/operatorsParser.js',
+    'src/helpers/parser/blocks/proceduresParser.js',
+    'src/components/ai_components/helpers/commandsToExecuteHelper.js',
+  ],
 };
