@@ -8,7 +8,7 @@
  ****************************************************************************/
 
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import { getDefaultProperties } from './helpers/commonPropertiesHelper';
 
 export default function TableArrangement({

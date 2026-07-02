@@ -1,41 +1,37 @@
 /****************************************************************************
- * Componente para representar o componente Label do App Inventor.          *                                                              *
+ * Componente para representar o componente CheckBox do App Inventor.       *
  *                                                                          *
  * Utiliza MaterialUI para estilização.                                     *
  *                                                                          *
  * As ações realizadas pelo componente usam a função handleCheckbox que     *
- * chama uma função genérica para todos os componentes.                     *
+ * chama uma função genérica comum a todos os componentes.                  *
  ****************************************************************************/
 
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, { useState } from 'react';
+import Checkbox from '@mui/material/Checkbox';
+import { makeStyles } from '@mui/styles';
 import { getDefaultProperties } from './helpers/commonPropertiesHelper';
 
-export default function Label({ componentName, componentProperties }) {
+export default function CheckBox({ componentName, componentProperties }) {
+  const [checked, setChecked] = useState(false);
   const properties = getDefaultProperties(componentProperties);
 
   // Estilização do componente
   const useStyles = makeStyles(() => ({
     div: {
+      minHeight: properties.height,
       minWidth: properties.width,
       position: 'relative',
-      backgroundColor: properties.bgColor,
       textAlign: properties.textAlignment,
-      minHeight: properties.height,
     },
     span: {
       textAlign: properties.textAlignment,
       width: '100%',
+      fontSize: properties.fontSize,
       fontStyle: properties.fontStyle,
       fontWeight: properties.fontWeight,
       color: properties.textColor,
-      height: '100%',
-      fontSize: properties.fontSize,
-      whiteSpace: 'nowrap',
       fontFamily: properties.fontTypeface,
-    },
-    invisible: {
-      display: 'none',
     },
   }));
 
@@ -45,11 +41,23 @@ export default function Label({ componentName, componentProperties }) {
     ? `${classes.div}`
     : `${classes.invisible}`;
 
+
+  // Ações realizadas pelo componente
+  const handleChange = (event) => {
+    setChecked(event.target.checked);
+  };
+
   return (
     <div className={componentClass}>
-      <span className={classes.span} id={componentName}>
-        {properties.text}
-      </span>
+      <Checkbox
+        checked={properties.checked}
+        color="primary"
+        onChange={handleChange}
+        value={checked}
+        name={componentName}
+        id={componentName}
+      />
+      <span className={classes.span}>{properties.text}</span>
     </div>
   );
 }

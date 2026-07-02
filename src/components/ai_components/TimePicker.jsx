@@ -1,5 +1,5 @@
 /****************************************************************************
- * Componente para representar o componente DatePicker do App Inventor.     *
+ * Componente para representar o componente ListPicker do App Inventor.     *
  *                                                                          *
  * Segue o padrão do App Inventor, usando um botão para exibir o seletor    *
  * de data.                                                                 *
@@ -7,19 +7,17 @@
  * Utiliza MaterialUI para estilização.                                     *
  ****************************************************************************/
 
-import React, { useState, useContext } from 'react';
-import ContentContext from '../../context/ContentContext';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import React, { useState } from 'react';
+import { makeStyles, withStyles } from '@mui/styles';
 import { getDefaultProperties } from './helpers/commonPropertiesHelper';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import FormControl from '@material-ui/core/FormControl';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import FormControl from '@mui/material/FormControl';
 
-export default function DatePicker({ componentName, componentProperties }) {
-  const { blocks } = useContext(ContentContext);
+export default function TimePicker({ componentName, componentProperties }) {
   const [open, setOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedTime, setSelectedTime] = useState('');
   const properties = getDefaultProperties(componentProperties);
 
   // Estilização do componente
@@ -74,19 +72,10 @@ export default function DatePicker({ componentName, componentProperties }) {
     ? `${classes.div}`
     : `${classes.invisible}`;
 
-  // Blocos
-  const commands = blocks.map(({ commands }) => {
-    return commands;
-  });
-
-  const variables = blocks.map(({ variables }) => {
-    return variables;
-  });
-
-  // Ações realizadas pelo componente
+  // Ações realizadas no componente
   const handleChange = (event) => {
-    alert(event.target.value);
-    setSelectedDate(event.target.value);
+    //alert(event.target.value);
+    setSelectedTime(event.target.value);
     setOpen(false);
   };
 
@@ -112,9 +101,9 @@ export default function DatePicker({ componentName, componentProperties }) {
           <form className={classes.container}>
             <FormControl className={classes.formControl}>
               <input
-                type="date"
+                type="time"
                 onChange={handleChange}
-                value={selectedDate}
+                value={selectedTime}
                 id={componentName}></input>
             </FormControl>
           </form>

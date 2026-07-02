@@ -12,7 +12,7 @@
 
 import React, { useContext } from 'react';
 import ContentContext from '../../context/ContentContext';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import { getDefaultProperties } from './helpers/commonPropertiesHelper';
 import { handleAction } from './helpers/componentActionHelper';
 
@@ -57,14 +57,6 @@ export default function TextBox({ componentName, componentProperties }) {
     multiline = true;
   }
 
-  // Blocos
-  const commands = blocks.map(({ commands }) => {
-    return commands;
-  });
-
-  const variables = blocks.map(({ variables }) => {
-    return variables;
-  });
 
   // Ações realizadas no componente
   function handleTextBox(action) {

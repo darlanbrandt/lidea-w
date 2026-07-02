@@ -12,13 +12,13 @@
 
 import React, { useState,useContext } from 'react';
 import ContentContext from '../../context/ContentContext';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@mui/styles';
 import { getDefaultProperties } from './helpers/commonPropertiesHelper';
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogContent from '@material-ui/core/DialogContent';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 import { handleAction } from './helpers/componentActionHelper';
 
 export default function ListPicker({
@@ -146,8 +146,8 @@ export default function ListPicker({
                 key={componentName}
                 value={selectedValue}
                 onChange={handleChange}
-                onMouseEnter={(e) => handleListPicker('GotFocus')}
-                onMouseLeave={(e) => handleListPicker('LostFocus')}
+                onMouseEnter={() => handleListPicker('GotFocus')}
+                onMouseLeave={() => handleListPicker('LostFocus')}
                 className={classes.select}
                 id={componentName}>
                 {optionsList}

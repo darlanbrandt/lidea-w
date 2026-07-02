@@ -1,36 +1,39 @@
 /****************************************************************************
- * Componente para representar o componente HorizontalArrangement do App    *
+ * Componente para representar o componente PasswordTextBox do App          *
  * Inventor.                                                                *
- *                                                                          *
- * Serve como uma <div> para inclusão de demais componentes internamente    *
  *                                                                          *
  * Utiliza MaterialUI para estilização.                                     *
  ****************************************************************************/
 
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@mui/styles';
 import { getDefaultProperties } from './helpers/commonPropertiesHelper';
 
-export default function HorizontalArrangement({
+export default function PasswordPasswordTextBox({
   componentName,
   componentProperties,
-  children,
 }) {
   const properties = getDefaultProperties(componentProperties);
 
   // Estilização do componente
   const useStyles = makeStyles(() => ({
     div: {
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: properties.alignHorizontal,
-      justifyContent: properties.alignVertical,
-      backgroundColor: properties.bgColor,
       minHeight: properties.height,
       minWidth: properties.width,
+      position: 'relative',
     },
-    invisible: {
-      display: 'none',
+    password: {
+      textAlign: properties.textAlignment,
+      height: properties.height,
+      fontSize: properties.fontSize,
+      fontStyle: properties.fontStyle,
+      fontWeight: properties.fontWeight,
+      backgroundColor: properties.bgColor,
+      color: properties.textColor,
+      border: 'none',
+      fontFamily: properties.fontTypeface,
+      width: '100%',
+      padding: '2px',
     },
   }));
 
@@ -41,8 +44,12 @@ export default function HorizontalArrangement({
     : `${classes.invisible}`;
 
   return (
-    <div className={componentClass} id={componentName}>
-      {children}
+    <div className={componentClass}>
+      <input
+        type="password"
+        id={componentName}
+        placeholder={properties.hint}
+        className={classes.password}></input>
     </div>
   );
 }
